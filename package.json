@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "workspaces": [
+    "warp-contracts-subscription-plugin",
+    "warp-contracts-nlp-plugin"
+  ],
+  "dependencies": {
+    "warp-contracts": "^1.2.19"
+  }
+}

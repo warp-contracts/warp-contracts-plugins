@@ -1,0 +1,56 @@
+{
+  "name": "warp-contracts-subscription-plugin",
+  "version": "1.0.0",
+  "description": "A subscription plugin for warp contracts",
+  "types": "./lib/types/index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "exports": {
+    ".": "./lib/cjs/index.js"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=16.5"
+  },
+  "scripts": {
+    "build:cjs": "tsc -b tsconfig.json",
+    "build:types": "tsc -b tsconfig.types.json",
+    "build": "yarn run clean && yarn build:cjs && yarn build:types",
+    "format": "prettier --write 'src/**/*.ts'",
+    "clean": "rimraf ./lib",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "prettier:format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "prepublishOnly": "yarn lint",
+    "preversion": "yarn lint && yarn build",
+    "version": "yarn format && git add -A src",
+    "postversion": "git push && git push --tags",
+    "yalc:publish": "yarn build && yalc publish --push",
+    "test": "jest",
+    "test:unit": "jest ./src/__tests__/unit"
+  },
+  "license": "MIT",
+  "files": [
+    "lib/",
+    "README.md"
+  ],
+  "dependencies": {
+    "warp-contracts-pubsub": "^1.0.3",
+    "ws": "^8.11.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.6",
+    "@types/node": "^18.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.1",
+    "jest": "^28.1.3",
+    "prettier": "^2.3.2",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.7.4"
+  },
+  "peerDependencies": {
+    "warp-contracts": "*"
+  }
+}
