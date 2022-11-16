@@ -1,11 +1,11 @@
 # Warp Contracts Subscription plugins
 
-These plugins allow to subscribe for notifications to new interactions sent by Warp Sequencer.  
+These plugins allow to subscribe for notifications to new interactions that are now being sent by the Warp Sequencer.  
 The Warp Sequencer publishes a notification for each newly registered interaction to a `interaction/{contractTxId}` channel - so each contract
 has its own channel.
 
 Subscribers may use the incoming messages to locally update their state - without having to constantly poll
-the Warp Gateway for new interactions.
+the Warp Gateway to check whether new interactions have been registered for a given contract.
 
 In order to safely update the local state - a plugin must verify whether the local state is cached
 at the sort key exactly "before" the sort key from the new interaction.   
