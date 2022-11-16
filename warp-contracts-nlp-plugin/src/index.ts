@@ -1,6 +1,6 @@
 import { initPubSub, subscribe } from 'warp-contracts-pubsub';
+import { WarpPlugin, WarpPluginType } from 'warp-contracts/lib/types/core/WarpPlugin';
 import { EvalStateResult, GQLNodeInterface, LoggerFactory, SortKeyCacheResult, Warp } from 'warp-contracts';
-import { WarpPlugin, WarpPluginType } from 'warp-contracts';
 
 const isNode = new Function('try {return this===global;}catch(e){return false;}');
 if (isNode) {
