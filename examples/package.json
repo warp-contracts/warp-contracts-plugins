@@ -6,7 +6,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "warp-contracts-pubsub": "1.0.3",
+    "warp-contracts-subscription-plugin": "^1.0.3",
     "warp-contracts": "^1.2.19"
   },
   "devDependencies": {

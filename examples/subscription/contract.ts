@@ -19,7 +19,7 @@ async function main() {
   const contractTxId = 'Ws9hhYckc-zSnVmbBep6q_kZD5zmzYzDmgMC50nMiuE';
   const warp = WarpFactory.forMainnet();
   warp.use(new StateUpdatePlugin(contractTxId, warp));
-  //warp.use(new CustomSubscriptionPlugin(contractTxId, warp));
+  // warp.use(new CustomSubscriptionPlugin(contractTxId, warp));
   const wallet = await warp.generateWallet();
 
   const contract = warp

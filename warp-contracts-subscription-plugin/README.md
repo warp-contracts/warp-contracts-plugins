@@ -59,6 +59,5 @@ warp.use(new StateUpdatePlugin(contractTxId, warp));
 ```
 
 ## Examples
-Examples are available in the `example/contract.ts`.  
-Run with `yarn ts-node example/contract.ts`.
+Examples are available [here](../examples).
 
