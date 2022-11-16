@@ -17,7 +17,7 @@ export interface InteractionMessage {
 }
 
 export abstract class WarpSubscriptionPlugin<R> implements WarpPlugin<InteractionMessage, Promise<R>> {
-  protected readonly logger = LoggerFactory.INST.create(WarpSubscriptionPlugin.name);
+  protected readonly logger = LoggerFactory.INST.create('WarpSubscriptionPlugin');
 
   constructor(protected readonly contractTxId: string, protected readonly warp: Warp) {
     subscribe(

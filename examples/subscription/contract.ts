@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import {LoggerFactory, WarpFactory} from "warp-contracts";
-import {InteractionMessage, StateUpdatePlugin, WarpSubscriptionPlugin} from "../src/index";
+import {InteractionMessage, StateUpdatePlugin, WarpSubscriptionPlugin} from "warp-contracts-subscription-plugin";
 
 LoggerFactory.INST.logLevel('none');
 LoggerFactory.INST.logLevel('info', 'subscription-example');
@@ -18,9 +18,9 @@ class CustomSubscriptionPlugin extends WarpSubscriptionPlugin<void> {
 async function main() {
   const contractTxId = 'Ws9hhYckc-zSnVmbBep6q_kZD5zmzYzDmgMC50nMiuE';
   const warp = WarpFactory.forMainnet();
-  //warp.use(new StateUpdatePlugin(contractTxId, warp));
-  warp.use(new CustomSubscriptionPlugin(contractTxId, warp));
-  let wallet = await warp.generateWallet();
+  warp.use(new StateUpdatePlugin(contractTxId, warp));
+  //warp.use(new CustomSubscriptionPlugin(contractTxId, warp));
+  const wallet = await warp.generateWallet();
 
   const contract = warp
     .contract(contractTxId)
