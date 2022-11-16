@@ -56,10 +56,9 @@ export class StateUpdatePlugin<State> extends WarpSubscriptionPlugin<SortKeyCach
      * If the local state is cached at 'lastSortKey' - it's safe to use the new interaction to update
      * the local state directly.
      *
-     * If the local state cache is cached add 'earlier' sort key - we need to ask the Warp Gateway for the missing
+     * If the local state is cached add 'earlier' sort key - we need to ask the Warp Gateway for the missing
      * interactions.
      */
-
     let result: SortKeyCacheResult<EvalStateResult<State>>;
     if (lastStoredKey?.localeCompare(input.lastSortKey) === 0) {
       this.logger.debug('Safe to use new interaction.', input.sortKey);
@@ -76,7 +75,7 @@ export class StateUpdatePlugin<State> extends WarpSubscriptionPlugin<SortKeyCach
       sortKey: result.sortKey,
       state: result.cachedValue.state
     });
-    
+
     return result;
   }
 }
