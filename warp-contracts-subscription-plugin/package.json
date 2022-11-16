@@ -1,11 +1,11 @@
 {
   "name": "warp-contracts-subscription-plugin",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "A subscription plugin for warp contracts",
-  "types": "./lib/types/plugin.d.ts",
-  "main": "./lib/cjs/plugin.js",
+  "types": "./lib/types/index.d.ts",
+  "main": "./lib/cjs/index.js",
   "exports": {
-    ".": "./lib/cjs/plugin.js"
+    ".": "./lib/cjs/index.js"
   },
   "sideEffects": false,
   "engines": {
@@ -48,8 +48,8 @@
     "jest": "*",
     "prettier": "*",
     "rimraf": "*",
-    "ts-node": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "ts-node": "*"
   },
   "peerDependencies": {
     "warp-contracts": "*"

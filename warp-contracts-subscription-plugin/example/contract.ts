@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import {LoggerFactory, WarpFactory} from "warp-contracts";
-import {InteractionMessage, StateUpdatePlugin, WarpSubscriptionPlugin} from "../src/plugin";
+import {InteractionMessage, StateUpdatePlugin, WarpSubscriptionPlugin} from "../src/index";
 
 LoggerFactory.INST.logLevel('none');
 LoggerFactory.INST.logLevel('info', 'subscription-example');
