@@ -68,7 +68,7 @@ export class StateUpdatePlugin<State> extends WarpSubscriptionPlugin<SortKeyCach
         lastSortKey: input.lastSortKey,
         localCache: lastStoredKey
       });
-      result =  await this.warp.contract<State>(this.contractTxId).readState();
+      result = await this.warp.contract<State>(this.contractTxId).readState();
     }
 
     this.logger.debug('State updated', {
