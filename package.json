@@ -5,7 +5,7 @@
     "warp-contracts-nlp-plugin"
   ],
   "dependencies": {
-    "warp-contracts": "^1.2.19"
+    "warp-contracts": "^1.2.20"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

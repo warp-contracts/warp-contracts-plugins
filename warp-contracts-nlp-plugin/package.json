@@ -1,7 +1,7 @@
 {
-  "name": "warp-contracts-subscription-plugin",
-  "version": "1.0.3",
-  "description": "A subscription plugin for warp contracts",
+  "name": "warp-contracts-nlp-plugin",
+  "version": "1.0.0",
+  "description": "A NLP (https://github.com/axa-group/nlp.js) plugin for warp contracts",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
   "exports": {
@@ -33,10 +33,6 @@
     "lib/",
     "README.md"
   ],
-  "dependencies": {
-    "warp-contracts-pubsub": "^1.0.3",
-    "ws": "^8.11.0"
-  },
   "devDependencies": {
     "@types/jest": "*",
     "@types/node": "*",
@@ -53,5 +49,8 @@
   },
   "peerDependencies": {
     "warp-contracts": "*"
+  },
+  "dependencies": {
+    "node-nlp": "^4.24.0"
   }
 }
