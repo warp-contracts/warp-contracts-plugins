@@ -7,7 +7,7 @@ has its own channel.
 Subscribers may use the incoming messages to locally update their state - without having to constantly poll
 the Warp Gateway to check whether new interactions have been registered for a given contract.
 
-In order to safely update the local state - a plugin must verify whether the local state is cached
+In order to safely update the local state - a plugin must [verify](https://github.com/warp-contracts/warp-contracts-plugins/blob/main/warp-contracts-subscription-plugin/src/index.ts#L63) whether the local state is cached
 at the sort key exactly "before" the sort key from the new interaction.   
 That's why each message sent by the Warp Sequencer contains the `lastSortKey` field.
 
