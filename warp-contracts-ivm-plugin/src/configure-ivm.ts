@@ -130,6 +130,7 @@ export function configureSandbox(
   arweave.ar.isGreaterThan = arweave.ar.isGreaterThan.bind(arweave.ar);
   arweave.ar.add = arweave.ar.add.bind(arweave.ar);
   arweave.ar.sub = arweave.ar.sub.bind(arweave.ar);
+
   sandbox.setSync('__host__smartweave__arweave__ar_winstonToAr', new ivm.Reference(arweave.ar.winstonToAr));
   sandbox.setSync('__host__smartweave__arweave__ar_arToWinston', new ivm.Reference(arweave.ar.arToWinston));
   sandbox.setSync('__host__smartweave__arweave__ar_compare', new ivm.Reference(arweave.ar.compare));
@@ -231,6 +232,21 @@ export function configureSandbox(
       return new ivm.ExternalCopy(result);
     })
   );
+
+  // Buffer - for the weaveDb contracts...
+  // not sure if that's a good idea - https://github.com/laverdet/isolated-vm/issues/329
+  sandbox.setSync('__host__buffer_from', function (...args) {
+    return Buffer.from(args);
+  });
+  sandbox.setSync('__host__buffer_allocUnsafe', function (...args) {
+    return Buffer.allocUnsafe(args[0]);
+  });
+  sandbox.setSync('__host__buffer_isBuffer', function (...args) {
+    return Buffer.isBuffer(args);
+  });
+  sandbox.setSync('__host__buffer_concat', function (...args) {
+    return Buffer.concat(args);
+  });
 }
 
 export function configureContext(context: Context) {
@@ -335,6 +351,13 @@ export function configureContext(context: Context) {
       super(message);
       this.name = 'ContractError';
     }
+  }
+  
+  const Buffer = {
+    from: __host__buffer_from,
+    allocUnsafe: __host__buffer_allocUnsafe,
+    isBuffer: __host__buffer_isBuffer,
+    concat: __host__buffer_concat
   }
   
   const logger = {
@@ -528,6 +551,26 @@ export function configureContext(context: Context) {
         ownerToAddress: function(...args) {
           return __host__smartweave__arweave__wallets_ownerToAddress.applySyncPromise(undefined, args);
         },
+        crypto: {
+          generateJWK: function(...args) {
+            return __host__smartweave__arweave__crypto_generateJWK.applySyncPromise(undefined, args).copy();
+          },
+          sign: function(...args) {
+            return __host__smartweave__arweave__crypto_sign.applySyncPromise(undefined, args, {arguments: {copy: true}}).copy();
+          },
+          verify: function(...args) {
+            return __host__smartweave__arweave__crypto_verify.applySyncPromise(undefined, args, {arguments: {copy: true}});
+          },
+          encrypt: function(...args) {
+            return __host__smartweave__arweave__crypto_encrypt.applySyncPromise(undefined, args, {arguments: {copy: true}}).copy();
+          },
+          decrypt: function(...args) {
+            return __host__smartweave__arweave__crypto_decrypt.applySyncPromise(undefined, args, {arguments: {copy: true}}).copy();
+          },
+          hash: function(...args) {
+            return __host__smartweave__arweave__crypto_hash.applySyncPromise(undefined, args, {arguments: {copy: true}}).copy();
+          }
+        }
       },
       
       crypto: {
