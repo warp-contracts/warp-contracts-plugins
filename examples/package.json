@@ -5,6 +5,9 @@
     "node": ">=16.5"
   },
   "license": "MIT",
+  "scripts": {
+    "sub": "NODE_NO_WARNINGS=1 ts-node subscription/contract.ts"
+  },
   "dependencies": {
     "warp-contracts-subscription-plugin": "^1.0.3",
     "warp-contracts": "^1.2.19"

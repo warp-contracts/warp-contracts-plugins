@@ -40,6 +40,9 @@ class CustomSubscriptionPlugin extends WarpSubscriptionPlugin<void> {
     // process the new message;
   }
 }
+
+const warp = WarpFactory.forMainnet();
+warp.use(new CustomSubscriptionPlugin(contractTxId, warp));
 ```
 
 Usage:
@@ -59,5 +62,5 @@ warp.use(new StateUpdatePlugin(contractTxId, warp));
 ```
 
 ## Examples
-Examples are available [here](../examples).
+Examples are available [here](https://github.com/warp-contracts/warp-contracts-plugins/blob/main/examples/subscription/contract.ts).
 
