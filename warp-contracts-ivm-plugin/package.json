@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-ivm-plugin",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "An isolated-vm plugin for Warp Contracts SDK",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
