@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "warp-contracts-subscription-plugin": "^1.0.3",
-    "warp-contracts-ivm-plugin": "^1.0.10",
+    "warp-contracts-ivm-plugin": "^1.0.11",
     "warp-contracts": "^1.2.22"
   },
   "devDependencies": {
