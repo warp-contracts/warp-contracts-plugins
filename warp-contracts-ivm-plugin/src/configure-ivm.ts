@@ -237,7 +237,6 @@ export function configureSandbox(
 
 export function configureContext(context: Context) {
   context.evalSync(bigNumberLib);
-  context.evalSync(fs.readFileSync(__dirname + '/buffer-bundle.js', 'utf-8'));
   context.evalSync(`
   
   class BaseObject {
@@ -577,5 +576,11 @@ export function configureContext(context: Context) {
   };
   
   const ArweaveUtils = SmartWeave.arweave.utils;
+  const window = {};
 `);
+
+  context.evalSync(fs.readFileSync(__dirname + '/buffer-bundle.js', 'utf-8'));
+  context.evalSync(`
+    const Buffer = window.buffer.Buffer;
+  `);
 }
