@@ -9,4 +9,12 @@ const manager = new SmartWeave.extensions
 ## Installation
 `yarn add warp-contracts-nlp-plugin`
 
+```ts
+import {NlpExtension} from "warp-contracts-nlp-plugin";
+import {WarpFactory} from "warp-contracts";
+
+const warp = WarpFactory.forMainnet()
+  .use(new NlpExtension())
+```
+
 Requires `warp-contract` SDK ver. min. `1.2.18`.
