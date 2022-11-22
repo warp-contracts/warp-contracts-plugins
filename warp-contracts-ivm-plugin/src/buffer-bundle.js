@@ -1,6 +1,4 @@
-logger.error('Buffer code')
 !function (t) {
-  logger.error('window', window);
   if ("object" == typeof exports && "undefined" != typeof module) {logger.error('exports'); module.exports = t()} else if ("function" == typeof define && define.amd) define([], t); else {
     ("undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : this).buffer = t()
   }
