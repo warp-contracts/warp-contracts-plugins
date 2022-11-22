@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-ivm-plugin",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "An isolated-vm plugin for Warp Contracts SDK",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
@@ -14,7 +14,7 @@
   "scripts": {
     "build:cjs": "tsc -b tsconfig.json",
     "build:types": "tsc -b tsconfig.types.json",
-    "build": "yarn run clean && yarn build:cjs && yarn build:types",
+    "build": "yarn run clean && yarn build:cjs && yarn build:types && cp src/buffer-bundle.js lib/cjs",
     "format": "prettier --write 'src/**/*.ts'",
     "clean": "rimraf ./lib",
     "lint": "eslint . --ext .ts",
