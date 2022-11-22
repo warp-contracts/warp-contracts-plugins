@@ -22,6 +22,7 @@
     "node_modules",
     "tools",
     "**/__tests__/*",
+    "src/buffer-bundle.js",
     "_scripts"
   ]
 }

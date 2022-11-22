@@ -2,6 +2,7 @@ import ivm, { Context, Reference } from 'isolated-vm';
 import Arweave from 'arweave';
 import { bigNumberLib } from './bigNumber-ivm';
 import { LoggerFactory, SmartWeaveGlobal } from 'warp-contracts';
+import fs from 'fs';
 
 class ContractError extends Error {
   constructor(message) {
@@ -232,25 +233,11 @@ export function configureSandbox(
       return new ivm.ExternalCopy(result);
     })
   );
-
-  // Buffer - for the weaveDb contracts...
-  // not sure if that's a good idea - https://github.com/laverdet/isolated-vm/issues/329
-  sandbox.setSync('__host__buffer_from', function (...args) {
-    return Buffer.from(args);
-  });
-  sandbox.setSync('__host__buffer_allocUnsafe', function (...args) {
-    return Buffer.allocUnsafe(args[0]);
-  });
-  sandbox.setSync('__host__buffer_isBuffer', function (...args) {
-    return Buffer.isBuffer(args);
-  });
-  sandbox.setSync('__host__buffer_concat', function (...args) {
-    return Buffer.concat(args);
-  });
 }
 
 export function configureContext(context: Context) {
   context.evalSync(bigNumberLib);
+  context.evalSync(fs.readFileSync(__dirname + '/buffer-bundle.js', 'utf-8'));
   context.evalSync(`
   
   class BaseObject {
@@ -351,13 +338,6 @@ export function configureContext(context: Context) {
       super(message);
       this.name = 'ContractError';
     }
-  }
-  
-  const Buffer = {
-    from: __host__buffer_from,
-    allocUnsafe: __host__buffer_allocUnsafe,
-    isBuffer: __host__buffer_isBuffer,
-    concat: __host__buffer_concat
   }
   
   const logger = {

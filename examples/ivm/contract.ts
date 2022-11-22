@@ -10,8 +10,7 @@ async function main() {
   const contractTxId = '9aetS5_kSsCdDI14y9e1TlL9CF6xjI2sLeZOnMHgwPc';
 
   const warp = WarpFactory
-    .forMainnet({...defaultCacheOptions, inMemory: true})
-    .use(new IvmPlugin({}));
+    .forMainnet({...defaultCacheOptions, inMemory: true});
 
   const result = await warp
     .contract(contractTxId)
