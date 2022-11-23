@@ -1,0 +1,51 @@
+{
+  "name": "warp-signature",
+  "version": "1.0.3",
+  "main": "./build/web/index.js",
+  "exports": {
+    "./server": "./build/server/index.js",
+    ".": "./build/web/index.js"
+  },
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "prettier:format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "compile:web": "tsc -p tsconfig.web.json",
+    "compile:server": "tsc -p tsconfig.server.json",
+    "build": "yarn compile:web && yarn compile:server"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.37.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard-with-typescript": "^22.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-prettier": "^3.4.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "prettier": "^2.7.1",
+    "typescript": "*"
+  },
+  "dependencies": {
+    "@metamask/onboarding": "^1.0.1",
+    "@metamask/providers": "^10.0.0",
+    "arweave": "^1.11.6",
+    "ethers": "^5.7.2",
+    "safe-stable-stringify": "^2.4.1"
+  },
+  "peerDependencies": {
+    "warp-contracts": "*"
+  },
+  "engines": {
+    "node": ">=16.5"
+  },
+  "files": [
+    "build/"
+  ],
+  "bugs": {
+    "url": "https://github.com/warp-contracts/evm-signatures/issues"
+  },
+  "homepage": "https://github.com/evm-signatures/warp-contracts-cli"
+}
