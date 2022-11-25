@@ -4,7 +4,7 @@ import { encodeTxId } from '../utils';
 import MetaMaskOnboarding from '@metamask/onboarding';
 import { stringify } from 'safe-stable-stringify';
 import { utils } from 'ethers';
-import { SmartWeaveTags, TagsParser } from 'warp-contracts';
+import { SmartWeaveTags, TagsParser } from 'warp-contracts/web';
 import { Interaction } from './evmSignatureVerification';
 declare global {
   interface Window {

@@ -1,5 +1,4 @@
-import { GQLNodeInterface } from 'warp-contracts';
-import { WarpPlugin, WarpPluginType } from 'warp-contracts';
+import { WarpPlugin, WarpPluginType, GQLNodeInterface } from 'warp-contracts/web';
 import { ethers } from 'ethers';
 import { stringify } from 'safe-stable-stringify';
 import Transaction, { Tag } from 'arweave/web/lib/transaction';

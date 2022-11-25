@@ -5,7 +5,7 @@
     "target": "es2019",
     "module": "commonjs",
     "types": ["node"],
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "sourceMap": true,
     "skipLibCheck": true,
     "isolatedModules": false,
@@ -14,7 +14,8 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "allowJs": true,
-    "declaration": true
+    "declaration": true,
+    "strict": false
   },
   "exclude": ["node_modules"]
 }
