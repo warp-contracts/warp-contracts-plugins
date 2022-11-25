@@ -16,7 +16,7 @@ export class EvaluationProgressPlugin implements WarpPlugin<EvaluationProgressPl
   process(input: EvaluationProgressPluginInput): void {
     const { contractTxId, currentInteraction, allInteractions, lastInteractionProcessingTime } = input;
 
-    if (currentInteraction % this.notificationFreq == 0) {
+    if ((currentInteraction + 1) % this.notificationFreq == 0) {
       const message = `[${contractTxId}]: ${currentInteraction}/${allInteractions} [${lastInteractionProcessingTime}]`;
       this.logger.debug(message);
       this.emitter.emit('progress-notification', { contractTxId, message });
