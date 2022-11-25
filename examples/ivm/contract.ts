@@ -8,19 +8,21 @@ LoggerFactory.INST.logLevel('debug');
 const logger = LoggerFactory.INST.create('ivm-example');
 
 async function main() {
-  const contractTxId = 'QAjM3_MklqXSXr-7z_J7t0UqEAyjBpqQDF9NDzf_JPU';
+  const contractTxId = 'mS6mBLQ4HmWAqiVs4Nhs3DEpjk3PZCrR6yUOosTSKa8';
 
   const warp = WarpFactory
-    .forMainnet({...defaultCacheOptions, inMemory: true});
+    .forMainnet({...defaultCacheOptions, inMemory: true})
+    .use(new IvmPlugin({}));
 
   const result = await warp
     .contract(contractTxId)
     .setEvaluationOptions({
-      allowBigInt: true
+      allowBigInt: true,
+      internalWrites: true,
     })
     .readState();
 
-  console.log(result.sortKey);
+  console.log(result.cachedValue.validity);
 }
 
 main().catch((e) => console.error(e));
