@@ -18,3 +18,11 @@ eventEmitter.on('progress-notification', (message) => {
 module.exports = WarpFactory.forMainnet()
   .use(new EvaluationProgressPlugin(eventEmitter, 500));
 ```
+
+The `message` format is:
+```json
+{
+  "contractTxId": "Daj-MNSnH55TDfxqC7v4eq0lKzVIwh98srUaWqyuZtY",
+  "message": "[Daj-MNSnH55TDfxqC7v4eq0lKzVIwh98srUaWqyuZtY]: 7500/9835 [0ms]"
+}
+```
