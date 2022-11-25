@@ -5,6 +5,11 @@ This plugin adds a support for [isolated-vm](https://github.com/laverdet/isolate
 ## Installation
 `yarn add warp-contracts-ivm-plugin`.
 
+```js
+WarpFactory.forMainnet()
+  .use(new IvmPlugin({}));
+```
+
 Requires:
 1. `warp-contract` SDK ver. min. `1.2.22`.
 2. At least 2GB of ram to be built - https://github.com/laverdet/isolated-vm/issues/309
