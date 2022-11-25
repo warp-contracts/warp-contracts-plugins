@@ -14,7 +14,6 @@ export class EvaluationProgressPlugin implements WarpPlugin<EvaluationProgressPl
   constructor(readonly emitter: EventEmitter, readonly notificationFreq = 100) {}
 
   process(input: EvaluationProgressPluginInput): void {
-    const emitte2 = new EventEmitter();
     const { contractTxId, currentInteraction, allInteractions, lastInteractionProcessingTime } = input;
 
     if (currentInteraction % this.notificationFreq == 0) {

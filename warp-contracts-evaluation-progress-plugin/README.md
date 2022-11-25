@@ -6,7 +6,7 @@ Requires Warp Contracts SDK ver. min. `1.2.27`.
 
 ## Installation
 
-`yarn add warp-contracts-nlp-plugin`
+`yarn add warp-contracts-evaluation-progress-plugin`
 
 ```js
 const emitter = new EventEmitter()
