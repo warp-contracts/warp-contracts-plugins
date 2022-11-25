@@ -1,6 +1,6 @@
 {
   "name": "warp-signature",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "./build/web/index.js",
   "exports": {
     "./server": "./build/server/index.js",
