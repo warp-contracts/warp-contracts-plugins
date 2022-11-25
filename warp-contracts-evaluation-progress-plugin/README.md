@@ -9,20 +9,12 @@ Requires Warp Contracts SDK ver. min. `1.2.27`.
 `yarn add warp-contracts-evaluation-progress-plugin`
 
 ```js
-const emitter = new EventEmitter()
+const eventEmitter = new EventEmitter();
+eventEmitter.on('progress-notification', (message) => {
+  console.log('From listener', message);
+});
 
-const manager = new SmartWeave.extensions
-  .NlpManager({languages: ['en'], forceNER: true, nlu: { log: true }});
+// will notify every 500 evaluated interactions
+module.exports = WarpFactory.forMainnet()
+  .use(new EvaluationProgressPlugin(eventEmitter, 500));
 ```
-## Installation
-`yarn add warp-contracts-nlp-plugin`
-
-```ts
-import {NlpExtension} from "warp-contracts-nlp-plugin";
-import {WarpFactory} from "warp-contracts";
-
-const warp = WarpFactory.forMainnet()
-  .use(new NlpExtension())
-```
-
-Requires `warp-contract` SDK ver. min. `1.2.18`.
