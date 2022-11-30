@@ -2,10 +2,14 @@
   "private": true,
   "workspaces": [
     "warp-contracts-subscription-plugin",
-    "warp-contracts-nlp-plugin"
+    "warp-contracts-nlp-plugin",
+    "warp-contracts-signature-plugin",
+    "warp-contracts-ivm-plugin",
+    "warp-contracts-evaluation-progress-plugin",
+    "warp-contracts-plugin-ethers"
   ],
   "dependencies": {
-    "warp-contracts": "^1.2.27"
+    "warp-contracts": "^1.2.30"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

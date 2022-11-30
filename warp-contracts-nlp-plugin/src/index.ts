@@ -7,6 +7,6 @@ export class NlpExtension implements WarpPlugin<any, void> {
   }
 
   type(): WarpPluginType {
-    return 'smartweave-nlp-extension';
+    return 'smartweave-extension-nlp';
   }
 }
