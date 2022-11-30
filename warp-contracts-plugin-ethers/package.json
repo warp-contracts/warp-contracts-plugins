@@ -1,7 +1,7 @@
 {
-  "name": "warp-contracts-nlp-plugin",
-  "version": "1.0.7",
-  "description": "A NLP (https://github.com/axa-group/nlp.js) plugin for warp contracts",
+  "name": "warp-contracts-plugin-ethers",
+  "version": "1.0.3",
+  "description": "Ethers extension fof Warp contracts",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
   "exports": {
@@ -51,6 +51,7 @@
     "warp-contracts": "*"
   },
   "dependencies": {
+    "ethers": "^5.7.2",
     "node-nlp": "^4.24.0"
   }
 }
