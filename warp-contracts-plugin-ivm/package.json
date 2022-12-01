@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-plugin-ivm",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "An isolated-vm plugin for Warp Contracts SDK",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
@@ -20,7 +20,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prettier:format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "prepublishOnly": "yarn lint",
+    "prepublishOnly": "yarn lint:fix && cd .. && yarn workspace warp-contracts-plugin-ivm config set version-tag-prefix \"ivm@\"",
     "preversion": "yarn lint && yarn build",
     "version": "yarn format && git add -A src",
     "postversion": "git push && git push --tags",
