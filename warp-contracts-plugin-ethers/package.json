@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-plugin-ethers",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Ethers extension fof Warp contracts",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
