@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-plugin-evaluation-progress",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "A plugin that allows to listen for evaluation progress events",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
@@ -20,7 +20,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prettier:format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "prepublishOnly": "yarn lint:fix && yarn workspace warp-contracts-plugin-evaluation-progress config set version-tag-prefix \"evaluation-progress@\"",
+    "prepublishOnly": "yarn lint:fix && cd .. && yarn workspace warp-contracts-plugin-evaluation-progress config set version-tag-prefix \"evaluation-progress@\"",
     "preversion": "yarn lint && yarn build",
     "version": "yarn format && git add -A src",
     "postversion": "git push && git push --tags",
