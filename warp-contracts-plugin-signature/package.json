@@ -13,6 +13,7 @@
     "prettier:format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "compile:web": "tsc -p tsconfig.web.json",
     "compile:server": "tsc -p tsconfig.server.json",
+    "prepublishOnly": "yarn lint:fix",
     "build": "yarn compile:web && yarn compile:server"
   },
   "devDependencies": {

@@ -7,7 +7,7 @@ const manager = new SmartWeave.extensions
   .NlpManager({languages: ['en'], forceNER: true, nlu: { log: true }});
 ```
 ## Installation
-`yarn add warp-contracts-nlp-plugin`
+`yarn add warp-contracts-plugin-nlp`
 
 ```ts
 import {NlpExtension} from "warp-contracts-nlp-plugin";

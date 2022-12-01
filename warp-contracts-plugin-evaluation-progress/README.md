@@ -6,7 +6,7 @@ Requires Warp Contracts SDK ver. min. `1.2.27`.
 
 ## Installation
 
-`yarn add warp-contracts-evaluation-progress-plugin`
+`yarn add warp-contracts-plugin-evaluation-progress`
 
 ```js
 const eventEmitter = new EventEmitter();

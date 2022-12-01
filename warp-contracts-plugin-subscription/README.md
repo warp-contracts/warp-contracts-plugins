@@ -12,7 +12,7 @@ at the sort key exactly "before" the sort key from the new interaction.
 That's why each message sent by the Warp Sequencer contains the `lastSortKey` field.
 
 ## Installation
-`yarn add warp-contracts-subscription-plugin`
+`yarn add warp-contracts-plugin-subscription`
 
 Requires `warp-contract` SDK ver. min. `1.2.19`.
 

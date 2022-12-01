@@ -3,7 +3,7 @@
 This plugin adds a support for [isolated-vm](https://github.com/laverdet/isolated-vm#isolated-vm----access-to-multiple-isolates-in-nodejs)-based executor.
 
 ## Installation
-`yarn add warp-contracts-ivm-plugin`.
+`yarn add warp-contracts-plugin-ivm`
 
 ```js
 WarpFactory.forMainnet()

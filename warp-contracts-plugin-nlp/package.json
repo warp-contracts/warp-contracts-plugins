@@ -20,7 +20,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prettier:format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "prepublishOnly": "yarn lint",
+    "prepublishOnly": "yarn lint:fix",
     "preversion": "yarn lint && yarn build",
     "version": "yarn format && git add -A src",
     "postversion": "git push && git push --tags",
