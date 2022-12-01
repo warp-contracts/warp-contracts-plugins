@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-plugin-ethers",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Ethers extension fof Warp contracts",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
@@ -20,7 +20,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prettier:format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "prepublishOnly": "yarn lint:fix && cd .. && yarn workspace warp-contracts-plugin-ethers config set version-tag-prefix \"ethers@\"",
+    "prepublishOnly": "yarn lint:fix",
     "preversion": "yarn lint && yarn build",
     "version": "yarn format && git add -A src",
     "postversion": "git push && git push --tags",
