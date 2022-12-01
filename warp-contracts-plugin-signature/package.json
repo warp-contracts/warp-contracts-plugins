@@ -1,5 +1,5 @@
 {
-  "name": "warp-signature",
+  "name": "warp-contracts-plugin-signature",
   "version": "1.0.5",
   "main": "./build/web/index.js",
   "exports": {

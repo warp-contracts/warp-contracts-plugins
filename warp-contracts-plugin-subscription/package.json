@@ -1,7 +1,7 @@
 {
-  "name": "warp-contracts-evaluation-progress-plugin",
-  "version": "1.0.17",
-  "description": "A plugin that allows to listen for evaluation progress events",
+  "name": "warp-contracts-plugin-subscription",
+  "version": "1.0.4",
+  "description": "A subscription plugin for warp contracts",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
   "exports": {
@@ -33,6 +33,10 @@
     "lib/",
     "README.md"
   ],
+  "dependencies": {
+    "warp-contracts-pubsub": "^1.0.3",
+    "ws": "^8.11.0"
+  },
   "devDependencies": {
     "@types/jest": "*",
     "@types/node": "*",

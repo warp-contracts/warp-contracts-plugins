@@ -1,7 +1,7 @@
 {
-  "name": "warp-contracts-nlp-plugin",
-  "version": "1.0.7",
-  "description": "A NLP (https://github.com/axa-group/nlp.js) plugin for warp contracts",
+  "name": "warp-contracts-plugin-evaluation-progress",
+  "version": "1.0.17",
+  "description": "A plugin that allows to listen for evaluation progress events",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
   "exports": {
@@ -49,8 +49,5 @@
   },
   "peerDependencies": {
     "warp-contracts": "*"
-  },
-  "dependencies": {
-    "node-nlp": "^4.24.0"
   }
 }

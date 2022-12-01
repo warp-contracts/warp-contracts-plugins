@@ -1,11 +1,11 @@
 {
   "private": true,
   "workspaces": [
-    "warp-contracts-subscription-plugin",
-    "warp-contracts-nlp-plugin",
-    "warp-contracts-signature-plugin",
-    "warp-contracts-ivm-plugin",
-    "warp-contracts-evaluation-progress-plugin",
+    "warp-contracts-plugin-subscription",
+    "warp-contracts-plugin-nlp",
+    "warp-contracts-plugin-signature",
+    "warp-contracts-plugin-ivm",
+    "warp-contracts-plugin-evaluation-progress",
     "warp-contracts-plugin-ethers"
   ],
   "dependencies": {
