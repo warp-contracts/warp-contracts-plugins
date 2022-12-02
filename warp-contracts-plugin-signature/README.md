@@ -23,3 +23,11 @@ const warp = await WarpFactory.forMainnet().use(new EvmSignatureVerificationPlug
 1. Expand to NodeJs environment.
 2. Usage of other wallets (e.g. Solana) and plugins.
 3. Add option to deploy contracts using Warp Signature.
+
+## Common problems
+
+### Next.js server side imports
+"Next.js requires that any code you import from `node_modules` need to be compatible with Node.js" - [discussed here](https://github.com/vercel/next.js/issues/31518). So to be able to import "only" `web` compatible lib like this one we have to use workaround with dynamic `import()`.
+
+`const { evmSignature, EvmSignatureVerificationWebPlugin } = await import('warp-signature');`
+
