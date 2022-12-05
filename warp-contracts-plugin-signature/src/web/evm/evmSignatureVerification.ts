@@ -48,7 +48,7 @@ export class EvmSignatureVerificationWebPlugin implements WarpPlugin<GQLNodeInte
     }
 
     if (!input.signature) {
-      throw new Error(`Unable to verify message due to lack of transaction signature.`);
+      throw new Error(`Unable to verify message due to lack of transaction signature. Transaction id: ${input.id}`);
     }
 
     try {
@@ -57,7 +57,7 @@ export class EvmSignatureVerificationWebPlugin implements WarpPlugin<GQLNodeInte
       const address = isTransaction ? input.owner : input.owner.address;
       return verifiedId === input.id && recoveredAddress.toLowerCase() === address.toLowerCase();
     } catch (e) {
-      throw new Error(`Unable to verify message. Error message: ${e.message}.`);
+      throw new Error(`Unable to verify message. Error message: ${e.message}. Transaction id: ${input.id}`);
     }
   }
 
@@ -66,6 +66,6 @@ export class EvmSignatureVerificationWebPlugin implements WarpPlugin<GQLNodeInte
   }
 
   private isTransactionType(input: GQLNodeInterface | Transaction): input is Transaction {
-    return (input as Transaction) !== undefined;
+    return (input as Transaction).toJSON !== undefined;
   }
 }
