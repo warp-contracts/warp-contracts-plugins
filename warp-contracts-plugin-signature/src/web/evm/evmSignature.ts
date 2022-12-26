@@ -2,7 +2,7 @@ import MetaMaskOnboarding from '@metamask/onboarding';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import Transaction from 'arweave/web/lib/transaction';
 import { utils } from 'ethers';
-import { attachSignature, prepareEvmTransaction } from './common';
+import { prepareTransaction, attachSignature } from '../common';
 
 declare global {
   interface Window {
@@ -10,12 +10,18 @@ declare global {
   }
 }
 
+export const attachEvmTags = (tx: Transaction) => {
+  tx.addTag('Signature-Type', 'ethereum');
+  tx.addTag('Nonce', Date.now().toString());
+};
+
 export const evmSignature = async (tx: Transaction) => {
   const signer = await getMetaMaskAccount();
 
   const signerAddress = utils.getAddress(signer);
 
-  const toSign = prepareEvmTransaction(tx, signerAddress);
+  attachEvmTags(tx);
+  const toSign = prepareTransaction(tx, signerAddress);
 
   const signature = await signWithMetaMask(signerAddress, toSign);
 

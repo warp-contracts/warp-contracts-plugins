@@ -1,3 +1,3 @@
 export * from './evm/evmSignature';
-export * from './evm/common';
+export * from './common';
 export { EvmSignatureVerificationWebPlugin } from './evm/evmSignatureVerification';
