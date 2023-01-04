@@ -1,10 +1,28 @@
 # Warp Signature
 
-Warp Signature is a tool to be used in [Warp](https://github.com/warp-contracts/warp) contracts. It allows to sign transactions using non-Arweave wallet. Currently, it is possible to connect to EVM wallet using Metamask plugin in browser environment.
+Warp Signature is a tool to be used in [Warp](https://github.com/warp-contracts/warp) contracts. It allows to sign transactions using non-Arweave wallet. Currently, it is possible to connect to:
+* EVM wallet using Metamask plugin in browser environment
+* EVM wallet using [ethers.Signer](https://docs.ethers.org/v5/api/signer/) interface in Node.js
 
-## Signing transactions
+## MetaMask Signing transactions
 
 ```ts
+import {evmSignature} from 'warp-contracts-plugin-signature';
+
+await this.contract.connect({ signer: evmSignature, signatureType: 'ethereum' }).writeInteraction({
+  function: 'function'
+});
+```
+## ethers.Signer Signing transactions
+
+```ts
+import { buildEvmSignature } from 'warp-contracts-plugin-signature/server';
+import { Wallet } from 'ethers';
+
+// for example using ethers.Wallet
+const signer = Wallet.createRandom();
+const evmSignature = buildEvmSignature(signer);
+
 await this.contract.connect({ signer: evmSignature, signatureType: 'ethereum' }).writeInteraction({
   function: 'function'
 });
@@ -20,9 +38,8 @@ const warp = await WarpFactory.forMainnet().use(new EvmSignatureVerificationPlug
 
 ## Future plans
 
-1. Expand to NodeJs environment.
-2. Usage of other wallets (e.g. Solana) and plugins.
-3. Add option to deploy contracts using Warp Signature.
+1. Usage of other wallets (e.g. Solana) and plugins.
+2. Add option to deploy contracts using Warp Signature.
 
 ## Common problems
 
