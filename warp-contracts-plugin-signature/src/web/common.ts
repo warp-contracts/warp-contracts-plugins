@@ -1,8 +1,8 @@
-import Transaction, { Tag } from "arweave/web/lib/transaction";
+import Transaction, { Tag } from 'arweave/web/lib/transaction';
 import { SmartWeaveTags, TagsParser } from 'warp-contracts/web';
 import { stringify } from 'safe-stable-stringify';
 import { encodeTxId } from './utils';
-import { Interaction } from "./evm/evmSignatureVerification";
+import { Interaction } from './evm/evmSignatureVerification';
 
 export const attachSignature = async (tx: Transaction, signature: string) => {
   tx.signature = signature;
@@ -46,5 +46,3 @@ export const prepareTransaction = (tx: Transaction, ownerAddress: string) => {
 
   return stringify(txToSign);
 };
-
-
