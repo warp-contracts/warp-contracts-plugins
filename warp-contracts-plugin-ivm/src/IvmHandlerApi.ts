@@ -29,14 +29,14 @@ export class IvmHandlerApi<State> extends AbstractContractHandler<State> {
     interactionData: InteractionData<Input>
   ): Promise<InteractionResult<State, Result>> {
     try {
-      const { interaction, interactionTx, currentTx } = interactionData;
+      const { interaction, interactionTx } = interactionData;
 
       this.swGlobal._activeTx = interactionTx;
       this.swGlobal.caller = interaction.caller; // either contract tx id (for internal writes) or transaction.owner
 
-      this.assignReadContractState<Input>(executionContext, currentTx, currentResult, interactionTx);
+      this.assignReadContractState<Input>(executionContext, interactionTx);
       this.assignViewContractState<Input>(executionContext);
-      this.assignWrite(executionContext, currentTx);
+      this.assignWrite(executionContext);
       this.assignRefreshState(executionContext);
 
       const handlerResult: any = await this.ivm.contract.apply(undefined, [currentResult.state, interaction], {

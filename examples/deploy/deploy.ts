@@ -3,7 +3,7 @@ import Arweave from 'arweave';
 import fs from 'fs';
 import path from 'path';
 import { JWKInterface } from 'arweave/node/lib/wallet';
-import { DeployPlugin, ArweaveSigner } from 'warp-contracts-plugin-deploy';
+import { DeployPlugin, ArweaveSigner, EthereumSigner } from 'warp-contracts-plugin-deploy';
 import { defaultCacheOptions, LoggerFactory, WarpFactory } from 'warp-contracts';
 
 async function main() {
@@ -36,20 +36,20 @@ async function main() {
       wallets: {},
     };
 
-    // // case 1 - full deploy, js contract
-    // const { contractTxId, srcTxId } = await warp.deploy({
-    //   wallet: new ArweaveSigner(wallet),
-    //   initState: JSON.stringify(initialState),
-    //   src: jsContractSrc,
-    // });
-    // console.log(contractTxId, srcTxId);
+    // case 1 - full deploy, js contract
+    const { contractTxId, srcTxId } = await warp.deploy({
+      wallet: new ArweaveSigner(wallet),
+      initState: JSON.stringify(initialState),
+      src: jsContractSrc,
+    });
+    console.log(contractTxId, srcTxId);
 
     // // case 2 - create source
-    // const dataItem = await warp.createSourceTx({ src: jsContractSrc }, new ArweaveSigner(wallet));
+    // const dataItem = await warp.createSource({ src: jsContractSrc }, new ArweaveSigner(wallet));
     // console.log('srcTxDataItem:', dataItem);
 
     // // case 3 - save source
-    // const srcTxId = await warp.saveSourceTx(dataItem);
+    // const srcTxId = await warp.saveSource(dataItem);
     // console.log(srcTxId)
 
     // // case 4 - deployFromSourceTx
@@ -87,16 +87,16 @@ async function main() {
     //   .writeInteraction({ function: 'transfer', target: 'uhE-QeYS8i4pmUtnxQyHD7dzXFNaJ9oMK-IM-QPNY6M', qty: 10 });
     // console.log(originalTxId);
 
-    // case 8 - full deploy, js contract - arweave
-    const { contractTxId, srcTxId } = await warp.deploy(
-      {
-        wallet,
-        initState: JSON.stringify(initialState),
-        src: jsContractSrc,
-      },
-      true
-    );
-    console.log(contractTxId, srcTxId);
+    // // case 8 - full deploy, js contract - arweave
+    // const { contractTxId, srcTxId } = await warp.deploy(
+    //   {
+    //     wallet,
+    //     initState: JSON.stringify(initialState),
+    //     src: jsContractSrc,
+    //   },
+    //   true
+    // );
+    // console.log(contractTxId, srcTxId);
   } catch (e) {
     //logger.error(e)
     throw e;

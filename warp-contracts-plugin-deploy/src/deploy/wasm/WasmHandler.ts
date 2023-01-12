@@ -1,13 +1,13 @@
 /* eslint-disable */
-import metering from 'redstone-wasm-metering';
+import metering from 'warp-wasm-metering';
 import fs, { PathOrFileDescriptor } from 'fs';
-import { Go, matchMutClosureDtor, SmartWeaveTags } from 'warp-contracts';
+import { matchMutClosureDtor, SmartWeaveTags } from 'warp-contracts';
 
 const wasmTypeMapping: Map<number, string> = new Map([
-  [1, 'assemblyscript'],
+  // [1, 'assemblyscript'],
   [2, 'rust'],
-  [3, 'go']
-  /*[4, 'swift'],
+  /*[3, 'go']
+  [4, 'swift'],
     [5, 'c']*/
 ]);
 
@@ -36,14 +36,6 @@ export class WasmHandler {
     const moduleImports = WebAssembly.Module.imports(wasmModule);
     let lang: number;
 
-    if (this.isGoModule(moduleImports)) {
-      const go = new Go(null);
-      const module = new WebAssembly.Instance(wasmModule, go.importObject);
-      // DO NOT await here!
-      go.run(module);
-      lang = go.exports.lang();
-      wasmVersion = go.exports.version();
-    } else {
       // @ts-ignore
       const module: WebAssembly.Instance = await WebAssembly.instantiate(this.src, dummyImports(moduleImports));
       // @ts-ignore
@@ -57,7 +49,6 @@ export class WasmHandler {
       if (!wasmTypeMapping.has(lang)) {
         throw new Error(`Unknown wasm source type ${lang}`);
       }
-    }
 
     const wasmLang = wasmTypeMapping.get(lang);
     if (this.wasmSrcCodeDir == null) {
@@ -80,16 +71,10 @@ export class WasmHandler {
     const wasmData = this.joinBuffers(data);
     const srcWasmTags = [
       { name: SmartWeaveTags.WASM_LANG, value: wasmLang },
-      { name: SmartWeaveTags.WASM_LANG_VERSION, value: wasmVersion },
+      { name: SmartWeaveTags.WASM_LANG_VERSION, value: wasmVersion.toString() },
       { name: SmartWeaveTags.WASM_META, value: JSON.stringify(metadata) }
     ];
     return { wasmData, srcWasmTags };
-  }
-
-  private isGoModule(moduleImports: WebAssembly.ModuleImportDescriptor[]) {
-    return moduleImports.some((moduleImport) => {
-      return moduleImport.module == 'env' && moduleImport.name.startsWith('syscall/js');
-    });
   }
 
   private joinBuffers(buffers: Buffer[]): Buffer {

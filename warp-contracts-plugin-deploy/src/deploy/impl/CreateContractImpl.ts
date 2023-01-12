@@ -1,7 +1,6 @@
 /* eslint-disable */
-import Transaction from 'arweave/node/lib/transaction';
 import { SourceImpl } from './SourceImpl';
-import { Buffer } from 'redstone-isomorphic';
+import { Buffer } from 'warp-isomorphic';
 import {
   ArWallet,
   BundlrNodeType,
@@ -17,6 +16,7 @@ import {
   Signer,
   SmartWeaveTags,
   SourceData,
+  Transaction,
   Warp,
   WarpFetchWrapper,
   WARP_GW_URL
@@ -45,10 +45,10 @@ export class CreateContractImpl implements CreateContract {
     const effectiveUseBundler =
       disableBundling == undefined ? this.warp.definitionLoader.type() == 'warp' : !disableBundling;
 
-    srcTx = await this.source.createSourceTx(contractData, wallet, !effectiveUseBundler);
+    srcTx = await this.source.createSource(contractData, wallet, !effectiveUseBundler);
 
     if (!effectiveUseBundler) {
-      await this.source.saveSourceTx(srcTx, true);
+      await this.source.saveSource(srcTx, true);
     }
 
     this.logger.debug('Creating new contract');
@@ -96,7 +96,7 @@ export class CreateContractImpl implements CreateContract {
         { name: SmartWeaveTags.APP_NAME, value: 'SmartWeaveContract' },
         { name: SmartWeaveTags.APP_VERSION, value: '0.3.0' },
         { name: SmartWeaveTags.CONTRACT_SRC_TX_ID, value: srcTxId },
-        { name: SmartWeaveTags.SDK, value: 'RedStone' },
+        { name: SmartWeaveTags.SDK, value: 'Warp' },
         { name: SmartWeaveTags.NONCE, value: Date.now().toString() }
       ],
       contractData: [
@@ -175,26 +175,26 @@ export class CreateContractImpl implements CreateContract {
     }
   }
 
-  async createSourceTx(
+  async createSource(
     sourceData: SourceData,
     wallet: ArWallet | CustomSignature | Signer,
     disableBundling: boolean = false
   ): Promise<Transaction | DataItem> {
-    return this.source.createSourceTx(sourceData, wallet, disableBundling);
+    return this.source.createSource(sourceData, wallet, disableBundling);
   }
 
-  async saveSourceTx(srcTx: Transaction | DataItem, disableBundling?: boolean): Promise<string> {
-    return this.source.saveSourceTx(srcTx, disableBundling);
+  async saveSource(srcTx: Transaction | DataItem, disableBundling?: boolean): Promise<string> {
+    return this.source.saveSource(srcTx, disableBundling);
   }
 
-  private async postContract(contractTx: Buffer, srcTx: Buffer = null): Promise<any> {
+  private async postContract(contract: Buffer, src: Buffer = null): Promise<any> {
     let body: any = {
-      contractTx
+      contract
     };
-    if (srcTx) {
+    if (src) {
       body = {
         ...body,
-        srcTx
+        src
       };
     }
 
