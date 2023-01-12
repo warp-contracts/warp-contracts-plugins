@@ -9,8 +9,10 @@
     "sub": "NODE_NO_WARNINGS=1 ts-node subscription/contract.ts"
   },
   "dependencies": {
-    "warp-contracts": "1.2.30",
+    "arbundles": "^0.7.3",
+    "warp-contracts": "file:.yalc/warp-contracts",
     "warp-contracts-ivm-plugin": "^1.0.11",
+    "warp-contracts-plugin-deploy": "file:.yalc/warp-contracts-plugin-deploy",
     "warp-contracts-plugin-ethers": "1.0.3",
     "warp-contracts-subscription-plugin": "^1.0.3"
   },
