@@ -74,7 +74,7 @@ export class CreateContractImpl implements CreateContract {
     srcTx: Transaction | DataItem = null
   ): Promise<ContractDeploy> {
     this.logger.debug('Creating new contract from src tx');
-    const { wallet, srcTxId, initState, tags, transfer, data, evaluationManifest } = contractData;
+    const { wallet, srcTxId, initState, data } = contractData;
 
     let contract;
     let responseOk: boolean;
@@ -91,90 +91,29 @@ export class CreateContractImpl implements CreateContract {
       throw new Error('Only Signer wallet type is allowed when bundling is enabled.');
     }
 
-    const contractTags = [
-      { name: SmartWeaveTags.APP_NAME, value: 'SmartWeaveContract' },
-      { name: SmartWeaveTags.APP_VERSION, value: '0.3.0' },
-      { name: SmartWeaveTags.CONTRACT_SRC_TX_ID, value: srcTxId },
-      { name: SmartWeaveTags.SDK, value: 'RedStone' },
-      { name: SmartWeaveTags.NONCE, value: Date.now().toString() }
-    ];
-    const contractDataTags = [
-      { name: SmartWeaveTags.CONTENT_TYPE, value: data && data['Content-Type'] },
-      { name: SmartWeaveTags.INIT_STATE, value: initState }
-    ];
-    const contractNonDataTags = [{ name: SmartWeaveTags.CONTENT_TYPE, value: 'application/json' }];
-    const contractTestnetTags = [{ name: SmartWeaveTags.WARP_TESTNET, value: '1.0.0' }];
-    const contractEvaluationManifestTags = [
-      { name: SmartWeaveTags.MANIFEST, value: JSON.stringify(contractData.evaluationManifest) }
-    ];
+    const contractTags = {
+      contract: [
+        { name: SmartWeaveTags.APP_NAME, value: 'SmartWeaveContract' },
+        { name: SmartWeaveTags.APP_VERSION, value: '0.3.0' },
+        { name: SmartWeaveTags.CONTRACT_SRC_TX_ID, value: srcTxId },
+        { name: SmartWeaveTags.SDK, value: 'RedStone' },
+        { name: SmartWeaveTags.NONCE, value: Date.now().toString() }
+      ],
+      contractData: [
+        { name: SmartWeaveTags.CONTENT_TYPE, value: data && data['Content-Type'] },
+        { name: SmartWeaveTags.INIT_STATE, value: initState }
+      ],
+      contractNonData: [{ name: SmartWeaveTags.CONTENT_TYPE, value: 'application/json' }],
+      contractTestnet: [{ name: SmartWeaveTags.WARP_TESTNET, value: '1.0.0' }],
+      contractEvaluationManifest: [
+        { name: SmartWeaveTags.MANIFEST, value: JSON.stringify(contractData.evaluationManifest) }
+      ]
+    };
 
     if (!effectiveUseBundler) {
-      this.signature = new Signature(this.warp, wallet as ArWallet | CustomSignature);
-      !isSigner(wallet) && this.signature.checkNonArweaveSigningAvailability(effectiveUseBundler);
-      const signer = this.signature.signer;
-      !isSigner(wallet) && this.signature.checkNonArweaveSigningAvailability(effectiveUseBundler);
-
-      contract = await this.warp.arweave.createTransaction({ data: data?.body || initState });
-
-      if (+transfer?.winstonQty > 0 && transfer.target.length) {
-        this.logger.debug('Creating additional transaction with AR transfer', transfer);
-        contract = await this.warp.arweave.createTransaction({
-          data: data?.body || initState,
-          target: transfer.target,
-          quantity: transfer.winstonQty
-        });
-      }
-
-      if (tags?.length) {
-        for (const tag of tags) {
-          contract.addTag(tag.name.toString(), tag.value.toString());
-        }
-      }
-      contractTags.forEach((t) => contract.addTag(t.name, t.value));
-      if (data) {
-        contractDataTags.forEach((t) => contract.addTag(t.name, t.value));
-      } else {
-        contractNonDataTags.forEach((t) => contract.addTag(t.name, t.value));
-      }
-
-      if (this.warp.environment === 'testnet') {
-        contractTestnetTags.forEach((t) => contract.addTag(t.name, t.value));
-      }
-
-      if (contractData.evaluationManifest) {
-        contractEvaluationManifestTags.forEach((t) => contract.addTag(t.name, t.value));
-      }
-
-      await signer(contract);
-
-      response = await this.warp.arweave.transactions.post(contract);
-      responseOk = response.status === 200 || response.status === 208;
+      ({ contract, responseOk } = await this.deployContractArweave(effectiveUseBundler, contractData, contractTags));
     } else {
-      const contractDataItemTags: { name: string; value: string }[] = [...contractTags];
-      if (tags?.length) {
-        for (const tag of tags) {
-          contractDataItemTags.push({ name: tag.name.toString(), value: tag.value.toString() });
-        }
-      }
-      if (data) {
-        contractDataTags.forEach((t) => contractDataItemTags.push({ name: t.name, value: t.value }));
-      } else {
-        contractNonDataTags.forEach((t) => contractDataItemTags.push({ name: t.name, value: t.value }));
-      }
-
-      if (this.warp.environment === 'testnet') {
-        contractTestnetTags.forEach((t) => contractDataItemTags.push({ name: t.name, value: t.value }));
-      }
-
-      if (contractData.evaluationManifest) {
-        contractEvaluationManifestTags.forEach((t) => contractDataItemTags.push({ name: t.name, value: t.value }));
-      }
-
-      contract = createData(data?.body || initState, wallet as Signer, { tags: contractDataItemTags });
-      await contract.sign(wallet as Signer);
-
-      await this.postContract(contract.getRaw(), srcTx?.getRaw());
-      responseOk = true;
+      ({ contract, responseOk } = await this.deployContractBundlr(contractData, contractTags, srcTx));
     }
 
     if (responseOk) {
@@ -276,6 +215,91 @@ export class CreateContractImpl implements CreateContract {
         `Error while posting contract. Sequencer responded with status ${response.status} ${response.statusText}`
       );
     }
+  }
+
+  private async deployContractArweave(
+    effectiveUseBundler: boolean,
+    contractData: FromSrcTxContractData,
+    contractTags: any
+  ): Promise<{ contract: Transaction; responseOk: boolean }> {
+    const { wallet, initState, transfer, data, tags } = contractData;
+
+    this.signature = new Signature(this.warp, wallet);
+    !isSigner(wallet) && this.signature.checkNonArweaveSigningAvailability(effectiveUseBundler);
+    const signer = this.signature.signer;
+    !isSigner(wallet) && this.signature.checkNonArweaveSigningAvailability(effectiveUseBundler);
+
+    let contract = await this.warp.arweave.createTransaction({ data: data?.body || initState });
+
+    if (+transfer?.winstonQty > 0 && transfer.target.length) {
+      this.logger.debug('Creating additional transaction with AR transfer', transfer);
+      contract = await this.warp.arweave.createTransaction({
+        data: data?.body || initState,
+        target: transfer.target,
+        quantity: transfer.winstonQty
+      });
+    }
+
+    if (tags?.length) {
+      for (const tag of tags) {
+        contract.addTag(tag.name.toString(), tag.value.toString());
+      }
+    }
+    contractTags.contract.forEach((t) => contract.addTag(t.name, t.value));
+    if (data) {
+      contractTags.contractData.forEach((t) => contract.addTag(t.name, t.value));
+    } else {
+      contractTags.contractNonData.forEach((t) => contract.addTag(t.name, t.value));
+    }
+
+    if (this.warp.environment === 'testnet') {
+      contractTags.contractTestnet.forEach((t) => contract.addTag(t.name, t.value));
+    }
+
+    if (contractData.evaluationManifest) {
+      contractTags.contractEvaluationManifest.forEach((t) => contract.addTag(t.name, t.value));
+    }
+
+    await signer(contract);
+
+    const response = await this.warp.arweave.transactions.post(contract);
+    return { contract, responseOk: response.status === 200 || response.status === 208 };
+  }
+
+  private async deployContractBundlr(
+    contractData: FromSrcTxContractData,
+    contractTags: any,
+    src: Transaction | DataItem = null
+  ): Promise<{ contract: DataItem; responseOk: boolean }> {
+    const { wallet, initState, data, tags } = contractData;
+
+    const contractDataItemTags: { name: string; value: string }[] = [...contractTags.contract];
+    if (tags?.length) {
+      for (const tag of tags) {
+        contractDataItemTags.push({ name: tag.name.toString(), value: tag.value.toString() });
+      }
+    }
+    if (data) {
+      contractTags.contractData.forEach((t) => contractDataItemTags.push({ name: t.name, value: t.value }));
+    } else {
+      contractTags.contractNonData.forEach((t) => contractDataItemTags.push({ name: t.name, value: t.value }));
+    }
+
+    if (this.warp.environment === 'testnet') {
+      contractTags.contractTestnet.forEach((t) => contractDataItemTags.push({ name: t.name, value: t.value }));
+    }
+
+    if (contractData.evaluationManifest) {
+      contractTags.contractEvaluationManifest.forEach((t) =>
+        contractDataItemTags.push({ name: t.name, value: t.value })
+      );
+    }
+
+    const contract = createData(data?.body || initState, wallet, { tags: contractDataItemTags });
+    await contract.sign(wallet);
+
+    await this.postContract(contract.getRaw(), src?.getRaw());
+    return { contract, responseOk: true };
   }
 
   isBundlrNodeType(value: string): value is BundlrNodeType {

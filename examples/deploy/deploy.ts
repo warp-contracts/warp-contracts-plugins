@@ -3,9 +3,8 @@ import Arweave from 'arweave';
 import fs from 'fs';
 import path from 'path';
 import { JWKInterface } from 'arweave/node/lib/wallet';
-import { DeployPlugin } from 'warp-contracts-plugin-deploy';
+import { DeployPlugin, ArweaveSigner } from 'warp-contracts-plugin-deploy';
 import { defaultCacheOptions, LoggerFactory, WarpFactory } from 'warp-contracts';
-import { ArweaveSigner } from 'arbundles/src/signing';
 
 async function main() {
   let wallet: JWKInterface = readJSON('.secrets/jwk.json');
@@ -23,78 +22,81 @@ async function main() {
     const warp = WarpFactory.forMainnet({ ...defaultCacheOptions, inMemory: true }).use(new DeployPlugin());
 
     const jsContractSrc = fs.readFileSync(path.join(__dirname, '../data/token-pst.js'), 'utf8');
-    const initialState = fs.readFileSync(path.join(__dirname, '../data/token-pst.json'), 'utf8');
+    const wasmContractSrc = fs.readFileSync(path.join(__dirname, '../data/rust/rust-pst_bg.wasm'));
+    const walletAddress = await warp.arweave.wallets.jwkToAddress(wallet);
+    const initialState = {
+      ticker: 'EXAMPLE_PST_TOKEN',
+      owner: 'uhE-QeYS8i4pmUtnxQyHD7dzXFNaJ9oMK-IM-QPNY6M',
+      canEvolve: true,
+      balances: {
+        'uhE-QeYS8i4pmUtnxQyHD7dzXFNaJ9oMK-IM-QPNY6M': 10000000,
+        '33F0QHcb22W7LwWR1iRC8Az1ntZG09XQ03YWuw2ABqA': 23111222,
+        [walletAddress]: 1000000,
+      },
+      wallets: {},
+    };
 
-    // case 1 - full deploy, js contract
+    // // case 1 - full deploy, js contract
     // const { contractTxId, srcTxId } = await warp.deploy({
-    //   wallet,
-    //   initState: initialState,
+    //   wallet: new ArweaveSigner(wallet),
+    //   initState: JSON.stringify(initialState),
     //   src: jsContractSrc,
     // });
+    // console.log(contractTxId, srcTxId);
 
-    //@ts-ignore
+    // // case 2 - create source
     // const dataItem = await warp.createSourceTx({ src: jsContractSrc }, new ArweaveSigner(wallet));
     // console.log('srcTxDataItem:', dataItem);
-    // // console.log(dataItem.id);
-    // await warp.saveSourceTx(dataItem);
-    const { contractTxId, srcTxId } = await warp.deploy({
-      //@ts-ignore
-      wallet: new ArweaveSigner(wallet),
-      initState: initialState,
-      src: jsContractSrc,
-    });
-    console.log('srcTxId:', srcTxId);
-    console.log('contractTxId', contractTxId);
-    // case 2 - deploy from source, js contract
-    /*const {contractTxId} = await warp.createContract.deployFromSourceTx({
-      wallet,
-      initState: initialState,
-      srcTxId: "Hj0S0iK5rG8yVf_5u-usb9vRZg1ZFkylQLXu6rcDt-0",
-    });*/
 
-    // case 3 - full deploy, wasm contract
-    /*const {contractTxId} = await warp.createContract.deploy({
-      wallet,
-      initState: initialState,
-      src: wasmContractSrc,
-      wasmSrcCodeDir: path.join(__dirname, 'data/rust/src'),
-      wasmGlueCode: path.join(__dirname, 'data/rust/rust-pst.js')
-    });*/
+    // // case 3 - save source
+    // const srcTxId = await warp.saveSourceTx(dataItem);
+    // console.log(srcTxId)
 
-    // case 4 - deploy from source, wasm contract
-    /*const {contractTxId} = await warp.createContract.deployFromSourceTx({
-      wallet,
-      initState: initialState,
-      srcTxId: "5wXT-A0iugP9pWEyw-iTbB0plZ_AbmvlNKyBfGS3AUY",
-    });*/
+    // // case 4 - deployFromSourceTx
+    // const { contractTxId, srcTxId } = await warp.deployFromSourceTx({
+    //   wallet: new ArweaveSigner(wallet),
+    //   initState: JSON.stringify(initialState),
+    //   srcTxId: 'QVtWnRyJgKw9WNAtZLyKOTDmlqssglRDZU4HDT9j-2Y',
+    // });
+    // console.log('srcTxId:', srcTxId);
+    // console.log('contractTxId', contractTxId);
 
-    // const contract = warp
-    //   .contract<any>(contractTxId)
-    //   .setEvaluationOptions({ internalWrites: false, unsafeClient: 'throw', allowBigInt: true })
-    //   .connect(wallet);
+    // // case 5 - deploy Wasm contract
+    // const { contractTxId, srcTxId } = await warp.deploy({
+    //   wallet: new ArweaveSigner(wallet),
+    //   initState: JSON.stringify(initialState),
+    //   src: wasmContractSrc,
+    //   wasmSrcCodeDir: path.join(__dirname, '../data/rust/src'),
+    //   wasmGlueCode: path.join(__dirname, '../data/rust/rust-pst.js'),
+    // });
+    // console.log(contractTxId, srcTxId);
 
-    // await Promise.all([
-    //   contract.writeInteraction<any>({
-    //     function: 'transfer',
-    //     target: 'M-mpNeJbg9h7mZ-uHaNsa5jwFFRAq0PsTkNWXJ-ojwI',
-    //     qty: 100,
-    //   }),
-    //   contract.writeInteraction<any>({
-    //     function: 'transfer',
-    //     target: 'M-mpNeJbg9h7mZ-uHaNsa5jwFFRAq0PsTkNWXJ-ojwI',
-    //     qty: 100,
-    //   }),
-    //   contract.writeInteraction<any>({
-    //     function: 'transfer',
-    //     target: 'M-mpNeJbg9h7mZ-uHaNsa5jwFFRAq0PsTkNWXJ-ojwI',
-    //     qty: 100,
-    //   }),
-    // ]);
+    // // case 6 - deploy from source, wasm contract
+    // const { contractTxId, srcTxId } = await warp.deployFromSourceTx({
+    //   wallet: new ArweaveSigner(wallet),
+    //   initState: JSON.stringify(initialState),
+    //   srcTxId: '5wXT-A0iugP9pWEyw-iTbB0plZ_AbmvlNKyBfGS3AUY',
+    // });
+    // console.log(contractTxId, srcTxId);
 
-    // const { cachedValue } = await contract.readState();
+    // // case 7 - write interaction js
+    // // @ts-ignore
+    // const { originalTxId } = await warp
+    //   .contract('1n4w-CArHCoq1wSrFQotIxqslh_-UCuo4vNSwmcLHl0')
+    //   .connect(wallet)
+    //   .writeInteraction({ function: 'transfer', target: 'uhE-QeYS8i4pmUtnxQyHD7dzXFNaJ9oMK-IM-QPNY6M', qty: 10 });
+    // console.log(originalTxId);
 
-    // logger.info('Result');
-    // console.dir(cachedValue.state);
+    // case 8 - full deploy, js contract - arweave
+    const { contractTxId, srcTxId } = await warp.deploy(
+      {
+        wallet,
+        initState: JSON.stringify(initialState),
+        src: jsContractSrc,
+      },
+      true
+    );
+    console.log(contractTxId, srcTxId);
   } catch (e) {
     //logger.error(e)
     throw e;

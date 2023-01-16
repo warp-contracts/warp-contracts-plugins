@@ -6967,8 +6967,10 @@ warp-contracts-pubsub@^1.0.3:
     "@aws-amplify/api" "^4.0.61"
     "@aws-amplify/core" "4.7.12"
 
-"warp-contracts@file:.yalc/warp-contracts":
-  version "1.2.43-beta.0"
+warp-contracts@1.2.43-beta.3:
+  version "1.2.43-beta.3"
+  resolved "https://registry.yarnpkg.com/warp-contracts/-/warp-contracts-1.2.43-beta.3.tgz#b69d766727fe3de8cd09d1b16d2e4e1bf058fd9d"
+  integrity sha512-QkuziKdayA3O5V1eb2O6g6Bvvc3c7IwUrNDItouagbVoB6T3NUiAIe0VisJeOIqqCsOQp8BJ6D3PbP/IFgJSAQ==
   dependencies:
     "@assemblyscript/loader" "^0.19.23"
     "@idena/vrf-js" "^1.0.1"

@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-plugin-deploy",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.4",
   "description": "A deploy plugin for warp contracts",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
@@ -44,7 +44,7 @@
     "arbundles": "^0.7.3",
     "arlocal": "^1.1.59",
     "node-stdlib-browser": "^1.2.0",
-    "warp-contracts": "1.2.43-beta.5"
+    "warp-contracts": "1.2.43-beta.7"
   },
   "devDependencies": {
     "@types/jest": "*",
