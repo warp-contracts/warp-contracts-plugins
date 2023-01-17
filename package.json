@@ -9,7 +9,7 @@
     "warp-contracts-plugin-ethers"
   ],
   "dependencies": {
-    "warp-contracts": "^1.2.30"
+    "warp-contracts": "1.2.43-beta.3"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",
@@ -22,7 +22,7 @@
     "jest": "^28.1.3",
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
-    "typescript": "^4.7.4",
-    "ts-node": "^10.2.1"
+    "ts-node": "^10.2.1",
+    "typescript": "^4.7.4"
   }
 }
