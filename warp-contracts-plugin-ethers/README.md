@@ -4,7 +4,7 @@ This plugin attaches the `ethers.utils` from the [ethers](https://www.npmjs.com/
 It can be then used inside the contract like this:
 
 ```js
-const address = new SmartWeave.extensions.utils.ethers.verifyMessage(message, signature);
+const address = SmartWeave.extensions.ethers.utils.verifyMessage(message, signature);
 ```
 
 ## Installation
