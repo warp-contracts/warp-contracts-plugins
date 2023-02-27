@@ -62,7 +62,7 @@ export class StateUpdatePlugin<State> extends WarpSubscriptionPlugin<SortKeyCach
     let result: SortKeyCacheResult<EvalStateResult<State>>;
     if (lastStoredKey?.localeCompare(input.lastSortKey) === 0) {
       this.logger.debug('Safe to use new interaction.', input.sortKey);
-      result = await this.warp.contract<State>(this.contractTxId).readStateFor([input.interaction]);
+      result = await this.warp.contract<State>(this.contractTxId).readStateFor(input.lastSortKey, [input.interaction]);
     } else {
       this.logger.debug('Unsafe to use new interaction - reading the state via gateway', {
         lastSortKey: input.lastSortKey,

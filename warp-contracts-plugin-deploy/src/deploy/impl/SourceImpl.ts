@@ -1,6 +1,5 @@
 /* eslint-disable */
-import { Buffer } from 'redstone-isomorphic';
-import Transaction from 'arweave/node/lib/transaction';
+import { Buffer } from 'warp-isomorphic';
 import {
   LoggerFactory,
   Signature,
@@ -14,7 +13,8 @@ import {
   Source,
   SourceData,
   Signer,
-  DataItem
+  DataItem,
+  Transaction
 } from 'warp-contracts';
 import { createData } from 'arbundles';
 import { isDataItem, isSigner } from '../../deploy/utils';
@@ -26,7 +26,7 @@ export class SourceImpl implements Source {
 
   constructor(private readonly warp: Warp) {}
 
-  async createSourceTx(
+  async createSource(
     sourceData: SourceData,
     wallet: ArWallet | CustomSignature | Signer,
     disableBundling: boolean = false
@@ -85,8 +85,8 @@ export class SourceImpl implements Source {
     }
   }
 
-  async saveSourceTx(srcTx: DataItem | Transaction, disableBundling?: boolean): Promise<string> {
-    this.logger.debug('Saving contract source', srcTx.id);
+  async saveSource(src: DataItem | Transaction, disableBundling?: boolean): Promise<string> {
+    this.logger.debug('Saving contract source', src.id);
 
     if (this.warp.environment == 'local') {
       disableBundling = true;
@@ -95,13 +95,13 @@ export class SourceImpl implements Source {
     const effectiveUseBundler =
       disableBundling == undefined ? this.warp.definitionLoader.type() == 'warp' : !disableBundling;
 
-    if (isDataItem(srcTx) && !effectiveUseBundler) {
+    if (isDataItem(src) && !effectiveUseBundler) {
       throw new Error(`Unable to save data item when bundling is disabled.`);
     }
 
-    if (!isDataItem(srcTx)) {
+    if (!isDataItem(src)) {
       const tagsParser = new TagsParser();
-      const signatureTag = tagsParser.getTag(srcTx, SmartWeaveTags.SIGNATURE_TYPE);
+      const signatureTag = tagsParser.getTag(src, SmartWeaveTags.SIGNATURE_TYPE);
       if (signatureTag && signatureTag != 'arweave' && !effectiveUseBundler) {
         throw new Error(`Unable to save source with signature type: ${signatureTag} when bundling is disabled.`);
       }
@@ -111,16 +111,16 @@ export class SourceImpl implements Source {
     let response: { status: number; statusText: string; data: any };
 
     if (effectiveUseBundler) {
-      const result = await this.postSource(srcTx.getRaw());
+      const result = await this.postSource(src.getRaw());
       this.logger.debug(result);
       responseOk = true;
     } else {
-      response = await this.warp.arweave.transactions.post(srcTx);
+      response = await this.warp.arweave.transactions.post(src);
       responseOk = response.status === 200 || response.status === 208;
     }
 
     if (responseOk) {
-      return srcTx.id;
+      return src.id;
     } else {
       throw new Error(
         `Unable to write Contract Source. Arweave responded with status ${response.status}: ${response.statusText}`
@@ -159,6 +159,7 @@ export class SourceImpl implements Source {
       throw new Error(`Unable to use signing function of type: ${this.signature.type}.`);
     }
     const signer = this.signature.signer;
+
     const srcTx = await this.warp.arweave.createTransaction({ data });
     srcTags.forEach((t) => srcTx.addTag(t.name, t.value));
 
@@ -193,7 +194,7 @@ export class SourceImpl implements Source {
       srcDataItemTags.push({ name: SmartWeaveTags.WARP_TESTNET, value: '1.0.0' });
     }
 
-    const srcDataItem = createData(data, wallet as Signer, { tags: srcTags });
+    const srcDataItem = createData(data, wallet as Signer, { tags: srcDataItemTags });
     await srcDataItem.sign(wallet as Signer);
     this.logger.debug('Posting transaction with source');
 

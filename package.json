@@ -9,7 +9,7 @@
     "warp-contracts-plugin-ethers"
   ],
   "dependencies": {
-    "warp-contracts": "1.2.43-beta.3"
+    "warp-contracts": "1.2.54"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",
