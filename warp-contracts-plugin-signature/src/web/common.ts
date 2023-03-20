@@ -1,5 +1,5 @@
 import Transaction, { Tag } from 'arweave/web/lib/transaction';
-import { SmartWeaveTags, TagsParser } from 'warp-contracts/web';
+import { SMART_WEAVE_TAGS, TagsParser } from 'warp-contracts/web';
 import { stringify } from 'safe-stable-stringify';
 import { encodeTxId } from './utils';
 import { Interaction } from './evm/evmSignatureVerification';
@@ -22,7 +22,7 @@ export const prepareTransaction = (tx: Transaction, ownerAddress: string) => {
 
   const isContractOrSource = decodedTags.some(
     (tag: Tag) =>
-      tag.name === SmartWeaveTags.APP_NAME &&
+      tag.name === SMART_WEAVE_TAGS.APP_NAME &&
       (tag.value === 'SmartWeaveContract' || tag.value === 'SmartWeaveContractSource')
   );
 

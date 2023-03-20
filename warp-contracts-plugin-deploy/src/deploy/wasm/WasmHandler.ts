@@ -1,11 +1,11 @@
 /* eslint-disable */
 import metering from 'warp-wasm-metering';
 import fs, { PathOrFileDescriptor } from 'fs';
-import { matchMutClosureDtor, SmartWeaveTags } from 'warp-contracts';
+import { matchMutClosureDtor, WARP_TAGS } from 'warp-contracts';
 
 const wasmTypeMapping: Map<number, string> = new Map([
   // [1, 'assemblyscript'],
-  [2, 'rust'],
+  [2, 'rust']
   /*[3, 'go']
   [4, 'swift'],
     [5, 'c']*/
@@ -36,19 +36,19 @@ export class WasmHandler {
     const moduleImports = WebAssembly.Module.imports(wasmModule);
     let lang: number;
 
-      // @ts-ignore
-      const module: WebAssembly.Instance = await WebAssembly.instantiate(this.src, dummyImports(moduleImports));
-      // @ts-ignore
-      if (!module.instance.exports.lang) {
-        throw new Error(`No info about source type in wasm binary. Did you forget to export "lang" function?`);
-      }
-      // @ts-ignore
-      lang = module.instance.exports.lang();
-      // @ts-ignore
-      wasmVersion = module.instance.exports.version();
-      if (!wasmTypeMapping.has(lang)) {
-        throw new Error(`Unknown wasm source type ${lang}`);
-      }
+    // @ts-ignore
+    const module: WebAssembly.Instance = await WebAssembly.instantiate(this.src, dummyImports(moduleImports));
+    // @ts-ignore
+    if (!module.instance.exports.lang) {
+      throw new Error(`No info about source type in wasm binary. Did you forget to export "lang" function?`);
+    }
+    // @ts-ignore
+    lang = module.instance.exports.lang();
+    // @ts-ignore
+    wasmVersion = module.instance.exports.version();
+    if (!wasmTypeMapping.has(lang)) {
+      throw new Error(`Unknown wasm source type ${lang}`);
+    }
 
     const wasmLang = wasmTypeMapping.get(lang);
     if (this.wasmSrcCodeDir == null) {
@@ -70,9 +70,9 @@ export class WasmHandler {
 
     const wasmData = this.joinBuffers(data);
     const srcWasmTags = [
-      { name: SmartWeaveTags.WASM_LANG, value: wasmLang },
-      { name: SmartWeaveTags.WASM_LANG_VERSION, value: wasmVersion.toString() },
-      { name: SmartWeaveTags.WASM_META, value: JSON.stringify(metadata) }
+      { name: WARP_TAGS.WASM_LANG, value: wasmLang },
+      { name: WARP_TAGS.WASM_LANG_VERSION, value: wasmVersion.toString() },
+      { name: WARP_TAGS.WASM_META, value: JSON.stringify(metadata) }
     ];
     return { wasmData, srcWasmTags };
   }
