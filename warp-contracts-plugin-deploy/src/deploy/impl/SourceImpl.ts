@@ -3,7 +3,6 @@ import { Buffer } from 'warp-isomorphic';
 import {
   LoggerFactory,
   Signature,
-  SmartWeaveTags,
   Warp,
   WARP_GW_URL,
   ContractType,
@@ -12,9 +11,11 @@ import {
   TagsParser,
   Source,
   SourceData,
-  Signer,
+  BundlerSigner,
   DataItem,
-  Transaction
+  Transaction,
+  SMART_WEAVE_TAGS,
+  WARP_TAGS
 } from 'warp-contracts';
 import { createData } from 'arbundles';
 import { isDataItem, isSigner } from '../../deploy/utils';
@@ -28,7 +29,7 @@ export class SourceImpl implements Source {
 
   async createSource(
     sourceData: SourceData,
-    wallet: ArWallet | CustomSignature | Signer,
+    wallet: ArWallet | CustomSignature | BundlerSigner,
     disableBundling: boolean = false
   ): Promise<DataItem | Transaction> {
     this.logger.debug('Creating new contract source');
@@ -62,12 +63,12 @@ export class SourceImpl implements Source {
     const allData = contractType == 'wasm' ? wasmData : src;
 
     const srcTags = [
-      { name: SmartWeaveTags.APP_NAME, value: 'SmartWeaveContractSource' },
-      { name: SmartWeaveTags.APP_VERSION, value: '0.3.0' },
-      { name: SmartWeaveTags.SDK, value: 'Warp' },
-      { name: SmartWeaveTags.NONCE, value: Date.now().toString() },
+      { name: SMART_WEAVE_TAGS.APP_NAME, value: 'SmartWeaveContractSource' },
+      { name: SMART_WEAVE_TAGS.APP_VERSION, value: '0.3.0' },
+      { name: SMART_WEAVE_TAGS.SDK, value: 'Warp' },
+      { name: WARP_TAGS.NONCE, value: Date.now().toString() },
       {
-        name: SmartWeaveTags.CONTENT_TYPE,
+        name: SMART_WEAVE_TAGS.CONTENT_TYPE,
         value: contractType == 'js' ? 'application/javascript' : 'application/wasm'
       }
     ];
@@ -81,7 +82,7 @@ export class SourceImpl implements Source {
         contractType
       );
     } else {
-      return await this.createSourceBundlr(wallet as Signer, srcTags, srcWasmTags, contractType, allData);
+      return await this.createSourceBundlr(wallet as BundlerSigner, srcTags, srcWasmTags, contractType, allData);
     }
   }
 
@@ -101,7 +102,7 @@ export class SourceImpl implements Source {
 
     if (!isDataItem(src)) {
       const tagsParser = new TagsParser();
-      const signatureTag = tagsParser.getTag(src, SmartWeaveTags.SIGNATURE_TYPE);
+      const signatureTag = tagsParser.getTag(src, WARP_TAGS.SIGNATURE_TYPE);
       if (signatureTag && signatureTag != 'arweave' && !effectiveUseBundler) {
         throw new Error(`Unable to save source with signature type: ${signatureTag} when bundling is disabled.`);
       }
@@ -168,7 +169,7 @@ export class SourceImpl implements Source {
     }
 
     if (this.warp.environment === 'testnet') {
-      srcTx.addTag(SmartWeaveTags.WARP_TESTNET, '1.0.0');
+      srcTx.addTag(WARP_TAGS.WARP_TESTNET, '1.0.0');
     }
 
     await signer(srcTx);
@@ -179,7 +180,7 @@ export class SourceImpl implements Source {
   }
 
   private async createSourceBundlr(
-    wallet: Signer,
+    wallet: BundlerSigner,
     srcTags: { name: string; value: string }[],
     srcWasmTags: { name: string; value: string }[],
     contractType: string,
@@ -191,11 +192,11 @@ export class SourceImpl implements Source {
     }
 
     if (this.warp.environment === 'testnet') {
-      srcDataItemTags.push({ name: SmartWeaveTags.WARP_TESTNET, value: '1.0.0' });
+      srcDataItemTags.push({ name: WARP_TAGS.WARP_TESTNET, value: '1.0.0' });
     }
 
-    const srcDataItem = createData(data, wallet as Signer, { tags: srcDataItemTags });
-    await srcDataItem.sign(wallet as Signer);
+    const srcDataItem = createData(data, wallet as BundlerSigner, { tags: srcDataItemTags });
+    await srcDataItem.sign(wallet as BundlerSigner);
     this.logger.debug('Posting transaction with source');
 
     return srcDataItem;

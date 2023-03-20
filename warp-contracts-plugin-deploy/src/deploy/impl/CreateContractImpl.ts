@@ -1,6 +1,5 @@
 /* eslint-disable */
 import { SourceImpl } from './SourceImpl';
-import { Buffer } from 'warp-isomorphic';
 import {
   ArWallet,
   BundlrNodeType,
@@ -13,13 +12,14 @@ import {
   FromSrcTxContractData,
   LoggerFactory,
   Signature,
-  Signer,
-  SmartWeaveTags,
+  BundlerSigner,
   SourceData,
   Transaction,
   Warp,
   WarpFetchWrapper,
-  WARP_GW_URL
+  WARP_GW_URL,
+  SMART_WEAVE_TAGS,
+  WARP_TAGS
 } from 'warp-contracts';
 import { createData } from 'arbundles';
 import { isSigner } from '../../deploy/utils';
@@ -93,21 +93,19 @@ export class CreateContractImpl implements CreateContract {
 
     const contractTags = {
       contract: [
-        { name: SmartWeaveTags.APP_NAME, value: 'SmartWeaveContract' },
-        { name: SmartWeaveTags.APP_VERSION, value: '0.3.0' },
-        { name: SmartWeaveTags.CONTRACT_SRC_TX_ID, value: srcTxId },
-        { name: SmartWeaveTags.SDK, value: 'Warp' },
-        { name: SmartWeaveTags.NONCE, value: Date.now().toString() }
+        { name: SMART_WEAVE_TAGS.APP_NAME, value: 'SmartWeaveContract' },
+        { name: SMART_WEAVE_TAGS.APP_VERSION, value: '0.3.0' },
+        { name: SMART_WEAVE_TAGS.CONTRACT_SRC_TX_ID, value: srcTxId },
+        { name: SMART_WEAVE_TAGS.SDK, value: 'Warp' },
+        { name: WARP_TAGS.NONCE, value: Date.now().toString() }
       ],
       contractData: [
-        { name: SmartWeaveTags.CONTENT_TYPE, value: data && data['Content-Type'] },
-        { name: SmartWeaveTags.INIT_STATE, value: initState }
+        { name: SMART_WEAVE_TAGS.CONTENT_TYPE, value: data && data['Content-Type'] },
+        { name: WARP_TAGS.INIT_STATE, value: initState }
       ],
-      contractNonData: [{ name: SmartWeaveTags.CONTENT_TYPE, value: 'application/json' }],
-      contractTestnet: [{ name: SmartWeaveTags.WARP_TESTNET, value: '1.0.0' }],
-      contractEvaluationManifest: [
-        { name: SmartWeaveTags.MANIFEST, value: JSON.stringify(contractData.evaluationManifest) }
-      ]
+      contractNonData: [{ name: SMART_WEAVE_TAGS.CONTENT_TYPE, value: 'application/json' }],
+      contractTestnet: [{ name: WARP_TAGS.WARP_TESTNET, value: '1.0.0' }],
+      contractEvaluationManifest: [{ name: WARP_TAGS.MANIFEST, value: JSON.stringify(contractData.evaluationManifest) }]
     };
 
     if (!effectiveUseBundler) {
@@ -177,7 +175,7 @@ export class CreateContractImpl implements CreateContract {
 
   async createSource(
     sourceData: SourceData,
-    wallet: ArWallet | CustomSignature | Signer,
+    wallet: ArWallet | CustomSignature | BundlerSigner,
     disableBundling: boolean = false
   ): Promise<Transaction | DataItem> {
     return this.source.createSource(sourceData, wallet, disableBundling);
