@@ -1,4 +1,4 @@
-import { HandlerApi, IvmOptions, IvmPluginInput, LoggerFactory, WarpPlugin, WarpPluginType } from 'warp-contracts';
+import { ContractDefinition, HandlerApi, IvmOptions, IvmPluginInput, LoggerFactory, WarpPlugin, WarpPluginType } from 'warp-contracts';
 import { Context, Isolate, Reference } from 'isolated-vm';
 import { configureContext, configureSandbox } from './configure-ivm';
 import { IvmHandlerApi } from './IvmHandlerApi';
@@ -24,7 +24,7 @@ export class IvmPlugin<State> implements WarpPlugin<IvmPluginInput, HandlerApi<S
     configureContext(context);
     const contract: Reference = context.evalSync(normalizedSource, { reference: true });
 
-    return new IvmHandlerApi(input.swGlobal, input.contractDefinition, { isolate, context, sandbox, contract });
+    return new IvmHandlerApi(input.swGlobal, input.contractDefinition as ContractDefinition<State>, { isolate, context, sandbox, contract });
   }
 
   type(): WarpPluginType {

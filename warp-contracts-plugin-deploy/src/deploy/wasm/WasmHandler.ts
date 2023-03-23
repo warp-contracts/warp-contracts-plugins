@@ -30,7 +30,7 @@ export class WasmHandler {
     const meteredWasmBinary = metering.meterWASM(this.src, {
       meterType: 'i32'
     });
-    data.push(meteredWasmBinary);
+    data.push(this.src as any);
 
     const wasmModule = await WebAssembly.compile(this.src as Buffer);
     const moduleImports = WebAssembly.Module.imports(wasmModule);

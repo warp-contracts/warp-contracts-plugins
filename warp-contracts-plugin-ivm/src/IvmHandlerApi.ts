@@ -10,6 +10,9 @@ import {
 } from 'warp-contracts';
 
 export class IvmHandlerApi<State> extends AbstractContractHandler<State> {
+  maybeCallStateConstructor(initialState: State, executionContext: ExecutionContext<State, unknown>): Promise<State> {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     swGlobal: SmartWeaveGlobal,
     contractDefinition: ContractDefinition<State>,
@@ -34,7 +37,7 @@ export class IvmHandlerApi<State> extends AbstractContractHandler<State> {
       this.swGlobal._activeTx = interactionTx;
       this.swGlobal.caller = interaction.caller; // either contract tx id (for internal writes) or transaction.owner
 
-      this.assignReadContractState<Input>(executionContext, interactionTx);
+      this.assignReadContractState(executionContext, interactionTx);
       this.assignViewContractState<Input>(executionContext);
       this.assignWrite(executionContext);
       this.assignRefreshState(executionContext);
