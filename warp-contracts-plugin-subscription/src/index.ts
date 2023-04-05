@@ -1,5 +1,5 @@
 import { initPubSub, subscribe } from 'warp-contracts-pubsub';
-import { EvalStateResult, GQLNodeInterface, LoggerFactory, SortKeyCacheResult, Warp } from 'warp-contracts';
+import { EvalStateResult, GQLNodeInterface, LoggerFactory, SortKeyCacheResult, Warp, Contract } from 'warp-contracts';
 import { WarpPlugin, WarpPluginType } from 'warp-contracts';
 
 const isNode = new Function('try {return this===global;}catch(e){return false;}');
@@ -16,12 +16,16 @@ export interface InteractionMessage {
   interaction: GQLNodeInterface;
 }
 
-export abstract class WarpSubscriptionPlugin<R> implements WarpPlugin<InteractionMessage, Promise<R>> {
+export abstract class WarpSubscriptionPlugin<S>
+  implements WarpPlugin<InteractionMessage, Promise<SortKeyCacheResult<EvalStateResult<S>>>>
+{
   protected readonly logger = LoggerFactory.INST.create('WarpSubscriptionPlugin');
+  readonly contractTxId: string;
 
-  constructor(protected readonly contractTxId: string, protected readonly warp: Warp) {
+  constructor(protected readonly contract: Contract<S>, protected readonly warp: Warp) {
+    this.contractTxId = this.contract.txId();
     subscribe(
-      `interactions/${contractTxId}`,
+      `interactions/${this.contractTxId}`,
       async ({ data }) => {
         const message = JSON.parse(data);
         this.logger.debug('New message received', message);
@@ -37,14 +41,14 @@ export abstract class WarpSubscriptionPlugin<R> implements WarpPlugin<Interactio
       });
   }
 
-  abstract process(input: InteractionMessage): Promise<R>;
+  abstract process(input: InteractionMessage): Promise<SortKeyCacheResult<EvalStateResult<S>>>;
 
   type(): WarpPluginType {
     return 'subscription';
   }
 }
 
-export class StateUpdatePlugin<State> extends WarpSubscriptionPlugin<SortKeyCacheResult<EvalStateResult<State>>> {
+export class StateUpdatePlugin<State> extends WarpSubscriptionPlugin<State> {
   async process(input: InteractionMessage): Promise<SortKeyCacheResult<EvalStateResult<State>>> {
     const lastStoredKey = (await this.warp.stateEvaluator.latestAvailableState(this.contractTxId))?.sortKey;
 
@@ -62,13 +66,14 @@ export class StateUpdatePlugin<State> extends WarpSubscriptionPlugin<SortKeyCach
     let result: SortKeyCacheResult<EvalStateResult<State>>;
     if (lastStoredKey?.localeCompare(input.lastSortKey) === 0) {
       this.logger.debug('Safe to use new interaction.', input.sortKey);
-      result = await this.warp.contract<State>(this.contractTxId).readStateFor(input.lastSortKey, [input.interaction]);
+
+      result = await this.contract.readStateFor(input.lastSortKey, [input.interaction]);
     } else {
       this.logger.debug('Unsafe to use new interaction - reading the state via gateway', {
         lastSortKey: input.lastSortKey,
         localCache: lastStoredKey
       });
-      result = await this.warp.contract<State>(this.contractTxId).readState();
+      result = await this.contract.readState();
     }
 
     this.logger.debug('State updated', {
