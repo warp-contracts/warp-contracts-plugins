@@ -2,9 +2,11 @@ import { Signer } from 'arbundles/src/signing';
 import { SignatureConfig, SIG_CONFIG } from 'arbundles/src/constants';
 import Arweave from 'arweave';
 import base64url from 'base64url';
+import { DataItem } from 'arbundles';
+import { Tag } from 'warp-contracts';
 
 export class InjectedArweaveSigner implements Signer {
-  private signer: any;
+  public signer: any;
   public publicKey: Buffer;
   readonly ownerLength: number = SIG_CONFIG[SignatureConfig.ARWEAVE].pubLength;
   readonly signatureLength: number = SIG_CONFIG[SignatureConfig.ARWEAVE].sigLength;
@@ -15,7 +17,12 @@ export class InjectedArweaveSigner implements Signer {
   }
 
   async setPublicKey(): Promise<void> {
-    const arOwner = await this.signer.getActivePublicKey();
+    let arOwner;
+    if (this.signer.getPublicKey) {
+      arOwner = await this.signer.getPublicKey();
+    } else {
+      arOwner = await this.signer.getActivePublicKey();
+    }
     this.publicKey = base64url.toBuffer(arOwner);
   }
 
@@ -32,6 +39,21 @@ export class InjectedArweaveSigner implements Signer {
     const signature = await this.signer.signature(message, algorithm);
     const buf = new Uint8Array(Object.values(signature));
     return buf;
+  }
+
+  async signDataItem(data: string | Buffer, tags: Tag[]): Promise<DataItem> {
+    if (!this.publicKey) {
+      await this.setPublicKey();
+    }
+
+    return new DataItem(
+      Buffer.from(
+        await this.signer.signDataItem({
+          data,
+          tags
+        })
+      )
+    );
   }
 
   static async verify(pk: string, message: Uint8Array, signature: Uint8Array): Promise<boolean> {

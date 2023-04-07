@@ -19,7 +19,8 @@ import {
   WarpFetchWrapper,
   WARP_GW_URL,
   SMART_WEAVE_TAGS,
-  WARP_TAGS
+  WARP_TAGS,
+  isBrowser
 } from 'warp-contracts';
 import { createData } from 'arbundles';
 import { isSigner } from '../../deploy/utils';
@@ -293,8 +294,14 @@ export class CreateContractImpl implements CreateContract {
       );
     }
 
-    const contract = createData(data?.body || initState, wallet as BundlerSigner, { tags: contractDataItemTags });
-    await contract.sign(wallet as BundlerSigner);
+    let contract: DataItem;
+
+    if (isBrowser() && (wallet as BundlerSigner).signer.signDataItem) {
+      contract = await (wallet as BundlerSigner).signDataItem(data?.body || initState, contractDataItemTags);
+    } else {
+      contract = createData(data?.body || initState, wallet as BundlerSigner, { tags: contractDataItemTags });
+      await contract.sign(wallet as BundlerSigner);
+    }
 
     await this.postContract(contract.getRaw(), src?.getRaw());
     return { contract, responseOk: true };
