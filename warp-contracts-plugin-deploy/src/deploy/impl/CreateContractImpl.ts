@@ -293,8 +293,8 @@ export class CreateContractImpl implements CreateContract {
       );
     }
 
-    const contract = createData(data?.body || initState, wallet, { tags: contractDataItemTags });
-    await contract.sign(wallet);
+    const contract = createData(data?.body || initState, wallet as BundlerSigner, { tags: contractDataItemTags });
+    await contract.sign(wallet as BundlerSigner);
 
     await this.postContract(contract.getRaw(), src?.getRaw());
     return { contract, responseOk: true };
