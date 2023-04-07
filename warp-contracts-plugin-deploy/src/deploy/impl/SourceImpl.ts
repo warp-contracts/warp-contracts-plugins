@@ -15,7 +15,8 @@ import {
   DataItem,
   Transaction,
   SMART_WEAVE_TAGS,
-  WARP_TAGS
+  WARP_TAGS,
+  isBrowser
 } from 'warp-contracts';
 import { createData } from 'arbundles';
 import { isDataItem, isSigner } from '../../deploy/utils';
@@ -195,8 +196,15 @@ export class SourceImpl implements Source {
       srcDataItemTags.push({ name: WARP_TAGS.WARP_TESTNET, value: '1.0.0' });
     }
 
-    const srcDataItem = createData(data, wallet as BundlerSigner, { tags: srcDataItemTags });
-    await srcDataItem.sign(wallet as BundlerSigner);
+    let srcDataItem: DataItem;
+
+    if (isBrowser() && wallet.signer.signDataItem) {
+      srcDataItem = await wallet.signDataItem(data, srcDataItemTags);
+    } else {
+      srcDataItem = createData(data, wallet, { tags: srcDataItemTags });
+      await srcDataItem.sign(wallet);
+    }
+
     this.logger.debug('Posting transaction with source');
 
     return srcDataItem;
