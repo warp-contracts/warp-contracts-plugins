@@ -1,5 +1,5 @@
 import Transaction, { Tag } from 'arweave/web/lib/transaction';
-import { SMART_WEAVE_TAGS, TagsParser } from 'warp-contracts/web';
+import { SMART_WEAVE_TAGS, TagsParser } from 'warp-contracts';
 import { stringify } from 'safe-stable-stringify';
 import { encodeTxId } from './utils';
 import { Interaction } from './evm/evmSignatureVerification';
