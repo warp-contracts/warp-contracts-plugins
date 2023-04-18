@@ -9,9 +9,9 @@
     "sub": "NODE_NO_WARNINGS=1 ts-node subscription/contract.ts"
   },
   "dependencies": {
-    "warp-contracts": "1.2.54",
+    "warp-contracts": "1.4.1",
     "warp-contracts-ivm-plugin": "^1.0.11",
-    "warp-contracts-plugin-deploy": "1.0.0",
+    "warp-contracts-plugin-deploy": "1.0.4",
     "warp-contracts-plugin-ethers": "1.0.3",
     "warp-contracts-subscription-plugin": "^1.0.3"
   },

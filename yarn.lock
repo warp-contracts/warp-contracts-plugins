@@ -2682,7 +2682,7 @@ acorn-jsx@^5.3.1, acorn-jsx@^5.3.2:
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz#7ed5bb55908b3b2f1bc55c6af1653bada7f07937"
   integrity sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==
 
-acorn-walk@^8.1.1, acorn-walk@^8.2.0:
+acorn-walk@^8.1.1:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.2.0.tgz#741210f2e2426454508853a2f44d0ab83b7f69c1"
   integrity sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==
@@ -2696,11 +2696,6 @@ acorn@^8.4.1, acorn@^8.8.0:
   version "8.8.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.8.1.tgz#0a3f9cbecc4ec3bea6f0a80b66ae8dd2da250b73"
   integrity sha512-7zFpHzhnqYKrkYdUjF1HI1bzd0VygEGX8lFk4k5zVMqHEoES+P+7TKI+EvLO9WVMJ8eekdO0aDEK044xTXwPPA==
-
-acorn@^8.7.0:
-  version "8.8.2"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.8.2.tgz#1b2f25db02af965399b9776b0c2c391276d37c4a"
-  integrity sha512-xjIYgE8HBrkpd/sJqOGNspf8uHG+NOHGOw6a/Urj8taM2EXfdNAH2oFcPeIFfsv3+kz/mJrS5VuMqbNLjCa2vw==
 
 adler-32@~1.3.0:
   version "1.3.1"
@@ -6937,14 +6932,6 @@ v8-to-istanbul@^9.0.1:
     "@types/istanbul-lib-coverage" "^2.0.1"
     convert-source-map "^1.6.0"
 
-vm2@3.9.13:
-  version "3.9.13"
-  resolved "https://registry.yarnpkg.com/vm2/-/vm2-3.9.13.tgz#774a1a3d73b9b90b1aa45bcc5f25e349f2eef649"
-  integrity sha512-0rvxpB8P8Shm4wX2EKOiMp7H2zq+HUE/UwodY0pCZXs9IffIKZq6vUti5OgkVCTakKo9e/fgO4X1fkwfjWxE3Q==
-  dependencies:
-    acorn "^8.7.0"
-    acorn-walk "^8.2.0"
-
 walker@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/walker/-/walker-1.0.8.tgz#bd498db477afe573dc04185f011d3ab8a8d7653f"
@@ -6960,10 +6947,10 @@ warp-contracts-pubsub@^1.0.3:
     "@aws-amplify/api" "^4.0.61"
     "@aws-amplify/core" "4.7.12"
 
-warp-contracts@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/warp-contracts/-/warp-contracts-1.3.0.tgz#c00bab24a0d62f5f93748db6057aec71689c806b"
-  integrity sha512-CG7pPv4YXenf95HL89a3CR3qj0cOntZw1fpoYWlspZg5xUKow8nETpXqYjrBCK7F1DaHWHgXxMWEhHEwWfOK0A==
+warp-contracts@1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/warp-contracts/-/warp-contracts-1.4.1.tgz#ba4c0101eda170fe54c3bbfdd836252817786f72"
+  integrity sha512-NQE83O6waKKIH74oBoBITK5KQrA60WurnCFx4LCZ5tUSX683lodCHPeNbyuioFUBebfEULQRfUkcbmnCiKxoaA==
   dependencies:
     "@idena/vrf-js" "^1.0.1"
     archiver "^5.3.0"
@@ -6978,7 +6965,6 @@ warp-contracts@1.3.0:
     safe-stable-stringify "2.4.1"
     stream-buffers "^3.0.2"
     unzipit "^1.4.0"
-    vm2 "3.9.13"
     warp-isomorphic "1.0.4"
     warp-wasm-metering "1.0.1"
 
