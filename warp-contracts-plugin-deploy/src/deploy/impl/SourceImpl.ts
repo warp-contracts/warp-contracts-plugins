@@ -16,7 +16,8 @@ import {
   Transaction,
   SMART_WEAVE_TAGS,
   WARP_TAGS,
-  isBrowser
+  isBrowser,
+  Tag
 } from 'warp-contracts';
 import { createData } from 'arbundles';
 import { isDataItem, isSigner } from '../../deploy/utils';
@@ -64,14 +65,11 @@ export class SourceImpl implements Source {
     const allData = contractType == 'wasm' ? wasmData : src;
 
     const srcTags = [
-      { name: SMART_WEAVE_TAGS.APP_NAME, value: 'SmartWeaveContractSource' },
-      { name: SMART_WEAVE_TAGS.APP_VERSION, value: '0.3.0' },
-      { name: SMART_WEAVE_TAGS.SDK, value: 'Warp' },
-      { name: WARP_TAGS.NONCE, value: Date.now().toString() },
-      {
-        name: SMART_WEAVE_TAGS.CONTENT_TYPE,
-        value: contractType == 'js' ? 'application/javascript' : 'application/wasm'
-      }
+      new Tag(SMART_WEAVE_TAGS.APP_NAME, 'SmartWeaveContractSource'),
+      new Tag(SMART_WEAVE_TAGS.APP_VERSION, '0.3.0'),
+      new Tag(SMART_WEAVE_TAGS.SDK, 'Warp'),
+      new Tag(WARP_TAGS.NONCE, Date.now().toString()),
+      new Tag(SMART_WEAVE_TAGS.CONTENT_TYPE, contractType == 'js' ? 'application/javascript' : 'application/wasm')
     ];
 
     if (disableBundling) {
@@ -182,23 +180,23 @@ export class SourceImpl implements Source {
 
   private async createSourceBundlr(
     wallet: BundlerSigner,
-    srcTags: { name: string; value: string }[],
-    srcWasmTags: { name: string; value: string }[],
+    srcTags: Tag[],
+    srcWasmTags: Tag[],
     contractType: string,
     data: string | Buffer
   ): Promise<DataItem> {
     const srcDataItemTags = [...srcTags];
     if (contractType == 'wasm') {
-      srcWasmTags.forEach((t) => srcDataItemTags.push({ name: t.name, value: t.value }));
+      srcWasmTags.forEach((t) => srcDataItemTags.push(new Tag(t.name, t.value)));
     }
 
     if (this.warp.environment === 'testnet') {
-      srcDataItemTags.push({ name: WARP_TAGS.WARP_TESTNET, value: '1.0.0' });
+      srcDataItemTags.push(new Tag(WARP_TAGS.WARP_TESTNET, '1.0.0'));
     }
 
     let srcDataItem: DataItem;
 
-    if (isBrowser() && wallet.signer.signDataItem) {
+    if (isBrowser() && wallet.signer && wallet.signer.signDataItem) {
       srcDataItem = await wallet.signDataItem(data, srcDataItemTags);
     } else {
       srcDataItem = createData(data, wallet, { tags: srcDataItemTags });
