@@ -20,7 +20,8 @@ import {
   WARP_GW_URL,
   SMART_WEAVE_TAGS,
   WARP_TAGS,
-  isBrowser
+  isBrowser,
+  Tag
 } from 'warp-contracts';
 import { createData } from 'arbundles';
 import { isSigner } from '../../deploy/utils';
@@ -272,31 +273,29 @@ export class CreateContractImpl implements CreateContract {
   ): Promise<{ contract: DataItem; responseOk: boolean }> {
     const { wallet, initState, data, tags } = contractData;
 
-    const contractDataItemTags: { name: string; value: string }[] = [...contractTags.contract];
+    const contractDataItemTags: Tag[] = [...contractTags.contract];
     if (tags?.length) {
       for (const tag of tags) {
-        contractDataItemTags.push({ name: tag.name.toString(), value: tag.value.toString() });
+        contractDataItemTags.push(new Tag(tag.name.toString(), tag.value.toString()));
       }
     }
     if (data) {
-      contractTags.contractData.forEach((t) => contractDataItemTags.push({ name: t.name, value: t.value }));
+      contractTags.contractData.forEach((t) => contractDataItemTags.push(new Tag(t.name, t.value)));
     } else {
-      contractTags.contractNonData.forEach((t) => contractDataItemTags.push({ name: t.name, value: t.value }));
+      contractTags.contractNonData.forEach((t) => contractDataItemTags.push(new Tag(t.name, t.value)));
     }
 
     if (this.warp.environment === 'testnet') {
-      contractTags.contractTestnet.forEach((t) => contractDataItemTags.push({ name: t.name, value: t.value }));
+      contractTags.contractTestnet.forEach((t) => contractDataItemTags.push(new Tag(t.name, t.value)));
     }
 
     if (contractData.evaluationManifest) {
-      contractTags.contractEvaluationManifest.forEach((t) =>
-        contractDataItemTags.push({ name: t.name, value: t.value })
-      );
+      contractTags.contractEvaluationManifest.forEach((t) => contractDataItemTags.push(new Tag(t.name, t.value)));
     }
 
     let contract: DataItem;
 
-    if (isBrowser() && (wallet as BundlerSigner).signer.signDataItem) {
+    if (isBrowser() && (wallet as BundlerSigner).signer && (wallet as BundlerSigner).signer.signDataItem) {
       contract = await (wallet as BundlerSigner).signDataItem(data?.body || initState, contractDataItemTags);
     } else {
       contract = createData(data?.body || initState, wallet as BundlerSigner, { tags: contractDataItemTags });
