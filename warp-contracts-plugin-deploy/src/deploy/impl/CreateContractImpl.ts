@@ -17,11 +17,11 @@ import {
   Transaction,
   Warp,
   WarpFetchWrapper,
-  WARP_GW_URL,
   SMART_WEAVE_TAGS,
   WARP_TAGS,
   isBrowser,
-  Tag
+  Tag,
+  getJsonResponse
 } from 'warp-contracts';
 import { createData } from 'arbundles';
 import { isSigner } from '../../deploy/utils';
@@ -126,53 +126,25 @@ export class CreateContractImpl implements CreateContract {
   }
 
   async deployBundled(rawDataItem: Buffer): Promise<ContractDeploy> {
-    const response = await fetch(`${WARP_GW_URL}/gateway/contracts/deploy-bundled`, {
+    return await getJsonResponse(fetch(`${this.warp.gwUrl()}/gateway/contracts/deploy-bundled`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/octet-stream',
         Accept: 'application/json'
       },
       body: rawDataItem
-    });
-    if (response.ok) {
-      return response.json();
-    } else {
-      if (typeof response.json === 'function') {
-        response.json().then((responseError) => {
-          if (responseError.message) {
-            this.logger.error(responseError.message);
-          }
-        });
-      }
-      throw new Error(
-        `Error while deploying data item. Warp Gateway responded with status ${response.status} ${response.statusText}`
-      );
-    }
+    }));
   }
 
   async register(id: string, bundlrNode: BundlrNodeType): Promise<ContractDeploy> {
-    const response = await fetch(`${WARP_GW_URL}/gateway/contracts/register`, {
+    return await getJsonResponse(fetch(`${this.warp.gwUrl()}/gateway/contracts/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json'
       },
-      body: JSON.stringify({ id, bundlrNode })
-    });
-    if (response.ok) {
-      return response.json();
-    } else {
-      if (typeof response.json === 'function') {
-        response.json().then((responseError) => {
-          if (responseError.message) {
-            this.logger.error(responseError.message);
-          }
-        });
-      }
-      throw new Error(
-        `Error while registering data item. Warp Gateway responded with status ${response.status} ${response.statusText}`
-      );
-    }
+      body: JSON.stringify({id, bundlrNode})
+    }));
   }
 
   async createSource(
@@ -198,7 +170,7 @@ export class CreateContractImpl implements CreateContract {
       };
     }
 
-    const response = await this.warpFetchWrapper.fetch(`${WARP_GW_URL}/gateway/v2/contracts/deploy`, {
+    return await getJsonResponse(this.warpFetchWrapper.fetch(`${this.warp.gwUrl()}/gateway/v2/contracts/deploy`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
@@ -206,15 +178,7 @@ export class CreateContractImpl implements CreateContract {
         'Content-Type': 'application/json',
         Accept: 'application/json'
       }
-    });
-
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error(
-        `Error while posting contract. Sequencer responded with status ${response.status} ${response.statusText}`
-      );
-    }
+    }));
   }
 
   private async deployContractArweave(

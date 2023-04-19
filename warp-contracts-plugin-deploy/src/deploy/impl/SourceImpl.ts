@@ -4,7 +4,6 @@ import {
   LoggerFactory,
   Signature,
   Warp,
-  WARP_GW_URL,
   ContractType,
   ArWallet,
   CustomSignature,
@@ -17,7 +16,7 @@ import {
   SMART_WEAVE_TAGS,
   WARP_TAGS,
   isBrowser,
-  Tag
+  Tag, getJsonResponse
 } from 'warp-contracts';
 import { createData } from 'arbundles';
 import { isDataItem, isSigner } from '../../deploy/utils';
@@ -129,22 +128,14 @@ export class SourceImpl implements Source {
   }
 
   private async postSource(srcDataItem: Buffer): Promise<any> {
-    const response = await fetch(`${WARP_GW_URL}/gateway/v2/sources/deploy`, {
+    return await getJsonResponse(fetch(`${this.warp.gwUrl()}/gateway/v2/sources/deploy`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/octet-stream',
         Accept: 'application/json'
       },
       body: srcDataItem
-    });
-
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error(
-        `Error while posting contract source. Sequencer responded with status ${response.status} ${response.statusText}`
-      );
-    }
+    }));
   }
 
   private async createSourceArweave(
