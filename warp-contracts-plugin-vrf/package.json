@@ -1,24 +1,20 @@
 {
-  "name": "warp-contracts-plugin-deploy",
-  "version": "1.0.4",
-  "description": "A deploy plugin for warp contracts",
+  "name": "warp-contracts-plugin-vrf",
+  "version": "1.0.0-beta.0",
+  "description": "A subscription plugin for warp contracts",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
-  "browser": {
-    "./lib/cjs/index.js": "./bundles/web.bundle.min.js"
-  },
   "exports": {
-    ".": "./lib/cjs/index.js",
-    "./web": "./bundles/web.bundle.min.js"
+    ".": "./lib/cjs/index.js"
   },
   "sideEffects": false,
   "engines": {
     "node": ">=16.5"
   },
   "scripts": {
-    "bundle:web": "node bundle.js",
-    "compile:types": "tsc -b tsconfig.types.json",
-    "build": "yarn run clean && tsc -b tsconfig.json && yarn compile:types && yarn bundle:web",
+    "build:cjs": "tsc -b tsconfig.json",
+    "build:types": "tsc -b tsconfig.types.json",
+    "build": "yarn run clean && yarn build:cjs && yarn build:types",
     "format": "prettier --write 'src/**/*.ts'",
     "clean": "rimraf ./lib",
     "lint": "eslint . --ext .ts",
@@ -35,25 +31,20 @@
   "license": "MIT",
   "files": [
     "lib/",
-    "docs/",
-    "LICENSE",
-    "README.md",
-    "bundles/"
+    "README.md"
   ],
   "dependencies": {
-    "arbundles": "^0.7.3",
-    "arlocal": "^1.1.59",
-    "node-stdlib-browser": "^1.2.0"
+    "@idena/vrf-js": "^1.0.1",
+    "elliptic": "^6.5.4"
   },
   "peerDependencies": {
-    "warp-contracts": "~1.3.0"
+    "warp-contracts": "~1.4.3-beta.0"
   },
   "devDependencies": {
     "@types/jest": "*",
     "@types/node": "*",
     "@typescript-eslint/eslint-plugin": "*",
     "@typescript-eslint/parser": "*",
-    "esbuild": "0.15.12",
     "eslint": "*",
     "eslint-config-prettier": "*",
     "eslint-plugin-prettier": "*",

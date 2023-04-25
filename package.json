@@ -1,12 +1,16 @@
 {
   "private": true,
   "workspaces": [
-    "warp-contracts-plugin-subscription",
+    "warp-contracts-plugin-blacklist",
+    "warp-contracts-plugin-deploy",
+    "warp-contracts-plugin-ethers",
+    "warp-contracts-plugin-evaluation-progress",
+    "warp-contracts-plugin-ivm",
     "warp-contracts-plugin-nlp",
     "warp-contracts-plugin-signature",
-    "warp-contracts-plugin-ivm",
-    "warp-contracts-plugin-evaluation-progress",
-    "warp-contracts-plugin-ethers"
+    "warp-contracts-plugin-subscription",
+    "warp-contracts-plugin-vm2",
+    "warp-contracts-plugin-vrf"
   ],
   "devDependencies": {
     "@types/jest": "^28.1.6",
@@ -21,6 +25,6 @@
     "rimraf": "^3.0.2",
     "ts-node": "^10.2.1",
     "typescript": "^4.7.4",
-    "warp-contracts": "1.4.1"
+    "warp-contracts": "1.4.3-beta.0"
   }
 }
