@@ -1,7 +1,7 @@
 {
   "name": "warp-contracts-plugin-vrf",
   "version": "1.0.0-beta.2",
-  "description": "A subscription plugin for warp contracts",
+  "description": "A Verifiable Random Function plugin for warp contracts",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
   "exports": {
