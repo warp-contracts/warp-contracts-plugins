@@ -3693,6 +3693,16 @@ arweave-stream-tx@^1.1.0:
   dependencies:
     exponential-backoff "^3.1.0"
 
+arweave@1.13.7, arweave@^1.10.5, arweave@^1.11.4:
+  version "1.13.7"
+  resolved "https://registry.yarnpkg.com/arweave/-/arweave-1.13.7.tgz#cda8534c833baec372a7052c61f53b4e39a886d7"
+  integrity sha512-Hv+x2bSI6UyBHpuVbUDMMpMje1ETfpJWj52kKfz44O0IqDRi/LukOkkDUptup1p6OT6KP1/DdpnUnsNHoskFeA==
+  dependencies:
+    arconnect "^0.4.2"
+    asn1.js "^5.4.1"
+    base64-js "^1.5.1"
+    bignumber.js "^9.0.2"
+
 arweave@^1.10.13:
   version "1.11.7"
   resolved "https://registry.yarnpkg.com/arweave/-/arweave-1.11.7.tgz#41266e2ad98e9d3fe19ccc781f6d6259c5724455"
@@ -3704,16 +3714,6 @@ arweave@^1.10.13:
     base64-js "^1.5.1"
     bignumber.js "^9.0.2"
     util "^0.12.4"
-
-arweave@^1.10.5, arweave@^1.11.4:
-  version "1.13.7"
-  resolved "https://registry.yarnpkg.com/arweave/-/arweave-1.13.7.tgz#cda8534c833baec372a7052c61f53b4e39a886d7"
-  integrity sha512-Hv+x2bSI6UyBHpuVbUDMMpMje1ETfpJWj52kKfz44O0IqDRi/LukOkkDUptup1p6OT6KP1/DdpnUnsNHoskFeA==
-  dependencies:
-    arconnect "^0.4.2"
-    asn1.js "^5.4.1"
-    base64-js "^1.5.1"
-    bignumber.js "^9.0.2"
 
 arweave@^1.12.4:
   version "1.13.0"
@@ -9810,13 +9810,13 @@ warp-contracts-pubsub@^1.0.3:
     "@aws-amplify/api" "^4.0.61"
     "@aws-amplify/core" "4.7.12"
 
-warp-contracts@1.4.3-beta.0:
-  version "1.4.3-beta.0"
-  resolved "https://registry.yarnpkg.com/warp-contracts/-/warp-contracts-1.4.3-beta.0.tgz#6b8883d5d4dfae906c3f145bd4086ca37b08e19e"
-  integrity sha512-adgKBePMpJGk3CMxUTw6VNumfQyOy7G6Yudo6B8kE22Q6ewbxES14NfBNhZr8vviyd6DWMZfq19h7wZ8Rt3x6g==
+warp-contracts@1.4.5-beta.0:
+  version "1.4.5-beta.0"
+  resolved "https://registry.yarnpkg.com/warp-contracts/-/warp-contracts-1.4.5-beta.0.tgz#5147d869f63d8ed798c0bc20808fdc74ceec70d4"
+  integrity sha512-RdML/R8DTyvWs+eDbA0MfyqptnOIMGbZOcO/3rHjyIIteVPf053vCiw5erlJ1BXMFmGRefuCNN8QYCwLBbdb9Q==
   dependencies:
     archiver "^5.3.0"
-    arweave "^1.12.4"
+    arweave "1.13.7"
     async-mutex "^0.4.0"
     bignumber.js "9.1.1"
     events "3.3.0"
