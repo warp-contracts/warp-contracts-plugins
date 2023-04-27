@@ -56,9 +56,8 @@ export class SourceImpl implements Source {
 
     const contractType: ContractType = src instanceof Buffer ? 'wasm' : 'js';
     if (contractType == 'js' && !checkJsSrc(sourceData.src as string, this.logger)) {
-      throw new Error("JS contract source does not contain properly exported \"handle\" function");
+      throw new Error('JS contract source does not contain properly exported "handle" function');
     }
-
 
     let wasmData: Buffer = null;
     let srcWasmTags = [];
