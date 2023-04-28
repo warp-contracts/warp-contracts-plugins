@@ -126,25 +126,29 @@ export class CreateContractImpl implements CreateContract {
   }
 
   async deployBundled(rawDataItem: Buffer): Promise<ContractDeploy> {
-    return await getJsonResponse(fetch(`${this.warp.gwUrl()}/gateway/contracts/deploy-bundled`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/octet-stream',
-        Accept: 'application/json'
-      },
-      body: rawDataItem
-    }));
+    return await getJsonResponse(
+      fetch(`${this.warp.gwUrl()}/gateway/contracts/deploy-bundled`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          Accept: 'application/json'
+        },
+        body: rawDataItem
+      })
+    );
   }
 
   async register(id: string, bundlrNode: BundlrNodeType): Promise<ContractDeploy> {
-    return await getJsonResponse(fetch(`${this.warp.gwUrl()}/gateway/contracts/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({id, bundlrNode})
-    }));
+    return await getJsonResponse(
+      fetch(`${this.warp.gwUrl()}/gateway/contracts/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({ id, bundlrNode })
+      })
+    );
   }
 
   async createSource(
@@ -170,15 +174,17 @@ export class CreateContractImpl implements CreateContract {
       };
     }
 
-    return await getJsonResponse(this.warpFetchWrapper.fetch(`${this.warp.gwUrl()}/gateway/v2/contracts/deploy`, {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: {
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      }
-    }));
+    return await getJsonResponse(
+      this.warpFetchWrapper.fetch(`${this.warp.gwUrl()}/gateway/v2/contracts/deploy`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      })
+    );
   }
 
   private async deployContractArweave(

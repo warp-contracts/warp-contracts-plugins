@@ -134,14 +134,16 @@ export class SourceImpl implements Source {
   }
 
   private async postSource(srcDataItem: Buffer): Promise<any> {
-    return await getJsonResponse(fetch(`${this.warp.gwUrl()}/gateway/v2/sources/deploy`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/octet-stream',
-        Accept: 'application/json'
-      },
-      body: srcDataItem
-    }));
+    return await getJsonResponse(
+      fetch(`${this.warp.gwUrl()}/gateway/v2/sources/deploy`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          Accept: 'application/json'
+        },
+        body: srcDataItem
+      })
+    );
   }
 
   private async createSourceArweave(
