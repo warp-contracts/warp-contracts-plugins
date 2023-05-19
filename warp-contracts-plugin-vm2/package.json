@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-plugin-vm2",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A VM2 plugin for warp contracts",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
@@ -35,7 +35,7 @@
   ],
   "dependencies": {
     "bignumber.js": "^9.1.1",
-    "vm2": "^3.9.16"
+    "vm2": "^3.9.19"
   },
   "devDependencies": {
     "@types/jest": "*",
