@@ -5,7 +5,7 @@
     "target": "es2019",
     "module": "commonjs",
     "types": ["node"],
-    "moduleResolution": "nodenext",
+    "moduleResolution": "Node",
     "sourceMap": true,
     "skipLibCheck": true,
     "isolatedModules": false,

@@ -1,20 +1,24 @@
 {
   "name": "warp-contracts-plugin-signature",
   "version": "1.0.12",
-  "main": "./build/web/index.js",
+  "main": "./build/server/index.js",
   "exports": {
-    "./server": "./build/server/index.js",
-    ".": "./build/web/index.js"
+    ".": "./build/server/index.js",
+    "./web": "./bundles/web.bundle.min.js"
+  },
+  "browser": {
+    "./build/server/index.js": "./bundles/web.bundle.min.js"
   },
   "license": "MIT",
   "scripts": {
+    "bundle:web": "node bundle.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prettier:format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "compile:web": "tsc -p tsconfig.web.json",
     "compile:server": "tsc -p tsconfig.server.json",
     "prepublishOnly": "yarn lint:fix",
-    "build": "yarn compile:web && yarn compile:server"
+    "build": "yarn compile:server && yarn bundle:web"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.0.0",
@@ -26,15 +30,13 @@
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-prettier": "^3.4.1",
     "eslint-plugin-promise": "^6.0.0",
+    "node-stdlib-browser": "^1.2.0",
     "prettier": "^2.7.1",
     "typescript": "*"
   },
   "dependencies": {
-    "@metamask/onboarding": "^1.0.1",
-    "@metamask/providers": "^10.0.0",
-    "arweave": "^1.12.4",
-    "ethers": "^5.7.2",
-    "safe-stable-stringify": "^2.4.1"
+    "arbundles": "^0.9.8",
+    "arweave": "^1.13.1"
   },
   "peerDependencies": {
     "warp-contracts": "1.3.x"
@@ -43,7 +45,8 @@
     "node": ">=16.5"
   },
   "files": [
-    "build/"
+    "build/",
+    "bundles/"
   ],
   "bugs": {
     "url": "https://github.com/warp-contracts/evm-signatures/issues"
