@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-plugin-signature",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "main": "./build/server/index.js",
   "exports": {
     ".": "./build/server/index.js",
