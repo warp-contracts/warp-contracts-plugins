@@ -8,11 +8,9 @@ import {
   ContractDeploy,
   CreateContract,
   CustomSignature,
-  DataItem,
   FromSrcTxContractData,
   LoggerFactory,
   Signature,
-  BundlerSigner,
   SourceData,
   Transaction,
   Warp,
@@ -23,7 +21,7 @@ import {
   Tag,
   getJsonResponse
 } from 'warp-contracts';
-import { createData } from 'arbundles';
+import { createData, Signer, DataItem } from 'warp-arbundles';
 import { isSigner } from '../../deploy/utils';
 
 export class CreateContractImpl implements CreateContract {
@@ -55,9 +53,10 @@ export class CreateContractImpl implements CreateContract {
 
     this.logger.debug('Creating new contract');
 
+    const srcTxId = await srcTx.id;
     return await this.deployFromSourceTx(
       {
-        srcTxId: srcTx.id,
+        srcTxId,
         wallet,
         initState,
         tags,
@@ -116,8 +115,9 @@ export class CreateContractImpl implements CreateContract {
       ({ contract, responseOk } = await this.deployContractBundlr(contractData, contractTags, srcTx));
     }
 
+    const contractTxId = await contract.id;
     if (responseOk) {
-      return { contractTxId: contract.id, srcTxId };
+      return { contractTxId, srcTxId };
     } else {
       throw new Error(
         `Unable to write Contract. Arweave responded with status ${response.status}: ${response.statusText}`
@@ -153,7 +153,7 @@ export class CreateContractImpl implements CreateContract {
 
   async createSource(
     sourceData: SourceData,
-    wallet: ArWallet | CustomSignature | BundlerSigner,
+    wallet: ArWallet | CustomSignature | Signer,
     disableBundling: boolean = false
   ): Promise<Transaction | DataItem> {
     return this.source.createSource(sourceData, wallet, disableBundling);
@@ -265,11 +265,11 @@ export class CreateContractImpl implements CreateContract {
 
     let contract: DataItem;
 
-    if (isBrowser() && (wallet as BundlerSigner).signer && (wallet as BundlerSigner).signer.signDataItem) {
-      contract = await (wallet as BundlerSigner).signDataItem(data?.body || initState, contractDataItemTags);
+    if (isBrowser() && (wallet as Signer).signer && (wallet as Signer).signer.signDataItem) {
+      contract = await (wallet as Signer).signDataItem(data?.body || initState, contractDataItemTags);
     } else {
-      contract = createData(data?.body || initState, wallet as BundlerSigner, { tags: contractDataItemTags });
-      await contract.sign(wallet as BundlerSigner);
+      contract = createData(data?.body || initState, wallet as Signer, { tags: contractDataItemTags });
+      await contract.sign(wallet as Signer);
     }
 
     await this.postContract(contract.getRaw(), src?.getRaw());
