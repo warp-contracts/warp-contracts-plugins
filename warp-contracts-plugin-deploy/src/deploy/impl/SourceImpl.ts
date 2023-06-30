@@ -10,8 +10,6 @@ import {
   TagsParser,
   Source,
   SourceData,
-  BundlerSigner,
-  DataItem,
   Transaction,
   SMART_WEAVE_TAGS,
   WARP_TAGS,
@@ -20,9 +18,10 @@ import {
   getJsonResponse,
   checkJsSrc
 } from 'warp-contracts';
-import { createData } from 'arbundles';
+import { createData } from 'warp-arbundles';
 import { isDataItem, isSigner } from '../../deploy/utils';
 import { WasmHandler } from '../../deploy/wasm/WasmHandler';
+import { DataItem, Signer } from 'warp-arbundles';
 
 export class SourceImpl implements Source {
   private readonly logger = LoggerFactory.INST.create('Source');
@@ -32,7 +31,7 @@ export class SourceImpl implements Source {
 
   async createSource(
     sourceData: SourceData,
-    wallet: ArWallet | CustomSignature | BundlerSigner,
+    wallet: ArWallet | CustomSignature | Signer,
     disableBundling: boolean = false
   ): Promise<DataItem | Transaction> {
     this.logger.debug('Creating new contract source');
@@ -86,7 +85,7 @@ export class SourceImpl implements Source {
         contractType
       );
     } else {
-      return await this.createSourceBundlr(wallet as BundlerSigner, srcTags, srcWasmTags, contractType, allData);
+      return await this.createSourceBundlr(wallet as Signer, srcTags, srcWasmTags, contractType, allData);
     }
   }
 
@@ -178,7 +177,7 @@ export class SourceImpl implements Source {
   }
 
   private async createSourceBundlr(
-    wallet: BundlerSigner,
+    wallet: Signer,
     srcTags: Tag[],
     srcWasmTags: Tag[],
     contractType: string,
