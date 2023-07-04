@@ -1,0 +1,13 @@
+{
+  "logo": "yNmrTqFZ7XpcD_YSE_QFzYD1t5eqo8mGbGHGq4CVzds",
+  "name": "tar test token",
+  "owner": "jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M",
+  "symbol": "TTAR",
+  "balances": {
+    "jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M": 10000000000000
+  },
+  "decimals": 5,
+  "allowances": {},
+  "description": "test token",
+  "totalSupply": 10000000000000
+}
