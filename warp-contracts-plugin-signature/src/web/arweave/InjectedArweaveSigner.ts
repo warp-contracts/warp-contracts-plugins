@@ -1,6 +1,6 @@
 import Arweave from 'arweave';
 import base64url from 'base64url';
-import { Signer, SIG_CONFIG, SignatureConfig, Tag, DataItem } from 'arbundles';
+import { Signer, SIG_CONFIG, SignatureConfig, Tag, DataItem } from 'arbundles/build/web/cjs/webIndex';
 import { Buffer } from 'buffer';
 
 export class InjectedArweaveSigner implements Signer {
