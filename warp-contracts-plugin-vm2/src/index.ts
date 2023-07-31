@@ -13,6 +13,19 @@ import * as vm2 from 'vm2';
 // https://github.com/evanw/esbuild/issues/1950
 // eslint-disable-next-line
 const BigNumber = require('bignumber.js');
+function WeakMapError() {
+  this.init = function () {
+    throw new Error('WeakMap is blocked due to non-deterministic results.');
+  };
+  this.init();
+}
+
+function WeakRefError() {
+  this.init = function () {
+    throw new Error('WeakRef is blocked due to non-deterministic results.');
+  };
+  this.init();
+}
 
 export class VM2Plugin<State> implements WarpPlugin<VM2PluginInput, HandlerApi<State>> {
   process(input: VM2PluginInput): HandlerApi<State> {
@@ -32,6 +45,7 @@ export class VM2Plugin<State> implements WarpPlugin<VM2PluginInput, HandlerApi<S
       BigUint64Array: BigUint64Array,
       TextEncoder: TextEncoder
     };
+
     const vm = new vm2.NodeVM({
       console: 'off',
       sandbox: {
@@ -43,7 +57,60 @@ export class VM2Plugin<State> implements WarpPlugin<VM2PluginInput, HandlerApi<S
           if (!cond) throw new ContractError(message);
         },
         //https://github.com/patriksimek/vm2/issues/484#issuecomment-1327479592
-        ...typedArrays
+        ...typedArrays,
+        Math: (function (OriginalMath) {
+          const Math = Object.create(OriginalMath);
+
+          Math.random = () => {
+            throw new Error('test');
+          };
+
+          return Math;
+        })(Math),
+        Date: (function (OriginalDate) {
+          function Date(year, month, day, hours, minutes, seconds, ms) {
+            let date;
+
+            switch (arguments.length) {
+              case 0:
+                throw new Error('Date.now is blocked due to non-deterministic results.');
+
+              case 1:
+                date = new OriginalDate(year);
+                break;
+
+              default:
+                day = day || 1;
+                hours = hours || 0;
+                minutes = minutes || 0;
+                seconds = seconds || 0;
+                ms = ms || 0;
+                date = new OriginalDate(year, month, day, hours, minutes, seconds, ms);
+                break;
+            }
+
+            return date;
+          }
+
+          Date.parse = OriginalDate.parse;
+          Date.UTC = OriginalDate.UTC;
+          Date.toString = OriginalDate.toString;
+          Date.prototype = OriginalDate.prototype;
+
+          Date.now = function () {
+            throw new Error('Date.now is blocked due to non-deterministic results.');
+          };
+
+          return Date;
+        })(Date),
+        setTimeout: () => {
+          throw new Error('setTimeout is blocked due to non-deterministic results.');
+        },
+        setInterval: () => {
+          throw new Error('setInterval is blocked due to non-deterministic results.');
+        },
+        WeakMap: WeakMapError,
+        WeakRef: WeakRefError
       },
       compiler: 'javascript',
       eval: false,
