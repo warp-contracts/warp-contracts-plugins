@@ -1,1 +1,1 @@
-export { ArweaveSigner } from 'arbundles/src/signing';
+export { ArweaveSigner } from 'arbundles';

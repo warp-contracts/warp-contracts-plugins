@@ -1,5 +1,5 @@
-import { Signer } from 'arbundles/src/signing';
-import { SignatureConfig, SIG_CONFIG } from 'arbundles/src/constants';
+import { Signer } from 'arbundles';
+import { SignatureConfig, SIG_CONFIG } from 'arbundles';
 import Arweave from 'arweave';
 import base64url from 'base64url';
 import { DataItem } from 'arbundles';
