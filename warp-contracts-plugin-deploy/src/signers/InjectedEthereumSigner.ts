@@ -1,1 +1,1 @@
-export { InjectedEthereumSigner } from 'arbundles/src/signing';
+export { InjectedEthereumSigner } from 'arbundles';
