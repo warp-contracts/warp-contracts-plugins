@@ -44,27 +44,17 @@ export class InjectedArweaveSigner implements Signer {
 
   async signDataItem(data: string | Buffer, tags: Tag[]): Promise<DataItem> {
     if (!this.publicKey) {
-      console.log('test3');
       await this.setPublicKey();
     }
 
-    console.log(data);
-    console.log(tags);
-
-    console.log('signer', this.signer);
     const bufData = await this.signer.signDataItem({
       data,
       tags
     });
 
-    console.log('bufData', bufData);
-
     const buf = Buffer.from(bufData);
 
-    console.log(buf);
-
     const dataI = new DataItem(buf);
-    console.log(dataI);
     return dataI;
   }
 
