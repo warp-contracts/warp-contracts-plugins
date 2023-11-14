@@ -2,8 +2,8 @@
 import { SourceImpl } from './SourceImpl';
 import {
   ArWallet,
-  BundlrNodeType,
-  BUNDLR_NODES,
+  RegisterProviderType,
+  REGISTER_PROVIDER,
   ContractData,
   ContractDeploy,
   CreateContract,
@@ -138,7 +138,7 @@ export class CreateContractImpl implements CreateContract {
     );
   }
 
-  async register(id: string, bundlrNode: BundlrNodeType): Promise<ContractDeploy> {
+  async register(id: string, registerProvider: RegisterProviderType): Promise<ContractDeploy> {
     return await getJsonResponse(
       fetch(`${this.warp.gwUrl()}/gateway/contracts/register`, {
         method: 'POST',
@@ -146,7 +146,7 @@ export class CreateContractImpl implements CreateContract {
           'Content-Type': 'application/json',
           Accept: 'application/json'
         },
-        body: JSON.stringify({ id, bundlrNode })
+        body: JSON.stringify({ id, registerProvider })
       })
     );
   }
@@ -276,7 +276,7 @@ export class CreateContractImpl implements CreateContract {
     return { contract, responseOk: true };
   }
 
-  isBundlrNodeType(value: string): value is BundlrNodeType {
-    return BUNDLR_NODES.includes(value as BundlrNodeType);
+  isRegisterProviderType(value: string): value is RegisterProviderType {
+    return REGISTER_PROVIDER.includes(value as RegisterProviderType);
   }
 }

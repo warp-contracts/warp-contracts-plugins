@@ -6,12 +6,14 @@ import { DataItem } from 'arbundles';
 import { Tag } from 'warp-contracts';
 
 export class InjectedArweaveSigner implements Signer {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public signer: any;
   public publicKey: Buffer;
   readonly ownerLength: number = SIG_CONFIG[SignatureConfig.ARWEAVE].pubLength;
   readonly signatureLength: number = SIG_CONFIG[SignatureConfig.ARWEAVE].sigLength;
   readonly signatureType: SignatureConfig = SignatureConfig.ARWEAVE;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(windowArweaveWallet: any) {
     this.signer = windowArweaveWallet;
   }
