@@ -11,7 +11,6 @@
     "outDir": "./lib/cjs",
     "isolatedModules": true,
     "esModuleInterop": true,
-    "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "baseUrl": "./src",

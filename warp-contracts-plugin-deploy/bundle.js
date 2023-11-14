@@ -1,12 +1,10 @@
 const { build } = require('esbuild');
-const rimraf = require('rimraf');
+const {rimraf} = require('rimraf');
 const plugin = require('node-stdlib-browser/helpers/esbuild/plugin');
 const stdLibBrowser = require('node-stdlib-browser');
 
 const clean = async () => {
-  return new Promise((resolve) => {
-    rimraf('./bundles', () => resolve());
-  });
+  return await rimraf('./bundles');
 };
 
 const runBuild = async () => {
