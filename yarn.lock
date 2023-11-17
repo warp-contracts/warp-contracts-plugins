@@ -10322,10 +10322,10 @@ warp-contracts-pubsub@^1.0.3:
     isomorphic-ws "^5.0.0"
     ws "^8.11.0"
 
-warp-contracts@1.4.23:
-  version "1.4.23"
-  resolved "https://registry.yarnpkg.com/warp-contracts/-/warp-contracts-1.4.23.tgz#173606867b4286f87ab4dcc784ae031d32166155"
-  integrity sha512-1Lm/nC3B+ul3rCd6oDECvyKL5vMFNKUSmoRa21PMK7OKUgWhvNyEzdqTbwY1yW+TyDGv2FDaFgcYrBf1uSUAAQ==
+warp-contracts@1.4.24:
+  version "1.4.24"
+  resolved "https://registry.yarnpkg.com/warp-contracts/-/warp-contracts-1.4.24.tgz#9175561b5fd85cc6ef0368c67ad3f9ae6e046b56"
+  integrity sha512-Zn6A8Dg6bNckExbErt5ECa5ZnzXOaSqtk6wc3bKz1h568eo3EUzpchFrhUBVZeV25IlNDs0Cit6987QZM2QOsg==
   dependencies:
     archiver "^5.3.0"
     arweave "1.13.7"
