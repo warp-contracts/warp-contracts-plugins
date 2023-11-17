@@ -16,7 +16,8 @@ import {
   isBrowser,
   Tag,
   getJsonResponse,
-  checkJsSrc
+  checkJsSrc,
+  Tags
 } from 'warp-contracts';
 import { createData } from 'warp-arbundles';
 import { isDataItem, isSigner } from '../../deploy/utils';
@@ -36,7 +37,9 @@ export class SourceImpl implements Source {
   ): Promise<DataItem | Transaction> {
     this.logger.debug('Creating new contract source');
 
-    const { src, wasmSrcCodeDir, wasmGlueCode } = sourceData;
+    const { src, wasmSrcCodeDir, wasmGlueCode, tags } = sourceData;
+
+    const effectiveTags = tags || [];
 
     if (this.warp.environment == 'local') {
       disableBundling = true;
@@ -68,13 +71,13 @@ export class SourceImpl implements Source {
 
     const allData = contractType == 'wasm' ? wasmData : src;
 
-    const srcTags = [
+    const srcTags = effectiveTags.concat([
       new Tag(SMART_WEAVE_TAGS.APP_NAME, 'SmartWeaveContractSource'),
       new Tag(SMART_WEAVE_TAGS.APP_VERSION, '0.3.0'),
       new Tag(SMART_WEAVE_TAGS.SDK, 'Warp'),
       new Tag(WARP_TAGS.NONCE, Date.now().toString()),
       new Tag(SMART_WEAVE_TAGS.CONTENT_TYPE, contractType == 'js' ? 'application/javascript' : 'application/wasm')
-    ];
+    ]);
 
     if (disableBundling) {
       return this.createSourceArweave(
@@ -148,8 +151,8 @@ export class SourceImpl implements Source {
   private async createSourceArweave(
     wallet: ArWallet | CustomSignature,
     data: string | Buffer,
-    srcTags: { name: string; value: string }[],
-    srcWasmTags: { name: string; value: string }[],
+    srcTags: Tags,
+    srcWasmTags: Tags,
     contractType: string
   ): Promise<Transaction> {
     this.signature = new Signature(this.warp, wallet as ArWallet | CustomSignature);
@@ -178,8 +181,8 @@ export class SourceImpl implements Source {
 
   private async createSourceBundlr(
     wallet: Signer,
-    srcTags: Tag[],
-    srcWasmTags: Tag[],
+    srcTags: Tags,
+    srcWasmTags: Tags,
     contractType: string,
     data: string | Buffer
   ): Promise<DataItem> {
