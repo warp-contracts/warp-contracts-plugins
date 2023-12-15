@@ -1,21 +1,27 @@
 {
   "name": "warp-contracts-plugin-signature",
-  "version": "1.0.16",
+  "version": "1.0.18",
   "main": "./bundles/web.bundle.min.js",
   "exports": {
-    ".": "./bundles/web.bundle.min.js",
-    "./server": "./build/server/index.js"
+    ".": {
+      "import": "./bundles/web.bundle.min.js",
+      "types": "./lib/types/web/index.d.ts"
+    },
+    "./server": {
+      "import": "./lib/cjs/server/index.js",
+      "types": "./lib/types/server/index.d.ts"
+    }
   },
   "license": "MIT",
   "scripts": {
     "bundle:web": "node bundle.js",
+    "compile:types": "tsc -b tsconfig.types.json",
+    "build": "yarn run clean && tsc -b tsconfig.json && yarn compile:types && yarn bundle:web",
+    "clean": "rimraf ./lib",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prettier:format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "compile:web": "tsc -p tsconfig.web.json",
-    "compile:server": "tsc -p tsconfig.server.json",
-    "prepublishOnly": "yarn lint:fix",
-    "build": "yarn compile:server && yarn bundle:web"
+    "prepublishOnly": "yarn lint:fix"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.0.0",
@@ -43,7 +49,8 @@
   },
   "files": [
     "build/",
-    "bundles/"
+    "bundles/",
+    "lib/"
   ],
   "bugs": {
     "url": "https://github.com/warp-contracts/evm-signatures/issues"
