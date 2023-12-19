@@ -62,7 +62,7 @@ export class VM2Plugin<State> implements WarpPlugin<VM2PluginInput, HandlerApi<S
           const Math = Object.create(OriginalMath);
 
           Math.random = () => {
-            throw new Error('test');
+            throw new Error('Math.random is blocked due to non-deterministic results.');
           };
 
           return Math;
@@ -73,7 +73,8 @@ export class VM2Plugin<State> implements WarpPlugin<VM2PluginInput, HandlerApi<S
 
             switch (arguments.length) {
               case 0:
-                throw new Error('Date.now is blocked due to non-deterministic results.');
+                date = new OriginalDate(swGlobal.block.timestamp * 1000);
+                break;
 
               case 1:
                 date = new OriginalDate(year);
@@ -98,7 +99,7 @@ export class VM2Plugin<State> implements WarpPlugin<VM2PluginInput, HandlerApi<S
           Date.prototype = OriginalDate.prototype;
 
           Date.now = function () {
-            throw new Error('Date.now is blocked due to non-deterministic results.');
+            return swGlobal.block.timestamp * 1000;
           };
 
           return Date;
