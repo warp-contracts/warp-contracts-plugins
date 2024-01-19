@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-plugin-deploy",
-  "version": "1.0.13-beta.0",
+  "version": "1.0.13-beta.1",
   "description": "A deploy plugin for warp contracts",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.js",
@@ -8,7 +8,11 @@
     "./lib/cjs/index.js": "./bundles/web.bundle.min.js"
   },
   "exports": {
-    ".": "./lib/cjs/index.js",
+    ".": {
+      "import": "./lib/cjs/index.js",
+      "require": "./lib/cjs/index.js",
+      "types": "./lib/types/index.d.ts"
+    },
     "./web": "./bundles/web.bundle.min.js"
   },
   "sideEffects": false,
@@ -42,6 +46,7 @@
   ],
   "dependencies": {
     "arbundles": "^0.10.0",
+    "node-pre-gyp": "^0.17.0",
     "node-stdlib-browser": "^1.2.0"
   },
   "peerDependencies": {
