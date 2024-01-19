@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-plugin-signature",
-  "version": "1.0.19",
+  "version": "1.0.20-beta.0",
   "main": "./bundles/web.bundle.min.js",
   "exports": {
     ".": {
@@ -9,6 +9,7 @@
     },
     "./server": {
       "import": "./lib/cjs/server/index.js",
+      "require": "./lib/cjs/server/index.js",
       "types": "./lib/types/server/index.d.ts"
     }
   },
@@ -38,6 +39,8 @@
     "typescript": "*"
   },
   "dependencies": {
+    "@ethersproject/transactions": "^5.7.0",
+    "@ethersproject/wallet": "^5.7.0",
     "arbundles": "^0.9.8",
     "arweave": "^1.13.1"
   },
