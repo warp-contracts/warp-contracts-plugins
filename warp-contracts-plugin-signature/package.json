@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-plugin-signature",
-  "version": "1.0.20-beta.0",
+  "version": "1.0.20",
   "main": "./bundles/web.bundle.min.js",
   "exports": {
     ".": {
