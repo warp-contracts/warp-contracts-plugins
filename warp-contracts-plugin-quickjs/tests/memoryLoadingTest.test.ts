@@ -258,6 +258,7 @@ describe('Loading QuickJS WASM memory', () => {
     // console.log(result.Memory.byteLength);
     // fs.writeFileSync('testwasm.dat', result.Memory);
     const test = fs.readFileSync('testwasm.dat');
+    console.log('after loading test')
     const quickJs2 = await quickJSPlugin.process({
       contractSource,
       evaluationOptions: new DefaultEvaluationOptions(),

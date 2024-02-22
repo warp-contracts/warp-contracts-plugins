@@ -573,11 +573,6 @@
     "@types/yargs" "^17.0.8"
     chalk "^4.0.0"
 
-"@jitl/quickjs-ffi-types@0.27.0":
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/@jitl/quickjs-ffi-types/-/quickjs-ffi-types-0.27.0.tgz#a861ca8c2a4e1e3cb4980f8badc36ba7755d080f"
-  integrity sha512-MWO0SgqjdisTkhm4h/dT2roTXqNdoJvi6THgizPP1tpzOxEmhI9qbQX7C26MDZFoj4rG/9Scqnt82ZWmB/GY3g==
-
 "@jitl/quickjs-ffi-types@0.28.0":
   version "0.28.0"
   resolved "https://registry.yarnpkg.com/@jitl/quickjs-ffi-types/-/quickjs-ffi-types-0.28.0.tgz#51600ff6ec5efe06507ee637daec33f17a043947"
@@ -590,33 +585,33 @@
   dependencies:
     "@jitl/quickjs-ffi-types" "0.28.0"
 
-"@jitl/quickjs-wasmfile-debug-asyncify@0.27.0":
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-debug-asyncify/-/quickjs-wasmfile-debug-asyncify-0.27.0.tgz#296d7de54dafac5bdf3e12449de1575a405eeefd"
-  integrity sha512-btcmw95wTdHiLTNdys2v50ooZXJ4iRvjntmbEwXFJgCydno+hBOK6C5YD5kmNi9Ya7pQbV0oj3MNA0BHCC3YEA==
+"@jitl/quickjs-wasmfile-debug-asyncify@0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-debug-asyncify/-/quickjs-wasmfile-debug-asyncify-0.28.0.tgz#498ab54a0606603e0322358f89acb21d0365cf64"
+  integrity sha512-8CtMcr1BTCJZR4NaokUNsRVyJewHRk6iu6WfvGoK+iz4cRVot0U2QmI0dQekjKHkKEUn58YFQ2dxPqYYOfEKgA==
   dependencies:
-    "@jitl/quickjs-ffi-types" "0.27.0"
+    "@jitl/quickjs-ffi-types" "0.28.0"
 
-"@jitl/quickjs-wasmfile-debug-sync@0.27.0":
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-debug-sync/-/quickjs-wasmfile-debug-sync-0.27.0.tgz#540052b2efc641bc13828a128532146f836305e4"
-  integrity sha512-EDLx4l2yBxW/TuYeJl1jNhUUg0NarBRqk8XZr47u55oqAYf7Xm47MTDBwRkPGFOv9V8oNQWe0bsDNwEmXOKxaw==
+"@jitl/quickjs-wasmfile-debug-sync@0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-debug-sync/-/quickjs-wasmfile-debug-sync-0.28.0.tgz#dd5580530be1ae2779ba0f86aeed65cdfd1582ce"
+  integrity sha512-cQ+3lVymPRFAzdPi1GmjSrgRfOj+vlILx06aAD42hd7SpbhtNOUthpocxv4HkkpHeU/pj7nLOC1JjHj/4ODLbQ==
   dependencies:
-    "@jitl/quickjs-ffi-types" "0.27.0"
+    "@jitl/quickjs-ffi-types" "0.28.0"
 
-"@jitl/quickjs-wasmfile-release-asyncify@0.27.0":
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-release-asyncify/-/quickjs-wasmfile-release-asyncify-0.27.0.tgz#2e2c901cd6e3363e5aa7e1e096b3c3e34ca3fb11"
-  integrity sha512-q0EOPDegItxm7Yb/LN1W7pg7jdB5gQzdXNgWu9T3zaV/qgdCj2AFaOSvu9TUimTw0GakNe61Kb0hjxwcb2vPsQ==
+"@jitl/quickjs-wasmfile-release-asyncify@0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-release-asyncify/-/quickjs-wasmfile-release-asyncify-0.28.0.tgz#c6747251221dbc1472bdea4f2433f366cd08c49b"
+  integrity sha512-OwIyGEOPvxS7takf0htokBdb0AZrFpUrGP+/hb2on+EBHczkO8/cwymczQIQsaxiz5FHxwNagdWYK6dnf2OL2w==
   dependencies:
-    "@jitl/quickjs-ffi-types" "0.27.0"
+    "@jitl/quickjs-ffi-types" "0.28.0"
 
-"@jitl/quickjs-wasmfile-release-sync@0.27.0":
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-release-sync/-/quickjs-wasmfile-release-sync-0.27.0.tgz#396f60c61ed21f72cfbc0e56ce4a57cc7110fb11"
-  integrity sha512-8YxCA85he2ZXE83W2r7sHGgNr/A6bA58xhwltpv94EvD060UbQJz6WzKeFrHj+nwyTDsQ/eJNUT1wflneiUFHw==
+"@jitl/quickjs-wasmfile-release-sync@0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@jitl/quickjs-wasmfile-release-sync/-/quickjs-wasmfile-release-sync-0.28.0.tgz#93a0c087d2eb56149fe4d30a2463208ac22a488e"
+  integrity sha512-gsPVQj7PNs2h+f7M8KTPxVsvxHTh8QoYSGRqTcIbr9NSKLG6k1h5Aaj5TEcVOGuqxgVXz0vI6Z4BCWZZGSVm5w==
   dependencies:
-    "@jitl/quickjs-ffi-types" "0.27.0"
+    "@jitl/quickjs-ffi-types" "0.28.0"
 
 "@jridgewell/gen-mapping@^0.3.0", "@jridgewell/gen-mapping@^0.3.2":
   version "0.3.3"
@@ -2920,23 +2915,23 @@ queue-microtask@^1.2.2, queue-microtask@^1.2.3:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-quickjs-emscripten-core@0.27.0:
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/quickjs-emscripten-core/-/quickjs-emscripten-core-0.27.0.tgz#745a051ea5d57e128152201d547a0f4e7ce690dd"
-  integrity sha512-rjxkeWBcwAVav8vR0o+ome+LDI8+v5pY93PZpBXS+1vf5Z8mN0mOR7t2YHDDxhc5b/albeF9FpDZDytoXh0RJQ==
+quickjs-emscripten-core@0.28.0:
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/quickjs-emscripten-core/-/quickjs-emscripten-core-0.28.0.tgz#a14b8a67effc4731bdf0e5e0cc9177a189361679"
+  integrity sha512-4s+QvWerzum9MJdkaID7HKAujanTOE0DfpOOUJ8XIHJVO4fQdj5GOg6vjSNOcvpySBVM8E4qD3e28E+lDAuoYw==
   dependencies:
-    "@jitl/quickjs-ffi-types" "0.27.0"
+    "@jitl/quickjs-ffi-types" "0.28.0"
 
-quickjs-emscripten@^0.27.0:
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/quickjs-emscripten/-/quickjs-emscripten-0.27.0.tgz#976963948c6963edd5fcc1240f074d6068515fe1"
-  integrity sha512-FkCQYaOmuQcxalg1SD+CjZ7+YCcQAVNeVakXlWmBXfQWrHK0tewKOg7rIS1cFUAlLJLOfoKRJfAjlHomjj8vxQ==
+quickjs-emscripten@^0.28.0:
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/quickjs-emscripten/-/quickjs-emscripten-0.28.0.tgz#88d7aae76209c792230a887b3e8f45cae88f26ce"
+  integrity sha512-VdM+p1FYgmC4b9NU8bPkjL0b1hTBwX/xU8AwMv36om0GxcndXmbiuFOZbGPzJT+Ij2W1JChztKrMiX/5yq2AAQ==
   dependencies:
-    "@jitl/quickjs-wasmfile-debug-asyncify" "0.27.0"
-    "@jitl/quickjs-wasmfile-debug-sync" "0.27.0"
-    "@jitl/quickjs-wasmfile-release-asyncify" "0.27.0"
-    "@jitl/quickjs-wasmfile-release-sync" "0.27.0"
-    quickjs-emscripten-core "0.27.0"
+    "@jitl/quickjs-wasmfile-debug-asyncify" "0.28.0"
+    "@jitl/quickjs-wasmfile-debug-sync" "0.28.0"
+    "@jitl/quickjs-wasmfile-release-asyncify" "0.28.0"
+    "@jitl/quickjs-wasmfile-release-sync" "0.28.0"
+    quickjs-emscripten-core "0.28.0"
 
 react-is@^18.0.0:
   version "18.2.0"
@@ -3396,8 +3391,10 @@ warp-arbundles@^1.0.4:
     buffer "^6.0.3"
     warp-isomorphic "^1.0.7"
 
-"warp-contracts@file:.yalc/warp-contracts":
-  version "1.4.33"
+warp-contracts@1.4.36-ao.0:
+  version "1.4.36-ao.0"
+  resolved "https://registry.yarnpkg.com/warp-contracts/-/warp-contracts-1.4.36-ao.0.tgz#84e0ec12d0f5571ccbf2a20261a3bf2acda57388"
+  integrity sha512-U4QPiRdB+JfAo4L+8dXME18qddGGFNY3dzH8FBiKTLR/033MGkgh/WaFzlYl6/Y5QBOJMV2XSx/2vAn+12Jv3w==
   dependencies:
     archiver "^5.3.0"
     arweave "1.13.7"

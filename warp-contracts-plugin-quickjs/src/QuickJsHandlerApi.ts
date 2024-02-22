@@ -1,4 +1,4 @@
-import { QuickJSContext, QuickJSHandle, QuickJSRuntime, QuickJSWASMModule } from 'quickjs-emscripten';
+import { QuickJSContext, QuickJSHandle, QuickJSRuntime, QuickJSWASMModule, RELEASE_SYNC } from 'quickjs-emscripten';
 import {
   AbstractContractHandler,
   AoInteractionResult,

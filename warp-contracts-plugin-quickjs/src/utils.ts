@@ -1,4 +1,4 @@
-import { DefaultIntrinsics, QuickJSContext, QuickJSHandle, QuickJSRuntime, RELEASE_SYNC } from 'quickjs-emscripten';
+import { DefaultIntrinsics, QuickJSContext, QuickJSHandle, RELEASE_SYNC } from 'quickjs-emscripten';
 import { WarpLogger } from 'warp-contracts';
 import { EvalError } from './types';
 

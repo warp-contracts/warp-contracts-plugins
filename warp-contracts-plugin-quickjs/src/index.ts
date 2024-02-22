@@ -15,7 +15,8 @@ import {
   QuickJSRuntime,
   QuickJSWASMModule,
   newQuickJSWASMModule,
-  newVariant
+  newVariant,
+  RELEASE_SYNC
 } from 'quickjs-emscripten';
 import { QuickJsHandlerApi } from './QuickJsHandlerApi';
 import { decorateProcessFnEval } from './evalCode/decorator';
@@ -125,15 +126,24 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
       const newWasmMemoryView = new Uint8Array(newWasmMemory.buffer);
       newWasmMemoryView.set(existingMemoryView);
 
-      const initialWasmMemory = new WebAssembly.Memory({
-        initial: 256, //*65536
-        maximum: 2048 //*65536
-      });
-      const variant = newVariant(VARIANT_TYPE, {
-        wasmMemory: initialWasmMemory
+      console.log(VARIANT_TYPE)
+      const variant = newVariant(RELEASE_SYNC, {
+        wasmMemory: new WebAssembly.Memory({
+          initial: 256,
+          maximum: 2048
+        })
       });
 
+      console.log({
+        existingRuntimePointer,
+        existingVmPointer
+      })
+
       const QuickJS = await newQuickJSWASMModule(variant);
+
+      console.log('after creating QuickJS')
+
+
 
       const lifetime = new Lifetime(existingRuntimePointer as JSRuntimePointer, undefined, (runtimePointer) => {
         // @ts-ignore

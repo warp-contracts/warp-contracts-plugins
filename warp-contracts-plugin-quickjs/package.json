@@ -34,7 +34,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "quickjs-emscripten": "^0.27.0",
-    "warp-contracts": "file:.yalc/warp-contracts"
+    "quickjs-emscripten": "^0.28.0",
+    "warp-contracts": "1.4.36-ao.0"
   }
 }

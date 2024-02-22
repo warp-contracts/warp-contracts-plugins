@@ -11,5 +11,5 @@ module.exports = {
     '^.+\\.(ts|js)$': 'ts-jest'
   },
 
-  silent: true
+  silent: false
 };
