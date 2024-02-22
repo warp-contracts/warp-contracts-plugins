@@ -3,8 +3,16 @@ import Arweave from 'arweave';
 import fs from 'fs';
 import path from 'path';
 import { JWKInterface } from 'arweave/node/lib/wallet';
-import { DeployPlugin, ArweaveSigner, EthereumSigner } from 'warp-contracts-plugin-deploy';
-import { defaultCacheOptions, LoggerFactory, WarpFactory } from 'warp-contracts';
+import {
+  DeployPlugin,
+  ArweaveSigner,
+  EthereumSigner,
+} from 'warp-contracts-plugin-deploy';
+import {
+  defaultCacheOptions,
+  LoggerFactory,
+  WarpFactory,
+} from 'warp-contracts';
 
 async function main() {
   let wallet: JWKInterface = readJSON('.secrets/jwk.json');
@@ -19,21 +27,23 @@ async function main() {
   });
 
   try {
-    const warp = WarpFactory.forMainnet({ ...defaultCacheOptions, inMemory: true }).use(new DeployPlugin());
+    const warp = WarpFactory.forMainnet({
+      ...defaultCacheOptions,
+      inMemory: true,
+    }).use(new DeployPlugin());
 
-    const jsContractSrc = fs.readFileSync(path.join(__dirname, '../data/token-pst.js'), 'utf8');
-    const wasmContractSrc = fs.readFileSync(path.join(__dirname, '../data/rust/rust-pst_bg.wasm'));
+    const jsContractSrc = fs.readFileSync(
+      path.join(__dirname, '../data/ao.js'),
+      'utf8'
+    );
+    const wasmContractSrc = fs.readFileSync(
+      path.join(__dirname, '../data/rust/rust-pst_bg.wasm')
+    );
     const walletAddress = await warp.arweave.wallets.jwkToAddress(wallet);
     const initialState = {
-      ticker: 'EXAMPLE_PST_TOKEN',
-      owner: 'uhE-QeYS8i4pmUtnxQyHD7dzXFNaJ9oMK-IM-QPNY6M',
-      canEvolve: true,
-      balances: {
-        'uhE-QeYS8i4pmUtnxQyHD7dzXFNaJ9oMK-IM-QPNY6M': 10000000,
-        '33F0QHcb22W7LwWR1iRC8Az1ntZG09XQ03YWuw2ABqA': 23111222,
-        [walletAddress]: 1000000,
-      },
-      wallets: {},
+      name: 'test',
+      ticker: 'test ticker',
+      logo: 'test',
     };
 
     // case 1 - full deploy, js contract

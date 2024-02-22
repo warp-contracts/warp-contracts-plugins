@@ -47,7 +47,7 @@ export class VM2Plugin<State> implements WarpPlugin<VM2PluginInput, HandlerApi<S
     };
 
     const vm = new vm2.NodeVM({
-      console: 'off',
+      console: 'inherit',
       sandbox: {
         SmartWeave: swGlobal,
         BigNumber: BigNumber,

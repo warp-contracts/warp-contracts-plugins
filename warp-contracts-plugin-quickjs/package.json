@@ -1,0 +1,40 @@
+{
+  "name": "warp-contracts-plugin-quickjs",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "./build/cjs/index.js",
+  "module": "./build/esm/index.js",
+  "types": "./build/types/index.d.ts",
+  "scripts": {
+    "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
+    "build:clean": "rm -rf ./build",
+    "build": "yarn build:clean && yarn compile",
+    "lint": "eslint --ext .js,.ts",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --silent=false"
+  },
+  "exports": {
+    ".": {
+      "types": "./build/types/index.d.ts",
+      "require": "./build/cjs/index.js",
+      "import": "./build/esm/index.js",
+      "default": "./build/esm/index.js"
+    }
+  },
+  "devDependencies": {
+    "@jitl/quickjs-singlefile-mjs-release-sync": "^0.28.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.5",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "arweave": "1.13.7",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "quickjs-emscripten": "^0.27.0",
+    "warp-contracts": "file:.yalc/warp-contracts"
+  }
+}

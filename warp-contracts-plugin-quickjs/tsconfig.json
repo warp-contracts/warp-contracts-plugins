@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "./build",
+    "types": ["jest", "node"],
+    "strictPropertyInitialization": false
+  },
+  "include": ["src", "tests", "tools/quickhandle.mjs", "tools/quickhandleWasmMemory.mjs"],
+  "exclude": ["node_modules"]
+}
