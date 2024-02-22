@@ -1,0 +1,15 @@
+{
+  "name": "warp-contracts-plugin-quickjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "quickjs-emscripten": "^0.29.0",
+    "warp-contracts": "1.4.36-ao.0"
+  }
+}
