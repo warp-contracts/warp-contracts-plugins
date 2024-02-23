@@ -80,8 +80,7 @@ export class QuickJsHandlerApi<State> extends AbstractContractHandler<State> {
     this.assignViewContractState<Input>(executionContext);
     this.assignWrite(executionContext);
     this.assignRefreshState(executionContext);
-
-    //TODO
+    //TODO d
     //assertNotConstructorCall
 
     // should be probably somewhere in SDK
@@ -103,7 +102,7 @@ export class QuickJsHandlerApi<State> extends AbstractContractHandler<State> {
     }
   }
 
-  private async runContractFunction<Result>(message: Message, state: State): InteractionResult<State, Result> {
+  private runContractFunction<Result>(message: Message, state: State): InteractionResult<State, Result> {
     try {
       const evalInteractionResult = this.vm.evalCode(`__handleDecorator(${JSON.stringify(message)})`);
       if (evalInteractionResult.error) {
@@ -122,7 +121,7 @@ export class QuickJsHandlerApi<State> extends AbstractContractHandler<State> {
           } else {
             const outbox: AoInteractionResult<Result> = this.disposeResult(evalOutboxResult);
             const wasmMemory = this.getWasmMemory();
-            fs.writeFileSync('wasmMemory.dat', wasmMemory);
+
             return {
               type: 'ok',
               result: outbox.Output,

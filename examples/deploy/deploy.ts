@@ -33,7 +33,7 @@ async function main() {
     }).use(new DeployPlugin());
 
     const jsContractSrc = fs.readFileSync(
-      path.join(__dirname, '../data/ao.js'),
+      path.join(__dirname, '../data/counter.js'),
       'utf8'
     );
     const wasmContractSrc = fs.readFileSync(

@@ -4,22 +4,21 @@ import {
   DEFAULT_LEVEL_DB_LOCATION,
   DefaultEvaluationOptions,
   EvalStateResult,
-  EvaluationOptionsEvaluator,
   ExecutionContext,
   LevelDbCache,
   LoggerFactory,
   SmartWeaveGlobal,
-  WarpFactory,
-  WarpGatewayContractDefinitionLoader,
-  defaultCacheOptions
+  WarpFactory
 } from 'warp-contracts';
 import { QuickJsPlugin } from '../src';
 import fs from 'fs';
 import Arweave from 'arweave';
+import { expect, test } from 'vitest';
 
 LoggerFactory.INST.logLevel('error');
-const quickJSPlugin = new QuickJsPlugin({});
+
 const contractSource = fs.readFileSync('tests/data/counter.js', 'utf-8');
+const quickJSPlugin = new QuickJsPlugin({});
 const arweave = Arweave.init({});
 const warp = WarpFactory.forLocal();
 const db = new LevelDbCache({
@@ -89,230 +88,119 @@ const swGlobal = new SmartWeaveGlobal(
   db
 );
 
-describe('Loading QuickJS WASM memory', () => {
-  // it('should return WASM memory in result', async () => {
-  //   const quickJs = await quickJSPlugin.process({
-  //     contractSource,
-  //     evaluationOptions: new DefaultEvaluationOptions(),
-  //     swGlobal,
-  //     contractDefinition
-  //   });
+let wasmMemory: Buffer;
 
-  //   const result = await quickJs.handle(executionContext, new EvalStateResult<unknown>({}, {}, {}), {
-  //     interaction: {
-  //       input: {
-  //         function: 'increment'
-  //       },
-  //       caller: '1234',
-  //       interactionType: 'write'
-  //     },
-  //     interactionTx: {
-  //       id: '1234',
-  //       anchor: '',
-  //       signature: 'signature',
-  //       recipient: 'recipient',
-  //       owner: {
-  //         address: 'owner',
-  //         key: 'key'
-  //       },
-  //       fee: {
-  //         ar: '',
-  //         winston: ''
-  //       },
-  //       quantity: {
-  //         ar: '',
-  //         winston: ''
-  //       },
-  //       data: {
-  //         size: 10,
-  //         type: ''
-  //       },
-  //       tags: [],
-  //       block: {
-  //         id: '1234',
-  //         timestamp: 1234,
-  //         height: 1234,
-  //         previous: '123'
-  //       },
-  //       parent: {
-  //         id: '1234'
-  //       },
-  //       bundledIn: {
-  //         id: '123'
-  //       }
-  //     }
-  //   });
-
-  //   expect(Buffer.from(result.Memory.buffer).length).toEqual(16777254);
-
-  //   // const quickJs2 = await quickJSPlugin.process({
-  //   //   contractSource,
-  //   //   evaluationOptions: new DefaultEvaluationOptions(),
-  //   //   swGlobal,
-  //   //   contractDefinition
-  //   //   // wasmMemory: result.Memory
-  //   // });
-
-  //   // const result2 = await quickJs2.handle(executionContext, new EvalStateResult<unknown>({}, {}, {}), {
-  //   //   interaction: {
-  //   //     input: {
-  //   //       function: 'increment'
-  //   //     },
-  //   //     caller: '1234',
-  //   //     interactionType: 'write'
-  //   //   },
-  //   //   interactionTx: {
-  //   //     id: '12345',
-  //   //     anchor: '',
-  //   //     signature: 'signature',
-  //   //     recipient: 'recipient',
-  //   //     owner: {
-  //   //       address: 'owner',
-  //   //       key: 'key'
-  //   //     },
-  //   //     fee: {
-  //   //       ar: '',
-  //   //       winston: ''
-  //   //     },
-  //   //     quantity: {
-  //   //       ar: '',
-  //   //       winston: ''
-  //   //     },
-  //   //     data: {
-  //   //       size: 10,
-  //   //       type: ''
-  //   //     },
-  //   //     tags: [],
-  //   //     block: {
-  //   //       id: '12345',
-  //   //       timestamp: 12345,
-  //   //       height: 1235,
-  //   //       previous: '1234'
-  //   //     },
-  //   //     parent: {
-  //   //       id: '1234'
-  //   //     },
-  //   //     bundledIn: {
-  //   //       id: '123'
-  //   //     }
-  //   //   }
-  //   // });
-
-  //   // expect(quickJs2).toBeDefined();
-  // });
-
-  it('should create new VM with WASM memory from the previous calculation', async () => {
-    // const quickJs = await quickJSPlugin.process({
-    //   contractSource,
-    //   evaluationOptions: new DefaultEvaluationOptions(),
-    //   swGlobal,
-    //   contractDefinition
-    // });
-
-    // const result = await quickJs.handle(executionContext, new EvalStateResult<unknown>({}, {}, {}), {
-    //   interaction: {
-    //     input: {
-    //       function: 'increment'
-    //     },
-    //     caller: '1234',
-    //     interactionType: 'write'
-    //   },
-    //   interactionTx: {
-    //     id: '1234',
-    //     anchor: '',
-    //     signature: 'signature',
-    //     recipient: 'recipient',
-    //     owner: {
-    //       address: 'owner',
-    //       key: 'key'
-    //     },
-    //     fee: {
-    //       ar: '',
-    //       winston: ''
-    //     },
-    //     quantity: {
-    //       ar: '',
-    //       winston: ''
-    //     },
-    //     data: {
-    //       size: 10,
-    //       type: ''
-    //     },
-    //     tags: [],
-    //     block: {
-    //       id: '1234',
-    //       timestamp: 1234,
-    //       height: 1234,
-    //       previous: '123'
-    //     },
-    //     parent: {
-    //       id: '1234'
-    //     },
-    //     bundledIn: {
-    //       id: '123'
-    //     }
-    //   }
-    // });
-
-    // console.dir(result, { depth: null });
-    // console.log(result.Memory.byteLength);
-    // fs.writeFileSync('testwasm.dat', result.Memory);
-    const test = fs.readFileSync('testwasm.dat');
-    const quickJs2 = await quickJSPlugin.process({
-      contractSource,
-      evaluationOptions: new DefaultEvaluationOptions(),
-      swGlobal,
-      contractDefinition,
-      wasmMemory: test
-    });
-
-    const result2 = await quickJs2.handle(executionContext, new EvalStateResult<unknown>({}, {}, {}), {
-      interaction: {
-        input: {
-          function: 'increment'
-        },
-        caller: '1234',
-        interactionType: 'write'
-      },
-      interactionTx: {
-        id: '12345',
-        anchor: '',
-        signature: 'signature',
-        recipient: 'recipient',
-        owner: {
-          address: 'owner',
-          key: 'key'
-        },
-        fee: {
-          ar: '',
-          winston: ''
-        },
-        quantity: {
-          ar: '',
-          winston: ''
-        },
-        data: {
-          size: 10,
-          type: ''
-        },
-        tags: [],
-        block: {
-          id: '12345',
-          timestamp: 12345,
-          height: 1235,
-          previous: '1234'
-        },
-        parent: {
-          id: '1234'
-        },
-        bundledIn: {
-          id: '123'
-        }
-      }
-    });
-
-    console.dir(result2, { depth: null });
-
-    expect(quickJs2).toBeDefined();
+test('should return WASM memory in result', async () => {
+  const quickJs = await quickJSPlugin.process({
+    contractSource,
+    evaluationOptions: new DefaultEvaluationOptions(),
+    swGlobal,
+    contractDefinition
   });
+
+  const result = await quickJs.handle(executionContext, new EvalStateResult<unknown>({}, {}, {}), {
+    interaction: {
+      input: {
+        function: 'increment'
+      },
+      caller: '1234',
+      interactionType: 'write'
+    },
+    interactionTx: {
+      id: '1234',
+      anchor: '',
+      signature: 'signature',
+      recipient: 'recipient',
+      owner: {
+        address: 'owner',
+        key: 'key'
+      },
+      fee: {
+        ar: '',
+        winston: ''
+      },
+      quantity: {
+        ar: '',
+        winston: ''
+      },
+      data: {
+        size: 10,
+        type: ''
+      },
+      tags: [],
+      block: {
+        id: '1234',
+        timestamp: 1234,
+        height: 1234,
+        previous: '123'
+      },
+      parent: {
+        id: '1234'
+      },
+      bundledIn: {
+        id: '123'
+      }
+    }
+  });
+
+  wasmMemory = result.Memory;
+  // fs.writeFileSync('test.dat', result.Memory);
+  expect(Buffer.from(result.Memory.buffer).length).toEqual(16777254);
+});
+
+test('should create new VM with WASM memory from the previous calculation', async () => {
+  const quickJs2 = await quickJSPlugin.process({
+    contractSource,
+    evaluationOptions: new DefaultEvaluationOptions(),
+    swGlobal,
+    contractDefinition,
+    wasmMemory
+  });
+
+  const result2 = await quickJs2.handle(executionContext, new EvalStateResult<unknown>({}, {}, {}), {
+    interaction: {
+      input: {
+        function: 'increment'
+      },
+      caller: '1234',
+      interactionType: 'write'
+    },
+    interactionTx: {
+      id: '12345',
+      anchor: '',
+      signature: 'signature',
+      recipient: 'recipient',
+      owner: {
+        address: 'owner',
+        key: 'key'
+      },
+      fee: {
+        ar: '',
+        winston: ''
+      },
+      quantity: {
+        ar: '',
+        winston: ''
+      },
+      data: {
+        size: 10,
+        type: ''
+      },
+      tags: [],
+      block: {
+        id: '12345',
+        timestamp: 12345,
+        height: 1235,
+        previous: '1234'
+      },
+      parent: {
+        id: '1234'
+      },
+      bundledIn: {
+        id: '123'
+      }
+    }
+  });
+  console.dir(result2, { depth: null });
+  expect(result2.state.counter).toBeDefined();
 });

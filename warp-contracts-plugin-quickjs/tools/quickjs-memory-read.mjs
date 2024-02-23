@@ -90,7 +90,7 @@ export function splitBuffer(b, splitWith) {
   return ret;
 }
 
-function doCallEval(vm, processFunction) {
+export function doCallEval(vm, processFunction) {
   const evalResult = vm.evalCode(
     `__handleDecorator(
     ${JSON.stringify({

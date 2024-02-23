@@ -15,6 +15,7 @@ import {
   QuickJSRuntime,
   QuickJSWASMModule,
   newQuickJSWASMModule,
+  newQuickJSWASMModuleFromVariant,
   newVariant
 } from 'quickjs-emscripten';
 import { QuickJsHandlerApi } from './QuickJsHandlerApi';
@@ -35,7 +36,6 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
   constructor(private readonly quickJsOptions: QuickJsOptions) {}
 
   async process(input: QuickJsPluginInput): Promise<HandlerApi<State>> {
-    input.wasmMemory = fs.readFileSync('wasmMemory.dat');
     ({
       QuickJS: this.QuickJS,
       runtime: this.runtime,
@@ -103,9 +103,8 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
 
   async configureExistingWasmModule(wasmMemory: Buffer): Promise<WasmModuleConfig> {
     try {
-      const splittedWasmMemory = this.splitBuffer(wasmMemory, DELIMITER);
-      const existingVariantType = splittedWasmMemory[WasmMemoryBuffer.VARIANT_TYPE].toString();
-      console.log(existingVariantType);
+      const splittedBuffer = this.splitBuffer(wasmMemory, DELIMITER);
+      const existingVariantType = splittedBuffer[WasmMemoryBuffer.VARIANT_TYPE].toString();
       const variantType = JSON.stringify(VARIANT_TYPE);
 
       if (existingVariantType != variantType) {
@@ -113,53 +112,48 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
           `Trying to configure WASM module with non-compatible variant type. Existing variant type: ${existingVariantType}, variant type: ${variantType}.`
         );
       }
-      const existingRuntimePointer = parseInt(splittedWasmMemory[WasmMemoryBuffer.RUNTIME_POINTER].toString());
-      const existingVmPointer = parseInt(splittedWasmMemory[WasmMemoryBuffer.VM_POINTER].toString());
-      const existingMemoryView = new Uint8Array(splittedWasmMemory[WasmMemoryBuffer.MEMORY]);
+      const memory = splittedBuffer[WasmMemoryBuffer.MEMORY];
+      const runtimePointer = parseInt(splittedBuffer[WasmMemoryBuffer.RUNTIME_POINTER].toString());
+      const vmPointer = parseInt(splittedBuffer[WasmMemoryBuffer.VM_POINTER].toString());
+
+      const existingMemoryView = new Uint8Array(memory);
       const pageSize = 64 * 1024;
-      const numPages = Math.ceil(splittedWasmMemory[WasmMemoryBuffer.MEMORY].byteLength / pageSize);
+      const numPages = Math.ceil(memory.byteLength / pageSize);
       const newWasmMemory = new WebAssembly.Memory({
         initial: numPages,
         maximum: 2048
       });
       const newWasmMemoryView = new Uint8Array(newWasmMemory.buffer);
+
       newWasmMemoryView.set(existingMemoryView);
 
-      const initialWasmMemory = new WebAssembly.Memory({
-        initial: 256, //*65536
-        maximum: 2048 //*65536
-      });
       const variant = newVariant(VARIANT_TYPE, {
-        wasmMemory: initialWasmMemory
+        wasmMemory: newWasmMemory
       });
 
       const QuickJS = await newQuickJSWASMModule(variant);
-
-      const lifetime = new Lifetime(existingRuntimePointer as JSRuntimePointer, undefined, (runtimePointer) => {
-        // @ts-ignore
-        QuickJS.callbacks.deleteRuntime(runtimePointer);
-        // @ts-ignore
-        QuickJS.ffi.QTS_FreeRuntime(runtimePointer);
+      const rt = new Lifetime(runtimePointer, undefined, (rt_ptr) => {
+        //@ts-ignore
+        QuickJS.callbacks.deleteRuntime(rt_ptr);
+        //@ts-ignore
+        QuickJS.ffi.QTS_FreeRuntime(rt_ptr);
       });
       const runtime = new QuickJSRuntime({
-        // @ts-ignore
+        //@ts-ignore
         module: QuickJS.module,
-        // @ts-ignore
+        //@ts-ignore
         callbacks: QuickJS.callbacks,
-        // @ts-ignore
+        //@ts-ignore
         ffi: QuickJS.ffi,
-        rt: lifetime
-      });
-      const vm = runtime.newContext({
-        contextPointer: existingVmPointer as JSContextPointer,
-        intrinsics: vmIntrinsics
+        //@ts-ignore
+        rt
       });
 
-      // const testRes2 = vm.unwrapResult(vm.evalCode(`add()`));
-      // console.log('add result 2 (should be 200):', vm.getNumber(testRes2));
-      // testRes2.dispose();
-      // vm.dispose();
-      // runtime.dispose();
+      const vm = runtime.newContext({
+        //@ts-ignore
+        contextPointer: vmPointer,
+        intrinsics: vmIntrinsics
+      });
 
       return {
         QuickJS,

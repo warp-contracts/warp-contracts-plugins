@@ -14,8 +14,8 @@ export interface WasmModuleConfig {
 
 export enum WasmMemoryBuffer {
   VARIANT_TYPE,
-  RUNTIME_POINTER,
   VM_POINTER,
+  RUNTIME_POINTER,
   MEMORY
 }
 

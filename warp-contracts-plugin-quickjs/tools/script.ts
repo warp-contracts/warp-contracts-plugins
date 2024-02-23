@@ -1,12 +1,8 @@
 /* eslint-disable */
 
-const {
-  defaultCacheOptions,
-  LoggerFactory,
-  WarpFactory,
-} = require('warp-contracts');
-const { QuickJsPlugin } = require('./src/index');
-const fs = require('fs');
+import { defaultCacheOptions, LoggerFactory, WarpFactory } from 'warp-contracts';
+import { QuickJsPlugin } from '../src/index';
+import fs from 'fs';
 
 LoggerFactory.INST.logLevel('debug');
 // LoggerFactory.INST.logLevel('none', 'DefaultStateEvaluator');
@@ -14,14 +10,14 @@ const logger = LoggerFactory.INST.create('ivm-example');
 
 async function main() {
   const contractTxId = 'jliaItK34geaPuyOYVqh8fsRgXIXWwa9iLJszGXKOHE';
-  //   const wallet = JSON.parse(fs.readFileSync('./.secrets/jwk.json', 'utf-8'));
+  const wallet = JSON.parse(fs.readFileSync('./.secrets/jwk.json', 'utf-8'));
 
   const warp = WarpFactory.forMainnet({
     ...defaultCacheOptions,
-    inMemory: true,
+    inMemory: true
   }).use(new QuickJsPlugin({}));
 
-  const contract = warp.contract(contractTxId);
+  const contract = warp.contract(contractTxId).connect(wallet);
 
   // await contract.writeInteraction({
   //   function: 'transfer',
@@ -39,7 +35,7 @@ async function main() {
   const result = await contract
     .setEvaluationOptions({
       allowBigInt: true,
-      internalWrites: true,
+      internalWrites: true
     })
     .readState();
 
