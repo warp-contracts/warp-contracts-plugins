@@ -20,10 +20,14 @@ export enum WasmMemoryBuffer {
 }
 
 export class EvalError extends Error {
-  cause: any;
+  name: string;
+  stack: any;
+  evalMessage: string;
 
-  constructor(message: string, { cause }: { cause: any }) {
+  constructor(message: string, { name, evalMessage, stack }: { name: string; evalMessage: string; stack: any }) {
     super(message);
-    this.cause = cause;
+    this.name = name;
+    this.evalMessage = evalMessage;
+    this.stack = stack;
   }
 }

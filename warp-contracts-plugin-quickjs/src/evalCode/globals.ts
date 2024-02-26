@@ -7,13 +7,13 @@ class ProcessError extends Error {
 }
 
 let ao = {
-  output: "",
-  _module: "",
-  _version: "0.0.3",
+  output: '',
+  _module: '',
+  _version: '0.0.3',
   _ref: 0,
   authorities: [],
   env: {},
-  id: "",
+  id: '',
   init: function(env) {
     if (this.id == '') {
       this.id = env.process.id;

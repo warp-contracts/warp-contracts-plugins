@@ -1,4 +1,4 @@
-import { DefaultIntrinsics, QuickJSContext, QuickJSHandle, QuickJSRuntime, RELEASE_SYNC } from 'quickjs-emscripten';
+import { DefaultIntrinsics, QuickJSContext, QuickJSHandle, RELEASE_SYNC } from 'quickjs-emscripten';
 import { WarpLogger } from 'warp-contracts';
 import { EvalError } from './types';
 
@@ -13,7 +13,12 @@ export const errorEvalAndDispose = (
   const error = vm.dump(evalError);
   evalError.dispose();
   logger.error(`${evalType} eval failed: ${JSON.stringify(error)}`);
-  throw new EvalError(`${evalType} eval failed.`, { cause: error });
+
+  throw new EvalError(`${evalType} eval failed.`, {
+    name: error.cause?.name,
+    evalMessage: error.cause?.message,
+    stack: error
+  });
 };
 
 export const vmIntrinsics = {

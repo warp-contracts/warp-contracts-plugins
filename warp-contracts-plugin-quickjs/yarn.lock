@@ -3966,10 +3966,10 @@ warp-arbundles@^1.0.4:
     buffer "^6.0.3"
     warp-isomorphic "^1.0.7"
 
-warp-contracts@1.4.36-ao.0:
-  version "1.4.36-ao.0"
-  resolved "https://registry.yarnpkg.com/warp-contracts/-/warp-contracts-1.4.36-ao.0.tgz#84e0ec12d0f5571ccbf2a20261a3bf2acda57388"
-  integrity sha512-U4QPiRdB+JfAo4L+8dXME18qddGGFNY3dzH8FBiKTLR/033MGkgh/WaFzlYl6/Y5QBOJMV2XSx/2vAn+12Jv3w==
+warp-contracts@1.4.36-ao.1:
+  version "1.4.36-ao.1"
+  resolved "https://registry.yarnpkg.com/warp-contracts/-/warp-contracts-1.4.36-ao.1.tgz#8f9fc84cec37023b0138def9b05866492dea20c1"
+  integrity sha512-/+8X6RBnnBl8VFtFmWWRys069q6oi+3ijOBuwxEB0JOJMv2hsqTo6C0R1V3HbqdbnFJ2Ga0tBSeaaqLMED3nWQ==
   dependencies:
     archiver "^5.3.0"
     arweave "1.13.7"

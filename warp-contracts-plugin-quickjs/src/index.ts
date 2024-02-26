@@ -1,21 +1,10 @@
+import { LoggerFactory, WarpPlugin, WarpPluginType, QuickJsPluginInput, QuickJsOptions } from 'warp-contracts';
 import {
-  ContractDefinition,
-  HandlerApi,
-  LoggerFactory,
-  WarpPlugin,
-  WarpPluginType,
-  QuickJsPluginInput,
-  QuickJsOptions
-} from 'warp-contracts';
-import {
-  JSContextPointer,
-  JSRuntimePointer,
   Lifetime,
   QuickJSContext,
   QuickJSRuntime,
   QuickJSWASMModule,
   newQuickJSWASMModule,
-  newQuickJSWASMModuleFromVariant,
   newVariant
 } from 'quickjs-emscripten';
 import { QuickJsHandlerApi } from './QuickJsHandlerApi';
@@ -23,11 +12,13 @@ import { decorateProcessFnEval } from './evalCode/decorator';
 import { globals } from './evalCode/globals';
 import { WasmMemoryBuffer, WasmModuleConfig } from './types';
 import { VARIANT_TYPE, vmIntrinsics } from './utils';
-import fs from 'fs';
 
 export const DELIMITER = '|||';
+const MEMORY_LIMIT = 1024 * 640;
+const MAX_STACK_SIZE = 1024 * 320;
+const INTERRUPT_CYCLES = 1024;
 
-export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Promise<HandlerApi<State>>> {
+export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Promise<QuickJsHandlerApi<State>>> {
   private readonly logger = LoggerFactory.INST.create('QuickJsPlugin');
   private vm: QuickJSContext;
   private runtime: QuickJSRuntime;
@@ -35,7 +26,7 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
 
   constructor(private readonly quickJsOptions: QuickJsOptions) {}
 
-  async process(input: QuickJsPluginInput): Promise<HandlerApi<State>> {
+  async process(input: QuickJsPluginInput): Promise<QuickJsHandlerApi<State>> {
     ({
       QuickJS: this.QuickJS,
       runtime: this.runtime,
@@ -48,23 +39,20 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
       this.evalLogging();
       this.evalGlobals();
       this.evalHandleFn(input.contractSource);
+    } else {
+      this.evalLogging();
     }
 
-    return new QuickJsHandlerApi(
-      input.swGlobal,
-      input.contractDefinition as ContractDefinition<State>,
-      this.vm,
-      this.runtime,
-      this.QuickJS,
-      input.wasmMemory
-    );
+    return new QuickJsHandlerApi(this.vm, this.runtime, this.QuickJS, input.wasmMemory);
   }
 
   setRuntimeOptions() {
-    this.runtime.setMemoryLimit(this.quickJsOptions.memoryLimit || 1024 * 640);
-    this.runtime.setMaxStackSize(this.quickJsOptions.maxStackSize || 1024 * 320);
+    this.runtime.setMemoryLimit(this.quickJsOptions.memoryLimit || MEMORY_LIMIT);
+    this.runtime.setMaxStackSize(this.quickJsOptions.maxStackSize || MAX_STACK_SIZE);
     let interruptCycles = 0;
-    this.runtime.setInterruptHandler(() => ++interruptCycles > (this.quickJsOptions.maxStackSize || 1024));
+    this.runtime.setInterruptHandler(
+      () => ++interruptCycles > (this.quickJsOptions.interruptCycles || INTERRUPT_CYCLES)
+    );
   }
 
   evalLogging() {
