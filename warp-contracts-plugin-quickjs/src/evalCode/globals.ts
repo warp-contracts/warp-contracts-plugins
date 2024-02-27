@@ -175,8 +175,4 @@ function __initState(newState) {
 function __currentState() {
   return JSON.stringify(currentState);
 }
-
-function __getOutbox() {
-  return JSON.stringify(ao.outbox);
-}
 `;

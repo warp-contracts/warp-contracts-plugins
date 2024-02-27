@@ -3,8 +3,8 @@ export const decorateProcessFnEval = (processCode: string) => {
         ${processCode}
     
         function __handleDecorator(message) {
-          const result = handle(currentState, message);
-          return JSON.stringify(result);
+          handle(currentState, message);
+          return JSON.stringify(ao.outbox);
         }
     `;
 };

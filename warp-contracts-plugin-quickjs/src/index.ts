@@ -94,7 +94,6 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
       const splittedBuffer = this.splitBuffer(wasmMemory, DELIMITER);
       const existingVariantType = splittedBuffer[WasmMemoryBuffer.VARIANT_TYPE].toString();
       const variantType = JSON.stringify(VARIANT_TYPE);
-
       if (existingVariantType != variantType) {
         throw new Error(
           `Trying to configure WASM module with non-compatible variant type. Existing variant type: ${existingVariantType}, variant type: ${variantType}.`
@@ -148,9 +147,9 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
         runtime,
         vm
       };
-    } catch (e) {
+    } catch (e: any) {
       this.logger.error(e);
-      throw new Error(`Could not create WASM module from existing memory.`);
+      throw new Error(`Could not create WASM module from existing memory. ${JSON.stringify(e.message)}`);
     }
   }
 

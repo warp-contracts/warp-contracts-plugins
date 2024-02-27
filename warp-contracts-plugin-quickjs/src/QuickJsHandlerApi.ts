@@ -1,6 +1,6 @@
 import { QuickJSContext, QuickJSHandle, QuickJSRuntime, QuickJSWASMModule } from 'quickjs-emscripten';
 import { AoInteractionResult, InteractionResult, LoggerFactory, QuickJsPluginMessage } from 'warp-contracts';
-import { VARIANT_TYPE, errorEvalAndDispose } from './utils';
+import { VARIANT_TYPE, errorEvalAndDispose, joinBuffers } from './utils';
 import { DELIMITER } from '.';
 
 export class QuickJsHandlerApi<State> {
@@ -34,51 +34,30 @@ export class QuickJsHandlerApi<State> {
 
   private runContractFunction<Result>(message: QuickJsPluginMessage): InteractionResult<State, Result> {
     try {
-      const evalInteractionResult = this.vm.evalCode(`__handleDecorator(${JSON.stringify(message)})`);
-      if (evalInteractionResult.error) {
-        errorEvalAndDispose('interaction', this.logger, this.vm, evalInteractionResult.error);
+      const evalOutboxResult = this.vm.evalCode(`__handleDecorator(${JSON.stringify(message)})`);
+      if (evalOutboxResult.error) {
+        errorEvalAndDispose('interaction', this.logger, this.vm, evalOutboxResult.error);
       } else {
-        const evalOutboxResult = this.vm.evalCode(`__getOutbox()`);
-        if (evalOutboxResult.error) {
-          errorEvalAndDispose('outbox', this.logger, this.vm, evalOutboxResult.error);
-        } else {
-          const outbox: AoInteractionResult<Result> = this.disposeResult(evalOutboxResult);
+        const outbox: AoInteractionResult<Result> = this.disposeResult(evalOutboxResult);
 
-          return {
-            Memory: this.getWasmMemory(),
-            Error: '',
-            Messages: outbox.Messages,
-            Spawns: outbox.Spawns,
-            Output: outbox.Output
-          };
-        }
+        return {
+          Memory: this.getWasmMemory(),
+          Error: '',
+          Messages: outbox.Messages,
+          Spawns: outbox.Spawns,
+          Output: outbox.Output
+        };
       }
-      throw new Error(`Unexpected result from contract: ${JSON.stringify(evalInteractionResult)}`);
+      throw new Error(`Unexpected result from contract: ${JSON.stringify(evalOutboxResult)}`);
     } catch (err: any) {
-      if (err.stack.includes('ProcessError')) {
-        try {
-          const evalOutboxResult = this.vm.evalCode(`__getOutbox()`);
-          if (evalOutboxResult.error) {
-            errorEvalAndDispose('outbox', this.logger, this.vm, evalOutboxResult.error);
-          } else {
-            const outbox: AoInteractionResult<Result> = this.disposeResult(evalOutboxResult);
-            return {
-              Memory: this.getWasmMemory(),
-              Error: err.cause.message,
-              Messages: outbox.Messages,
-              Spawns: outbox.Spawns,
-              Output: outbox.Output
-            };
-          }
-        } catch (e) {
-          return {
-            Memory: this.getWasmMemory(),
-            Error: `${(err && err.stack) || (err && err.message) || err}`,
-            Messages: null,
-            Spawns: null,
-            Output: null
-          };
-        }
+      if (err.name.includes('ProcessError')) {
+        return {
+          Memory: this.getWasmMemory(),
+          Error: `${err.message} ${JSON.stringify(err.stack)}`,
+          Messages: null,
+          Spawns: null,
+          Output: null
+        };
       } else {
         return {
           Memory: this.getWasmMemory(),
@@ -174,15 +153,9 @@ export class QuickJsHandlerApi<State> {
     // @ts-ignore
     const runtimePointerBuffer = Buffer.from(JSON.stringify(this.vm.rt.value));
 
-    return this.joinBuffers(
+    return joinBuffers(
       [variantTypeBuffer, vmPointerBuffer, runtimePointerBuffer, Buffer.from(wasmMemoryBuffer)],
       DELIMITER
     );
-  }
-
-  private joinBuffers(buffers: Buffer[], delimiter = '|||') {
-    let delimiterBuffer = Buffer.from(delimiter);
-
-    return buffers.reduce((prev, buffer) => Buffer.concat([prev, delimiterBuffer, buffer]));
   }
 }

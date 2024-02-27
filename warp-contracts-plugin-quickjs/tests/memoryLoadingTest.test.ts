@@ -3,6 +3,8 @@ import { QuickJsPlugin } from '../src';
 import fs from 'fs';
 import { expect, test, describe, beforeAll } from 'vitest';
 import { QuickJsHandlerApi } from '../src/QuickJsHandlerApi';
+import { DEBUG_SYNC } from 'quickjs-emscripten';
+import { joinBuffers } from '../src/utils';
 
 describe('Memory loading test', () => {
   let contractSource: string;
@@ -72,5 +74,38 @@ describe('Memory loading test', () => {
 
     const result2 = await quickJs2.handle(message);
     expect(result2.Messages[1].tags.find((t: { name: string; value: string }) => t.name == 'counter').value).toEqual(2);
+
+    wasmMemory = result2.Memory;
   });
+
+  test('should correctly handle ProcessError', async () => {
+    const quickJs3 = await quickJSPlugin.process({
+      contractSource,
+      wasmMemory
+    });
+
+    const result3 = await quickJs3.handle({
+      ...message,
+      tags: {
+        ...message.tags,
+        Action: 'increment2'
+      }
+    });
+
+    expect(result3.Error).toContain('ProcessError');
+  });
+
+  // test('should not create VM with WASM memory based on a different variant', async () => {
+  //   console.log(JSON.stringify(DEBUG_SYNC));
+  //   const invalidWasmMemory = joinBuffers(
+  //     [Buffer.from(JSON.stringify(DEBUG_SYNC)), Buffer.from(wasmMemory.buffer)],
+  //     '|||'
+  //   );
+  //   const quickJs3 = await quickJSPlugin.process({
+  //     contractSource,
+  //     wasmMemory: invalidWasmMemory
+  //   });
+
+  //   const result3 = await quickJs3.handle(message);
+  // });
 });
