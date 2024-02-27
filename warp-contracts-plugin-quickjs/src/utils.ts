@@ -37,3 +37,18 @@ export const joinBuffers = (buffers: Buffer[], delimiter: string) => {
 
   return buffers.reduce((prev, buffer) => Buffer.concat([prev, delimiterBuffer, buffer]));
 };
+
+export const splitBuffer = (buffer: Buffer, delimiter: string) => {
+  const splitted = [];
+  let start = 0;
+  let indexOfElement = buffer.indexOf(delimiter, start);
+  while (indexOfElement >= 0) {
+    if (indexOfElement >= 0) {
+      splitted.push(buffer.slice(start, indexOfElement));
+    }
+    start = indexOfElement + delimiter.length;
+    indexOfElement = buffer.indexOf(delimiter, start);
+  }
+  splitted.push(buffer.slice(start));
+  return splitted;
+};

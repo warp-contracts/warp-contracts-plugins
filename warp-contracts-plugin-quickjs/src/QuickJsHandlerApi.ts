@@ -1,4 +1,12 @@
-import { QuickJSContext, QuickJSHandle, QuickJSRuntime, QuickJSWASMModule } from 'quickjs-emscripten';
+import {
+  DEBUG_SYNC,
+  QuickJSContext,
+  QuickJSHandle,
+  QuickJSRuntime,
+  QuickJSWASMModule,
+  RELEASE_ASYNC,
+  RELEASE_SYNC
+} from 'quickjs-emscripten';
 import { AoInteractionResult, InteractionResult, LoggerFactory, QuickJsPluginMessage } from 'warp-contracts';
 import { VARIANT_TYPE, errorEvalAndDispose, joinBuffers } from './utils';
 import { DELIMITER } from '.';
@@ -39,7 +47,6 @@ export class QuickJsHandlerApi<State> {
         errorEvalAndDispose('interaction', this.logger, this.vm, evalOutboxResult.error);
       } else {
         const outbox: AoInteractionResult<Result> = this.disposeResult(evalOutboxResult);
-
         return {
           Memory: this.getWasmMemory(),
           Error: '',

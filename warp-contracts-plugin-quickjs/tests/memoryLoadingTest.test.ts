@@ -3,8 +3,9 @@ import { QuickJsPlugin } from '../src';
 import fs from 'fs';
 import { expect, test, describe, beforeAll } from 'vitest';
 import { QuickJsHandlerApi } from '../src/QuickJsHandlerApi';
-import { DEBUG_SYNC } from 'quickjs-emscripten';
-import { joinBuffers } from '../src/utils';
+import { DEBUG_SYNC, RELEASE_ASYNC } from 'quickjs-emscripten';
+import { joinBuffers, splitBuffer } from '../src/utils';
+import { join } from 'path';
 
 describe('Memory loading test', () => {
   let contractSource: string;
@@ -51,6 +52,7 @@ describe('Memory loading test', () => {
 
   test('should correctly handle message', async () => {
     const result = await quickJs.handle(message);
+    expect(result.Messages.length).toBe(1);
     expect(result.Messages[0].tags.find((t: { name: string; value: string }) => t.name == 'counter').value).toEqual(1);
   });
 
@@ -93,19 +95,24 @@ describe('Memory loading test', () => {
     });
 
     expect(result3.Error).toContain('ProcessError');
+    expect(result3.Messages).toBeNull();
+    expect(result3.Spawns).toBeNull();
+    expect(result3.Output).toBeNull();
   });
 
-  // test('should not create VM with WASM memory based on a different variant', async () => {
-  //   console.log(JSON.stringify(DEBUG_SYNC));
-  //   const invalidWasmMemory = joinBuffers(
-  //     [Buffer.from(JSON.stringify(DEBUG_SYNC)), Buffer.from(wasmMemory.buffer)],
-  //     '|||'
-  //   );
-  //   const quickJs3 = await quickJSPlugin.process({
-  //     contractSource,
-  //     wasmMemory: invalidWasmMemory
-  //   });
-
-  //   const result3 = await quickJs3.handle(message);
-  // });
+  test('should not create VM with WASM memory based on a different variant', async () => {
+    const splittedBuffer = splitBuffer(wasmMemory, '|||');
+    splittedBuffer.shift();
+    splittedBuffer.unshift(Buffer.from(JSON.stringify(RELEASE_ASYNC)));
+    const invalidWasmMemory = joinBuffers(splittedBuffer, '|||');
+    await expect(
+      quickJSPlugin.process({
+        contractSource,
+        wasmMemory: invalidWasmMemory
+      })
+    ).rejects.toThrow(
+      `Could not create WASM module from existing memory. "Trying to configure WASM module with non-compatible variant type. Existing variant` +
+        ` type: {\\"type\\":\\"async\\"}, variant type: {\\"type\\":\\"sync\\"}."`
+    );
+  });
 });

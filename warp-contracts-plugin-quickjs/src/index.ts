@@ -11,7 +11,7 @@ import { QuickJsHandlerApi } from './QuickJsHandlerApi';
 import { decorateProcessFnEval } from './evalCode/decorator';
 import { globals } from './evalCode/globals';
 import { WasmMemoryBuffer, WasmModuleConfig } from './types';
-import { VARIANT_TYPE, vmIntrinsics } from './utils';
+import { VARIANT_TYPE, splitBuffer, vmIntrinsics } from './utils';
 
 export const DELIMITER = '|||';
 const MEMORY_LIMIT = 1024 * 640;
@@ -91,7 +91,7 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
 
   async configureExistingWasmModule(wasmMemory: Buffer): Promise<WasmModuleConfig> {
     try {
-      const splittedBuffer = this.splitBuffer(wasmMemory, DELIMITER);
+      const splittedBuffer = splitBuffer(wasmMemory, DELIMITER);
       const existingVariantType = splittedBuffer[WasmMemoryBuffer.VARIANT_TYPE].toString();
       const variantType = JSON.stringify(VARIANT_TYPE);
       if (existingVariantType != variantType) {
@@ -173,21 +173,6 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
       runtime,
       vm
     };
-  }
-
-  splitBuffer(buffer: Buffer, delimiter: string) {
-    const splitted = [];
-    let start = 0;
-    let indexOfElement = buffer.indexOf(delimiter, start);
-    while (indexOfElement >= 0) {
-      if (indexOfElement >= 0) {
-        splitted.push(buffer.slice(start, indexOfElement));
-      }
-      start = indexOfElement + delimiter.length;
-      indexOfElement = buffer.indexOf(delimiter, start);
-    }
-    splitted.push(buffer.slice(start));
-    return splitted;
   }
 
   type(): WarpPluginType {
