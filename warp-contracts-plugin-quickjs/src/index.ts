@@ -4,19 +4,24 @@ import {
   QuickJSContext,
   QuickJSRuntime,
   QuickJSWASMModule,
+  RELEASE_SYNC,
   newQuickJSWASMModule,
   newVariant
 } from 'quickjs-emscripten';
 import { QuickJsHandlerApi } from './QuickJsHandlerApi';
-import { decorateProcessFnEval } from './evalCode/decorator';
-import { globals } from './evalCode/globals';
-import { WasmMemoryBuffer, WasmModuleConfig } from './types';
-import { VARIANT_TYPE, splitBuffer, vmIntrinsics } from './utils';
+import { decorateProcessFn } from './eval/evalCode/decorator';
+import { globals } from './eval/evalCode/globals';
+import { WasmMemoryBuffer, WasmMemoryHeaders, WasmModuleConfig } from './types';
+import { splitBuffer, vmIntrinsics } from './utils';
+import { QuickJsEvaluator } from './eval/QuickJsEvaluator';
 
 export const DELIMITER = '|||';
+export const VARIANT_TYPE = RELEASE_SYNC;
 const MEMORY_LIMIT = 1024 * 640;
 const MAX_STACK_SIZE = 1024 * 320;
 const INTERRUPT_CYCLES = 1024;
+const MEMORY_INITIAL_PAGE_SIZE = 64 * 1024;
+const MEMORY_MAXIMUM_PAGE_SIZE = 2048;
 
 export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Promise<QuickJsHandlerApi<State>>> {
   private readonly logger = LoggerFactory.INST.create('QuickJsPlugin');
@@ -34,16 +39,14 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
     } = input.wasmMemory ? await this.configureExistingWasmModule(input.wasmMemory) : await this.configureWasmModule());
     this.setRuntimeOptions();
 
-    //TODO - co z logowaniem? LoggerFactory?
+    const quickJsEvaluator = new QuickJsEvaluator(this.vm);
+    quickJsEvaluator.evalLogging();
     if (!input.wasmMemory) {
-      this.evalLogging();
-      this.evalGlobals();
-      this.evalHandleFn(input.contractSource);
-    } else {
-      this.evalLogging();
+      quickJsEvaluator.evalGlobalsCode(globals);
+      quickJsEvaluator.evalHandleFnCode(decorateProcessFn, input.contractSource);
     }
 
-    return new QuickJsHandlerApi(this.vm, this.runtime, this.QuickJS, input.wasmMemory);
+    return new QuickJsHandlerApi(this.vm, this.runtime, this.QuickJS, input.wasmMemory, this.quickJsOptions.compress);
   }
 
   setRuntimeOptions() {
@@ -55,60 +58,43 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
     );
   }
 
-  evalLogging() {
-    const logHandle = this.vm.newFunction('log', (...args) => {
-      const nativeArgs = args.map(this.vm.dump);
-      console.log(...nativeArgs);
-    });
-    const consoleHandle = this.vm.newObject();
-    this.vm.setProp(consoleHandle, 'log', logHandle);
-    this.vm.setProp(this.vm.global, 'console', consoleHandle);
-    consoleHandle.dispose();
-    logHandle.dispose();
-  }
-
-  evalGlobals() {
-    const globalsResult = this.vm.evalCode(globals);
-    if (globalsResult.error) {
-      globalsResult.error.dispose();
-      this.logger.error(`Globals eval failed: ${this.vm.dump(globalsResult.error)}`);
-      throw new Error(`Globals eval failed: ${this.vm.dump(globalsResult.error)}`);
-    } else {
-      globalsResult.value.dispose();
-    }
-  }
-
-  evalHandleFn(contractSrc: string) {
-    const handleFnResult = this.vm.evalCode(decorateProcessFnEval(contractSrc));
-    if (handleFnResult.error) {
-      handleFnResult.error.dispose();
-      this.logger.debug(`HandleFn eval failed: ${this.vm.dump(handleFnResult.error)}`);
-      throw new Error(`HandleFn eval failed:${this.vm.dump(handleFnResult.error)}`);
-    } else {
-      handleFnResult.value.dispose();
-    }
-  }
-
   async configureExistingWasmModule(wasmMemory: Buffer): Promise<WasmModuleConfig> {
     try {
       const splittedBuffer = splitBuffer(wasmMemory, DELIMITER);
-      const existingVariantType = splittedBuffer[WasmMemoryBuffer.VARIANT_TYPE].toString();
+      const headers: WasmMemoryHeaders = JSON.parse(splittedBuffer[WasmMemoryBuffer.HEADERS].toString());
+      const existingVariantType = JSON.stringify(headers.variantType);
       const variantType = JSON.stringify(VARIANT_TYPE);
+
       if (existingVariantType != variantType) {
         throw new Error(
           `Trying to configure WASM module with non-compatible variant type. Existing variant type: ${existingVariantType}, variant type: ${variantType}.`
         );
       }
-      const memory = splittedBuffer[WasmMemoryBuffer.MEMORY];
-      const runtimePointer = parseInt(splittedBuffer[WasmMemoryBuffer.RUNTIME_POINTER].toString());
-      const vmPointer = parseInt(splittedBuffer[WasmMemoryBuffer.VM_POINTER].toString());
+      let memory: Buffer;
+      memory = splittedBuffer[WasmMemoryBuffer.MEMORY];
+      const runtimePointer = headers.runtimePointer;
+      const vmPointer = headers.vmPointer;
+
+      if (headers.compressed) {
+        const compressedMemoryView = new Uint8Array(memory);
+        const decompressionStream = new DecompressionStream('gzip');
+        const compressedStream = new ReadableStream({
+          start(controller) {
+            controller.enqueue(compressedMemoryView);
+            controller.close();
+          }
+        });
+        const decompressedStream = compressedStream.pipeThrough(decompressionStream);
+        const decompressedBuffer = await new Response(decompressedStream).arrayBuffer();
+        memory = Buffer.from(decompressedBuffer);
+      }
 
       const existingMemoryView = new Uint8Array(memory);
-      const pageSize = 64 * 1024;
+      const pageSize = MEMORY_INITIAL_PAGE_SIZE;
       const numPages = Math.ceil(memory.byteLength / pageSize);
       const newWasmMemory = new WebAssembly.Memory({
         initial: numPages,
-        maximum: 2048
+        maximum: MEMORY_MAXIMUM_PAGE_SIZE
       });
       const newWasmMemoryView = new Uint8Array(newWasmMemory.buffer);
 
@@ -154,25 +140,30 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
   }
 
   async configureWasmModule(): Promise<WasmModuleConfig> {
-    const initialWasmMemory = new WebAssembly.Memory({
-      initial: 256, //*65536
-      maximum: 2048 //*65536
-    });
-    const variant = newVariant(VARIANT_TYPE, {
-      wasmMemory: initialWasmMemory
-    });
-    const QuickJS = await newQuickJSWASMModule(variant);
-    const runtime = QuickJS.newRuntime();
+    try {
+      const initialWasmMemory = new WebAssembly.Memory({
+        initial: 256, //*65536
+        maximum: 2048 //*65536
+      });
+      const variant = newVariant(VARIANT_TYPE, {
+        wasmMemory: initialWasmMemory
+      });
+      const QuickJS = await newQuickJSWASMModule(variant);
+      const runtime = QuickJS.newRuntime();
 
-    const vm = runtime.newContext({
-      intrinsics: vmIntrinsics
-    });
+      const vm = runtime.newContext({
+        intrinsics: vmIntrinsics
+      });
 
-    return {
-      QuickJS,
-      runtime,
-      vm
-    };
+      return {
+        QuickJS,
+        runtime,
+        vm
+      };
+    } catch (e: any) {
+      this.logger.error(e);
+      throw new Error(`Could not create WASM module. ${JSON.stringify(e.message)}`);
+    }
   }
 
   type(): WarpPluginType {

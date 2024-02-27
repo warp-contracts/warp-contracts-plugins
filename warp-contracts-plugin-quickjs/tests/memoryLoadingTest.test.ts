@@ -3,15 +3,16 @@ import { QuickJsPlugin } from '../src';
 import fs from 'fs';
 import { expect, test, describe, beforeAll } from 'vitest';
 import { QuickJsHandlerApi } from '../src/QuickJsHandlerApi';
-import { DEBUG_SYNC, RELEASE_ASYNC } from 'quickjs-emscripten';
+import { RELEASE_ASYNC } from 'quickjs-emscripten';
 import { joinBuffers, splitBuffer } from '../src/utils';
-import { join } from 'path';
+import { WasmMemoryHeaders } from '../src/types';
 
 describe('Memory loading test', () => {
   let contractSource: string;
   let quickJSPlugin: QuickJsPlugin<unknown>;
   let message: QuickJsPluginMessage;
   let wasmMemory: Buffer;
+  let wasmMemoryCompressed: Buffer;
   let quickJs: QuickJsHandlerApi<unknown>;
 
   beforeAll(async () => {
@@ -65,7 +66,7 @@ describe('Memory loading test', () => {
 
     wasmMemory = result.Memory;
 
-    expect(Buffer.from(result.Memory.buffer).length).toEqual(16777254);
+    expect(Buffer.from(result.Memory.buffer).length).toEqual(16777295);
   });
 
   test('should create new VM with WASM memory from the previous calculation', async () => {
@@ -102,8 +103,15 @@ describe('Memory loading test', () => {
 
   test('should not create VM with WASM memory based on a different variant', async () => {
     const splittedBuffer = splitBuffer(wasmMemory, '|||');
-    splittedBuffer.shift();
-    splittedBuffer.unshift(Buffer.from(JSON.stringify(RELEASE_ASYNC)));
+    const headers: WasmMemoryHeaders = JSON.parse(splittedBuffer.shift()!.toString());
+    splittedBuffer.unshift(
+      Buffer.from(
+        JSON.stringify({
+          ...headers,
+          variantType: RELEASE_ASYNC
+        })
+      )
+    );
     const invalidWasmMemory = joinBuffers(splittedBuffer, '|||');
     await expect(
       quickJSPlugin.process({
@@ -114,5 +122,29 @@ describe('Memory loading test', () => {
       `Could not create WASM module from existing memory. "Trying to configure WASM module with non-compatible variant type. Existing variant` +
         ` type: {\\"type\\":\\"async\\"}, variant type: {\\"type\\":\\"sync\\"}."`
     );
+  });
+
+  test(`should correctly compress wasm memory when 'compress' is set to true`, async () => {
+    const quickJSPlugin2 = new QuickJsPlugin({ compress: true });
+    const quickJs4 = await quickJSPlugin2.process({
+      contractSource
+    });
+
+    const result = await quickJs4.handle(message);
+
+    wasmMemoryCompressed = result.Memory;
+
+    expect(Buffer.from(result.Memory.buffer).length).toBeLessThanOrEqual(94223);
+  });
+
+  test(`should correctly decompress wasm memory when 'compress' header is found`, async () => {
+    const quickJs5 = await quickJSPlugin.process({
+      contractSource,
+      wasmMemory: wasmMemoryCompressed
+    });
+
+    const result = await quickJs5.handle(message);
+
+    expect(result.Messages[1].tags.find((t: { name: string; value: string }) => t.name == 'counter').value).toEqual(2);
   });
 });

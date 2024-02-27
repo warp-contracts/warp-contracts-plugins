@@ -1,24 +1,17 @@
-import {
-  DEBUG_SYNC,
-  QuickJSContext,
-  QuickJSHandle,
-  QuickJSRuntime,
-  QuickJSWASMModule,
-  RELEASE_ASYNC,
-  RELEASE_SYNC
-} from 'quickjs-emscripten';
+import { QuickJSContext, QuickJSHandle, QuickJSRuntime, QuickJSWASMModule } from 'quickjs-emscripten';
 import { AoInteractionResult, InteractionResult, LoggerFactory, QuickJsPluginMessage } from 'warp-contracts';
-import { VARIANT_TYPE, errorEvalAndDispose, joinBuffers } from './utils';
-import { DELIMITER } from '.';
+import { errorEvalAndDispose, joinBuffers } from './utils';
+import { DELIMITER, VARIANT_TYPE } from '.';
 
 export class QuickJsHandlerApi<State> {
-  protected logger = LoggerFactory.INST.create('QuickJsHandlerApi');
+  private readonly logger = LoggerFactory.INST.create('QuickJsHandlerApi');
 
   constructor(
     private readonly vm: QuickJSContext,
     private readonly runtime: QuickJSRuntime,
     private readonly quickJS: QuickJSWASMModule,
-    private readonly wasmMemory: Buffer | undefined
+    private readonly wasmMemory?: Buffer,
+    private readonly compress?: boolean
   ) {}
 
   async handle<Result>(message: QuickJsPluginMessage): Promise<InteractionResult<State, Result>> {
@@ -26,7 +19,7 @@ export class QuickJsHandlerApi<State> {
       this.init(message);
     }
 
-    return this.runContractFunction(message);
+    return await this.runContractFunction(message);
   }
 
   initState(state: State): void {
@@ -40,26 +33,26 @@ export class QuickJsHandlerApi<State> {
     }
   }
 
-  private runContractFunction<Result>(message: QuickJsPluginMessage): InteractionResult<State, Result> {
+  private async runContractFunction<Result>(message: QuickJsPluginMessage): InteractionResult<State, Result> {
     try {
-      const evalOutboxResult = this.vm.evalCode(`__handleDecorator(${JSON.stringify(message)})`);
-      if (evalOutboxResult.error) {
-        errorEvalAndDispose('interaction', this.logger, this.vm, evalOutboxResult.error);
+      const evalInteractionResult = this.vm.evalCode(`__handleDecorator(${JSON.stringify(message)})`);
+      if (evalInteractionResult.error) {
+        errorEvalAndDispose('interaction', this.logger, this.vm, evalInteractionResult.error);
       } else {
-        const outbox: AoInteractionResult<Result> = this.disposeResult(evalOutboxResult);
+        const result: AoInteractionResult<Result> = this.disposeResult(evalInteractionResult);
         return {
-          Memory: this.getWasmMemory(),
+          Memory: await this.getWasmMemory(),
           Error: '',
-          Messages: outbox.Messages,
-          Spawns: outbox.Spawns,
-          Output: outbox.Output
+          Messages: result.Messages,
+          Spawns: result.Spawns,
+          Output: result.Output
         };
       }
-      throw new Error(`Unexpected result from contract: ${JSON.stringify(evalOutboxResult)}`);
+      throw new Error(`Unexpected result from contract: ${JSON.stringify(evalInteractionResult)}`);
     } catch (err: any) {
       if (err.name.includes('ProcessError')) {
         return {
-          Memory: this.getWasmMemory(),
+          Memory: await this.getWasmMemory(),
           Error: `${err.message} ${JSON.stringify(err.stack)}`,
           Messages: null,
           Spawns: null,
@@ -67,7 +60,7 @@ export class QuickJsHandlerApi<State> {
         };
       } else {
         return {
-          Memory: this.getWasmMemory(),
+          Memory: await this.getWasmMemory(),
           Error: `${(err && JSON.stringify(err.stack)) || (err && err.message) || err}`,
           Messages: null,
           Spawns: null,
@@ -115,11 +108,11 @@ export class QuickJsHandlerApi<State> {
           },
           {
             name: 'Data-Protocol',
-            value: 'ao'
+            value: message.tags['Data-Protocol']
           },
           {
             name: 'Variant',
-            value: 'ao.TN.1'
+            value: message.tags.variant
           },
           {
             name: 'Type',
@@ -152,17 +145,33 @@ export class QuickJsHandlerApi<State> {
     }
   }
 
-  private getWasmMemory() {
-    const variantTypeBuffer = Buffer.from(JSON.stringify(VARIANT_TYPE));
-    const wasmMemoryBuffer = this.quickJS.getWasmMemory().buffer;
-    // @ts-ignore
-    const vmPointerBuffer = Buffer.from(JSON.stringify(this.vm.ctx.value));
-    // @ts-ignore
-    const runtimePointerBuffer = Buffer.from(JSON.stringify(this.vm.rt.value));
+  private async getWasmMemory() {
+    let wasmMemoryBuffer: ArrayBuffer;
+    wasmMemoryBuffer = this.quickJS.getWasmMemory().buffer;
 
-    return joinBuffers(
-      [variantTypeBuffer, vmPointerBuffer, runtimePointerBuffer, Buffer.from(wasmMemoryBuffer)],
-      DELIMITER
-    );
+    const headers = {
+      variantType: VARIANT_TYPE,
+      // @ts-ignore
+      vmPointer: this.vm.ctx.value,
+      // @ts-ignore
+      runtimePointer: this.vm.rt.value,
+      compressed: this.compress
+    };
+    if (this.compress) {
+      const compressionStream = new CompressionStream('gzip');
+      const uint8WasmMemoryBuffer = new Uint8Array(wasmMemoryBuffer);
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(uint8WasmMemoryBuffer);
+          controller.close();
+        }
+      });
+      const compressedStream = stream.pipeThrough(compressionStream);
+      wasmMemoryBuffer = await new Response(compressedStream).arrayBuffer();
+    }
+
+    const buffers: Buffer[] = [Buffer.from(JSON.stringify(headers)), Buffer.from(wasmMemoryBuffer)];
+
+    return joinBuffers(buffers, DELIMITER);
   }
 }

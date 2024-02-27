@@ -4,8 +4,18 @@ import fs from 'fs';
 async function main() {
   // reading memory from file, creating new Memory instance
   // and copying contents of the first module's memory into it
-  const memoryBuffer = fs.readFileSync('tools/data/wasmMem.dat');
-  const existingBufferView = new Uint8Array(memoryBuffer);
+  const compressedBuffer = fs.readFileSync('tools/data/wasmMem.dat');
+  const compressedBufferView = new Uint8Array(compressedBuffer);
+  const decompressionStream = new DecompressionStream('gzip');
+  const compressedStream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(compressedBufferView);
+      controller.close();
+    }
+  });
+  const decompressedStream = compressedStream.pipeThrough(decompressionStream);
+  const decompressedBuffer = await new Response(decompressedStream).arrayBuffer();
+  const memoryBuffer = new Uint8Array(decompressedBuffer);
   const pageSize = 64 * 1024;
   const numPages = Math.ceil(memoryBuffer.byteLength / pageSize);
   const newWasmMemory = new WebAssembly.Memory({
@@ -13,7 +23,7 @@ async function main() {
     maximum: 2048
   });
   const newWasmMemoryView = new Uint8Array(newWasmMemory.buffer);
-  newWasmMemoryView.set(existingBufferView);
+  newWasmMemoryView.set(memoryBuffer);
 
   // module 2
   const variant2 = newVariant(RELEASE_SYNC, {

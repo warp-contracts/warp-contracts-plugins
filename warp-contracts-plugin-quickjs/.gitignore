@@ -30,3 +30,5 @@ bundles/
 cache
 
 build/
+
+tools/data

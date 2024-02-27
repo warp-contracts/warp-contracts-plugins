@@ -1,4 +1,4 @@
-export const decorateProcessFnEval = (processCode: string) => {
+export const decorateProcessFn = (processCode: string) => {
   return `
         ${processCode}
     

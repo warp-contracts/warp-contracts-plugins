@@ -1,4 +1,4 @@
-import { QuickJSContext, QuickJSRuntime, QuickJSWASMModule } from 'quickjs-emscripten';
+import { QuickJSContext, QuickJSRuntime, QuickJSVariant, QuickJSWASMModule } from 'quickjs-emscripten';
 
 export type Pointer<CType extends string> = number & {
   ctype: CType;
@@ -13,9 +13,7 @@ export interface WasmModuleConfig {
 }
 
 export enum WasmMemoryBuffer {
-  VARIANT_TYPE,
-  VM_POINTER,
-  RUNTIME_POINTER,
+  HEADERS,
   MEMORY
 }
 
@@ -30,4 +28,11 @@ export class EvalError extends Error {
     this.evalMessage = evalMessage;
     this.stack = stack;
   }
+}
+
+export interface WasmMemoryHeaders {
+  variantType: QuickJSVariant;
+  runtimePointer: number;
+  vmPointer: number;
+  compressed: boolean;
 }
