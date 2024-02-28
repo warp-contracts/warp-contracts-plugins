@@ -24,7 +24,7 @@ const MEMORY_INITIAL_PAGE_SIZE = 64 * 1024;
 const MEMORY_MAXIMUM_PAGE_SIZE = 2048;
 
 export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Promise<QuickJsHandlerApi<State>>> {
-  private readonly logger = LoggerFactory.INST.create('QuickJsPlugin');
+  private readonly logger = LoggerFactory.INST.create(QuickJsPlugin.name);
   private vm: QuickJSContext;
   private runtime: QuickJSRuntime;
   private QuickJS: QuickJSWASMModule;
@@ -75,6 +75,8 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
       const runtimePointer = headers.runtimePointer;
       const vmPointer = headers.vmPointer;
 
+      // extract function for the decompression process
+      // please add benchmark in decompression function
       if (headers.compressed) {
         const compressedMemoryView = new Uint8Array(memory);
         const decompressionStream = new DecompressionStream('gzip');
@@ -89,6 +91,7 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
         memory = Buffer.from(decompressedBuffer);
       }
 
+      // extract function for setting memory in wasm module
       const existingMemoryView = new Uint8Array(memory);
       const pageSize = MEMORY_INITIAL_PAGE_SIZE;
       const numPages = Math.ceil(memory.byteLength / pageSize);

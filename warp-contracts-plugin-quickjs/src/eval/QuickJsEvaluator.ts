@@ -2,9 +2,9 @@ import { QuickJSContext } from 'quickjs-emscripten';
 import { LoggerFactory } from 'warp-contracts';
 
 export class QuickJsEvaluator {
-  private readonly logger = LoggerFactory.INST.create('QuickJsEvaluator');
+  private readonly logger = LoggerFactory.INST.create(QuickJsEvaluator.name);
 
-  constructor(private vm: QuickJSContext) {}
+  constructor(private readonly vm: QuickJSContext) {}
 
   evalLogging() {
     const logHandle = this.vm.newFunction('log', (...args) => {
