@@ -4,7 +4,7 @@ import { errorEvalAndDispose, joinBuffers } from './utils';
 import { DELIMITER, VARIANT_TYPE } from '.';
 
 export class QuickJsHandlerApi<State> {
-  private readonly logger = LoggerFactory.INST.create('QuickJsHandlerApi');
+  private readonly logger = LoggerFactory.INST.create(QuickJsHandlerApi.name);
 
   constructor(
     private readonly vm: QuickJSContext,
@@ -16,6 +16,7 @@ export class QuickJsHandlerApi<State> {
 
   async handle<Result>(message: QuickJsPluginMessage): Promise<InteractionResult<State, Result>> {
     if (!this.wasmMemory) {
+      // TODO: final version
       this.init(message);
     }
 
@@ -50,22 +51,14 @@ export class QuickJsHandlerApi<State> {
       }
       throw new Error(`Unexpected result from contract: ${JSON.stringify(evalInteractionResult)}`);
     } catch (err: any) {
-      if (err.name.includes('ProcessError')) {
-        return {
-          Memory: await this.getWasmMemory(),
-          Error: `${err.message} ${JSON.stringify(err.stack)}`,
-          Messages: null,
-          Spawns: null,
-          Output: null
-        };
-      } else {
-        return {
-          Memory: await this.getWasmMemory(),
-          Error: `${(err && JSON.stringify(err.stack)) || (err && err.message) || err}`,
-          Messages: null,
-          Spawns: null,
-          Output: null
-        };
+      return {
+        Memory: await this.getWasmMemory(),
+        Error: (err.name.includes('ProcessError'))
+            ? `${err.message} ${JSON.stringify(err.stack)}`
+            : `${(err && JSON.stringify(err.stack)) || (err && err.message) || err}`,
+        Messages: null,
+        Spawns: null,
+        Output: null
       }
     }
   }
@@ -97,6 +90,7 @@ export class QuickJsHandlerApi<State> {
   }
 
   private init(message: QuickJsPluginMessage): void {
+    // TODO: verify current env definition in AO specs
     const env = {
       process: {
         id: message.from,
@@ -146,10 +140,12 @@ export class QuickJsHandlerApi<State> {
   }
 
   private async getWasmMemory() {
+    // please add benchmark around the whole method and around compression itself
     let wasmMemoryBuffer: ArrayBuffer;
     wasmMemoryBuffer = this.quickJS.getWasmMemory().buffer;
 
     const headers = {
+      // please store release/debug and sync/async info
       variantType: VARIANT_TYPE,
       // @ts-ignore
       vmPointer: this.vm.ctx.value,

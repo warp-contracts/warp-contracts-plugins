@@ -1,11 +1,5 @@
 import { QuickJSContext, QuickJSRuntime, QuickJSVariant, QuickJSWASMModule } from 'quickjs-emscripten';
 
-export type Pointer<CType extends string> = number & {
-  ctype: CType;
-};
-export type JSRuntimePointer = Pointer<'JSRuntime'>;
-export type JSContextPointer = Pointer<'JSContext'>;
-
 export interface WasmModuleConfig {
   QuickJS: QuickJSWASMModule;
   vm: QuickJSContext;
