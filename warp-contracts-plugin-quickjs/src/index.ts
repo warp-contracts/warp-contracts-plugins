@@ -49,6 +49,7 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
     quickJsEvaluator.evalGlobalsCode(globals);
     quickJsEvaluator.evalHandleFnCode(decorateProcessFn, input.contractSource);
     quickJsEvaluator.evalLogging();
+    quickJsEvaluator.evalPngJS();
 
     return new QuickJsHandlerApi(this.vm, this.runtime, this.QuickJS);
   }
