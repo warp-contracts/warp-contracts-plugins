@@ -108,7 +108,7 @@ let ao = {
       throw new Error('Module source is required');
     }
   
-    ao._ref = ao_.ref + 1;
+    ao._ref = ao._ref + 1;
   
     const spawn = {
       data: msg.Data || 'NODATA',
@@ -120,7 +120,7 @@ let ao = {
         {name: "From-Process", value: ao.id},
         {name: "From-Module", value: ao._module},
         {name: "Module", value: module},
-        {name: "Ref_", value: tostring(ao._ref)}
+        {name: "Ref_", value: ao._ref.toString()}
       ]
     }
   
