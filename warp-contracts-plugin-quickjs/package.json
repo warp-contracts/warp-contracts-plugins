@@ -24,6 +24,7 @@
     "@jitl/quickjs-singlefile-mjs-release-sync": "^0.28.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.5",
+    "@types/pngjs": "^6.0.4",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "arweave": "1.13.7",
@@ -37,6 +38,7 @@
     "warp-contracts-plugin-deploy": "^1.0.13"
   },
   "dependencies": {
+    "pngjs": "7.0.0",
     "quickjs-emscripten": "^0.29.1",
     "warp-contracts": "1.4.40"
   },
