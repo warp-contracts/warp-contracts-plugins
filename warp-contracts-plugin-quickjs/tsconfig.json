@@ -10,6 +10,6 @@
     "types": ["jest", "node"],
     "strictPropertyInitialization": false
   },
-  "include": ["src", "tests", "tools/quickhandle.mjs", "tools/quickhandleWasmMemory.mjs"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }

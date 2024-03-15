@@ -4,7 +4,7 @@ import fs from 'fs';
 async function main() {
   // reading memory from file, creating new Memory instance
   // and copying contents of the first module's memory into it
-  const compressedBuffer = fs.readFileSync('tools/data/wasmMem.dat');
+  const compressedBuffer = fs.readFileSync('tools/outputData/wasmMem.dat');
   const compressedBufferView = new Uint8Array(compressedBuffer);
   const decompressionStream = new DecompressionStream('gzip');
   const compressedStream = new ReadableStream({
@@ -30,7 +30,7 @@ async function main() {
     wasmMemory: newWasmMemory
   });
 
-  const { rt1Ptr, vm1Ptr } = JSON.parse(fs.readFileSync('tools/data/ptrs.json', 'utf-8'));
+  const { rt1Ptr, vm1Ptr } = JSON.parse(fs.readFileSync('tools/outputData/ptrs.json', 'utf-8'));
 
   const QuickJS2 = await newQuickJSWASMModule(variant2);
 

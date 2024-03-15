@@ -99,8 +99,8 @@ export class QuickJsHandlerApi<State> {
   private init(message: QuickJsPluginMessage): void {
     const env = {
       process: {
-        id: message.from,
-        owner: message.owner,
+        id: message.From,
+        owner: message.Owner,
         tags: [
           {
             name: 'Name',
@@ -108,11 +108,11 @@ export class QuickJsHandlerApi<State> {
           },
           {
             name: 'Data-Protocol',
-            value: message.tags['Data-Protocol']
+            value: message.Tags['Data-Protocol']
           },
           {
             name: 'Variant',
-            value: message.tags.variant
+            value: message.Tags.variant
           },
           {
             name: 'Type',
@@ -120,7 +120,7 @@ export class QuickJsHandlerApi<State> {
           },
           {
             name: 'Module',
-            value: message.tags['From-Module']
+            value: message.Tags['From-Module']
           },
           {
             name: 'Scheduler',

@@ -36,7 +36,7 @@ async function main() {
   if (!fs.existsSync('tools/data')) {
     fs.mkdirSync('tools/data');
   }
-  fs.writeFileSync('tools/data/ptrs.json', JSON.stringify({ vm1Ptr, rt1Ptr }));
+  fs.writeFileSync('tools/outputData/ptrs.json', JSON.stringify({ vm1Ptr, rt1Ptr }));
 
   // storing module 1 memory in file
   const buffer = QuickJS1.getWasmMemory().buffer;
@@ -52,7 +52,7 @@ async function main() {
   const compressedStream = stream.pipeThrough(compressionStream);
   const compressedBuffer = await new Response(compressedStream).arrayBuffer();
 
-  fs.writeFileSync('tools/data/wasmMem.dat', Buffer.from(compressedBuffer));
+  fs.writeFileSync('tools/outputData/wasmMem.dat', Buffer.from(compressedBuffer));
   console.log('byteLength', Buffer.from(compressedBuffer).length);
   // it is now safe to dispose vm1 and runtime1
   vm1.dispose();

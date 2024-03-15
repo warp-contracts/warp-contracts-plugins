@@ -1,10 +1,13 @@
 import { Lifetime, newQuickJSWASMModule, newVariant, QuickJSRuntime, RELEASE_SYNC } from 'quickjs-emscripten';
 import fs from 'fs';
+import Arweave from 'arweave';
+
+const arweave = Arweave.init();
 
 async function main() {
   // reading memory from file, creating new Memory instance
   // and copying contents of the first module's memory into it
-  const memoryBuffer = fs.readFileSync('tools/data/wasmMem.dat');
+  const memoryBuffer = fs.readFileSync('tools/outputData/wasmMem.dat');
   const existingBufferView = new Uint8Array(memoryBuffer);
   const pageSize = 64 * 1024;
   const numPages = Math.ceil(memoryBuffer.byteLength / pageSize);
@@ -20,7 +23,7 @@ async function main() {
     wasmMemory: newWasmMemory
   });
 
-  const { rt1Ptr, vm1Ptr } = JSON.parse(fs.readFileSync('tools/data/ptrs.json', 'utf-8'));
+  const { rt1Ptr, vm1Ptr } = JSON.parse(fs.readFileSync('tools/outputData/ptrs.json', 'utf-8'));
 
   const QuickJS2 = await newQuickJSWASMModule(variant2);
 
