@@ -28,7 +28,7 @@ let ao = {
     }
   
     if (this.authorities.length < 1) {
-      for (const tag of env.process.tags) {
+      for (const tag of env.process.Tags) {
         if (tag.name == 'Authority') {
           this.authorities.push(tag.value);
         }
@@ -69,11 +69,11 @@ let ao = {
     this._ref = this._ref + 1;
   
     const message = {
-      target: msg.target,
-      data: msg.data,
+      Target: msg.Target,
+      Data: msg.Data,
       // what's happening here?
-      anchor: '%032d' + ao._ref,
-      tags: [
+      Anchor: '%032d' + ao._ref,
+      Tags: [
         { name: 'Data-Protocol', value: 'ao' },
         { name: 'Variant', value: 'ao.TN.1' },
         { name: 'Type', value: 'Message' },
@@ -84,19 +84,19 @@ let ao = {
     };
   
     for (const key in msg) {
-      if (!['target', 'data', 'anchor', 'tags'].includes(key)) {
-        message.tags.push({ name: key, value: msg[key] });
+      if (!['Target', 'Data', 'Anchor', 'Tags'].includes(key)) {
+        message.Tags.push({ name: key, value: msg[key] });
       }
     }
   
     if (msg.tags) {
-      if (Array.isArray(msg.tags)) {
-        msg.tags.forEach((t) => {
-          message.tags.push(t);
+      if (Array.isArray(msg.Tags)) {
+        msg.Tags.forEach((t) => {
+          message.Tags.push(t);
         });
       } else {
-        for (const key in msg.tags) {
-          message.tags.push({ name: key, value: msg.tags[key] });
+        for (const key in msg.Tags) {
+          message.Tags.push({ name: key, value: msg.Tags[key] });
         }
       }
     }
@@ -108,36 +108,36 @@ let ao = {
       throw new Error('Module source is required');
     }
   
-    ao._ref = ao_.ref + 1;
+    ao._ref = ao._ref + 1;
   
     const spawn = {
-      data: msg.Data || 'NODATA',
-      anchor: '%032d' + ao._ref,
-      tags: [
+      Data: msg.Data || 'NODATA',
+      Anchor: '%032d' + ao._ref,
+      Tags: [
         {name: "Data-Protocol", value: "ao"},
         {name: "Variant", value: "ao.TN.1"},
         {name: "Type", value: "Process"},
         {name: "From-Process", value: ao.id},
         {name: "From-Module", value: ao._module},
         {name: "Module", value: module},
-        {name: "Ref_", value: tostring(ao._ref)}
+        {name: "Ref_", value: toString(ao._ref)}
       ]
     }
   
       for (const key in msg) {
-        if (!['target', 'data', 'anchor', 'tags'].includes(key)) {
-          spawn.tags.push({ name: key, value: msg[key] });
+        if (!['Target', 'Data', 'Anchor', 'Tags'].includes(key)) {
+          spawn.Tags.push({ name: key, value: msg[key] });
         }
       }
   
-      if (msg.tags) {
-        if (Array.isArray(msg.tags)) {
-          msg.tags.forEach((t) => {
-            spawn.tags.push(t);
+      if (msg.Tags) {
+        if (Array.isArray(msg.Tags)) {
+          msg.Tags.forEach((t) => {
+            spawn.Tags.push(t);
           });
         } else {
-          for (const key in msg.tags) {
-            spawn.tags.push({ name: key, value: msg.tags[key] });
+          for (const key in msg.Tags) {
+            spawn.Tags.push({ name: key, value: msg.Tags[key] });
           }
         }
       }

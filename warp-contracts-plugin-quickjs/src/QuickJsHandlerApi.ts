@@ -1,7 +1,6 @@
 import { QuickJSContext, QuickJSHandle, QuickJSRuntime, QuickJSWASMModule } from 'quickjs-emscripten';
 import { AoInteractionResult, InteractionResult, LoggerFactory, QuickJsPluginMessage } from 'warp-contracts';
-import { errorEvalAndDispose, joinBuffers } from './utils';
-import { DELIMITER, VARIANT_TYPE } from '.';
+import { errorEvalAndDispose } from './utils';
 
 export class QuickJsHandlerApi<State> {
   private readonly logger = LoggerFactory.INST.create('QuickJsHandlerApi');
@@ -10,26 +9,21 @@ export class QuickJsHandlerApi<State> {
     private readonly vm: QuickJSContext,
     private readonly runtime: QuickJSRuntime,
     private readonly quickJS: QuickJSWASMModule,
-    private readonly wasmMemory?: Buffer,
-    private readonly compress?: boolean
   ) {}
 
-  async handle<Result>(message: QuickJsPluginMessage): Promise<InteractionResult<State, Result>> {
-    if (!this.wasmMemory) {
-      this.init(message);
+  async handle<Result>(message: QuickJsPluginMessage, state?: State): Promise<InteractionResult<State, Result>> {
+    if (state) {
+      this.initState(state);
     }
-
-    return await this.runContractFunction(message);
+    return this.runContractFunction(message);
   }
 
   initState(state: State): void {
-    if (!this.wasmMemory) {
-      const initStateResult = this.vm.evalCode(`__initState(${JSON.stringify(state)})`);
-      if (initStateResult.error) {
-        errorEvalAndDispose('initState', this.logger, this.vm, initStateResult.error);
-      } else {
-        initStateResult.value.dispose();
-      }
+    const initStateResult = this.vm.evalCode(`__initState(${JSON.stringify(state)})`);
+    if (initStateResult.error) {
+      errorEvalAndDispose('initState', this.logger, this.vm, initStateResult.error);
+    } else {
+      initStateResult.value.dispose();
     }
   }
 
@@ -41,7 +35,7 @@ export class QuickJsHandlerApi<State> {
       } else {
         const result: AoInteractionResult<Result> = this.disposeResult(evalInteractionResult);
         return {
-          Memory: await this.getWasmMemory(),
+          Memory: await this.currentState(),
           Error: '',
           Messages: result.Messages,
           Spawns: result.Spawns,
@@ -52,7 +46,7 @@ export class QuickJsHandlerApi<State> {
     } catch (err: any) {
       if (err.name.includes('ProcessError')) {
         return {
-          Memory: await this.getWasmMemory(),
+          Memory: await this.currentState(),
           Error: `${err.message} ${JSON.stringify(err.stack)}`,
           Messages: null,
           Spawns: null,
@@ -60,7 +54,7 @@ export class QuickJsHandlerApi<State> {
         };
       } else {
         return {
-          Memory: await this.getWasmMemory(),
+          Memory: await this.currentState(),
           Error: `${(err && JSON.stringify(err.stack)) || (err && err.message) || err}`,
           Messages: null,
           Spawns: null,
@@ -145,33 +139,4 @@ export class QuickJsHandlerApi<State> {
     }
   }
 
-  private async getWasmMemory() {
-    let wasmMemoryBuffer: ArrayBuffer;
-    wasmMemoryBuffer = this.quickJS.getWasmMemory().buffer;
-
-    const headers = {
-      variantType: VARIANT_TYPE,
-      // @ts-ignore
-      vmPointer: this.vm.ctx.value,
-      // @ts-ignore
-      runtimePointer: this.vm.rt.value,
-      compressed: this.compress
-    };
-    if (this.compress) {
-      const compressionStream = new CompressionStream('gzip');
-      const uint8WasmMemoryBuffer = new Uint8Array(wasmMemoryBuffer);
-      const stream = new ReadableStream({
-        start(controller) {
-          controller.enqueue(uint8WasmMemoryBuffer);
-          controller.close();
-        }
-      });
-      const compressedStream = stream.pipeThrough(compressionStream);
-      wasmMemoryBuffer = await new Response(compressedStream).arrayBuffer();
-    }
-
-    const buffers: Buffer[] = [Buffer.from(JSON.stringify(headers)), Buffer.from(wasmMemoryBuffer)];
-
-    return joinBuffers(buffers, DELIMITER);
-  }
 }

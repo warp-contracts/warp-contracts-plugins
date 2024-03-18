@@ -2,8 +2,9 @@ function handle(state, message) {
   if (!state.hasOwnProperty('counter')) {
     state.counter = 0;
   }
+  console.log('AO: console log test');
 
-  if (message.tags['Action'] == 'increment') {
+  if (message.Tags['Action'] == 'increment') {
     state.counter++;
     ao.send({
       counter: state.counter
@@ -11,7 +12,7 @@ function handle(state, message) {
     return;
   }
 
-  if (message.tags['Action'] == 'currentValue') {
+  if (message.Tags['Action'] == 'currentValue') {
     return {
       result: state.counter
     };
