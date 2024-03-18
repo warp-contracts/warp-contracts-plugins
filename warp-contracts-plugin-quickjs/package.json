@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "quickjs-emscripten": "^0.27.0",
-    "warp-contracts": "1.4.36-ao.3"
+    "warp-contracts": "1.4.36-ao.12"
   },
   "files": [
     "build/"
