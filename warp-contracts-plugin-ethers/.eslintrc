@@ -1,10 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint",
-    "prettier"
-  ],
+  "plugins": ["@typescript-eslint", "prettier"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -12,10 +9,11 @@
     "prettier"
   ],
   "rules": {
-    "no-console": 1,       // warning
+    "no-console": 1, // warning
     "multiline-ternary": "off",
     "no-nested-ternary": "error",
     "no-multiple-empty-lines": "off",
-    "prettier/prettier": 2 // error
+    "prettier/prettier": 2, // error
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }

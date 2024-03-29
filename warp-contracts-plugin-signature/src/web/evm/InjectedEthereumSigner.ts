@@ -1,8 +1,8 @@
 import { InjectedEthereumSigner as ArbundlesInjectedEthereumSigner } from 'arbundles';
-import { utils } from 'ethers';
+import { computeAddress } from '@ethersproject/transactions';
 
 export class InjectedEthereumSigner extends ArbundlesInjectedEthereumSigner {
   async getAddress() {
-    return utils.computeAddress(this.publicKey);
+    return computeAddress(this.publicKey);
   }
 }
