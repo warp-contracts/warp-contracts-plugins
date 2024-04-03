@@ -3,7 +3,7 @@ function handle(state, message) {
     state.counter = 0;
   }
 
-  if (message.Tags['Action'] === 'increment') {
+  if (message.Tags.find((t) => t.value == 'increment')) {
     state.counter++;
     ao.send({
       counter: state.counter
@@ -11,7 +11,8 @@ function handle(state, message) {
     return;
   }
 
-  if (message.Tags['Action'] === 'rise') {
+  if (message.Tags.find((t) => t.value == 'rise')) {
+    console.log('rise');
     let result = body();
     const eyesPngObj = eyes();
 
@@ -27,14 +28,21 @@ function handle(state, message) {
         }
       }
     }
+    console.log('before parse');
 
     let resParsed = PNG.parse(result);
 
+    console.log('after parse');
+
     state.counter++;
+
+    console.log('before spawn');
 
     ao.spawn('beaverWeaver', {
       Data: resParsed
     });
+
+    console.log('after spawn');
 
     return;
   }

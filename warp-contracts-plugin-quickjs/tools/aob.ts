@@ -21,7 +21,7 @@ async function main() {
             new Tag('Data-Protocol', 'ao'),
             new Tag('Variant', 'ao.TN.1'),
             new Tag('Type', 'Module'),
-            new Tag('Module-Format', 'quickjs-emscripten'),
+            new Tag('Module-Format', 'wasm32-unknown-emscripten'),
             new Tag('Input-Encoding', 'JSON-1'),
             new Tag('Output-Encoding', 'JSON-1'),
             new Tag('Memory-Limit', '500-mb'),
