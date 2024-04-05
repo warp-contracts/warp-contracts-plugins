@@ -88,7 +88,7 @@ describe('just pick one already', () => {
     } as QuickJsPluginInput);
 
     const result2 = await quickJs2.handle(riseMessage);
-    const spawnedPng = PNG.sync.read(Buffer.from(result2.Spawns[0].Data, 'hex'));
+    const spawnedPng = PNG.sync.read(Buffer.from(result2.Spawns[0].Data, 'base64'));
     const actualPng = PNG.sync.read(fs.readFileSync('./tests/img/result.png'));
     expect(spawnedPng).toEqual(actualPng);
 

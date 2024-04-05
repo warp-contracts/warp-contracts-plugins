@@ -29,6 +29,20 @@ function handle(state, message) {
     }
 
     let resParsed = PNG.parse(result);
+    console.log(resParsed);
+
+
+    // Convert the Buffer to a base64 encoded string
+    //const buffer = PNG.sync.write(result);
+    //const base64String = buffer.toString('base64');
+    //console.log(base64String);
+    /*const binaryData = hexToBinary(resParsed);
+
+    console.log(binaryData);
+
+    const base64String = binaryToBase64(binaryData);
+
+    console.log(base64String);*/
 
     state.counter++;
 
@@ -40,6 +54,25 @@ function handle(state, message) {
   }
 
   throw new ProcessError('unknown action');
+}
+
+
+function hexToBinary(hexString) {
+  const length = hexString.length / 2;
+  const binaryData = new Uint8Array(length);
+  for (let i = 0; i < length; i++) {
+    binaryData[i] = parseInt(hexString.substring(i * 2, 2), 16);
+  }
+  return binaryData;
+}
+
+// Convert binary data to a base64 string
+function binaryToBase64(binaryData) {
+  let binaryString = "";
+  binaryData.forEach(byte => {
+    binaryString += String.fromCharCode(byte);
+  });
+  return btoa(binaryString);
 }
 
 function body() {

@@ -19,12 +19,22 @@ export class QuickJsEvaluator {
     logHandle.dispose();
   }
 
+  evalBtoa() {
+    const btoaHandle = this.vm.newFunction('btoa', (...args) => {
+      const nativeArgs = args.map(this.vm.dump);
+      const result = btoa(nativeArgs[0]);
+      return this.vm.newString(result);
+    });
+    this.vm.setProp(this.vm.global, 'btoa', btoaHandle);
+    btoaHandle.dispose();
+  }
+
   evalPngJS() {
     const parseHandle = this.vm.newFunction('parse', (arg) => {
       const png = PNG.sync.write(this.vm.dump(arg));
       // vm.newArrayBuffer doesn't work as expected, so we return string
       // https://github.com/justjake/quickjs-emscripten/issues/167
-      return this.vm.newString(png.toString('hex'));
+      return this.vm.newString(png.toString('base64'));
     });
     const pngHandle = this.vm.newObject();
     this.vm.setProp(pngHandle, 'parse', parseHandle);

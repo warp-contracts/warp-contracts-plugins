@@ -3,11 +3,23 @@ function handle(state, message) {
     state.counter = 0;
   }
 
+  if (!state.hasOwnProperty('spawned')) {
+    state.spawned = {};
+  }
+
   if (message.Tags.find((t) => t.value == 'increment')) {
     state.counter++;
     ao.send({
       counter: state.counter
     });
+    return;
+  }
+
+  if (message.Tags.find((t) => t.value == 'Spawned')) {
+    console.log('Spawned');
+    const spawnedTxId = message.Tags.find((t) => t.name == 'AO-Spawn-Success').value;
+    console.log('Spawned', {spawnedTxId, ref: ao._ref});
+    state.spawned[spawnedTxId] = ao._ref;
     return;
   }
 
@@ -39,7 +51,11 @@ function handle(state, message) {
     console.log('before spawn');
 
     ao.spawn('beaverWeaver', {
-      Data: resParsed
+      Data: resParsed,
+      Tags: [
+          {"name": "Content-Type", "value": "image/png"},
+          {"name": "Type", "value": "image/png"},
+      ]
     });
 
     console.log('after spawn');
