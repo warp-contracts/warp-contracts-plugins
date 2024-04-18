@@ -71,12 +71,14 @@ describe('Memory loading test', () => {
 
     const result = await quickJs.handle(message);
 
-    contractState = result.Memory;
+    contractState = result.State;
+
+    console.log(contractState);
 
     expect(contractState.counter).toEqual(1);
   });
 
-  test('should repsect passed current state', async () => {
+  test('should respect passed current state', async () => {
     const quickJs2 = await quickJSPlugin.process({
       contractSource,
       binaryType: "release_sync"
@@ -84,15 +86,15 @@ describe('Memory loading test', () => {
 
     let result;
     result = await quickJs2.handle(message, contractState);
-    contractState = result.Memory;
+    contractState = result.State;
     result = await quickJs2.handle(message, contractState)
-    contractState = result.Memory;
+    contractState = result.State;
     result = await quickJs2.handle(message, contractState)
-    contractState = result.Memory;
+    contractState = result.State;
     const result2 = await quickJs2.handle(message, contractState);
     expect(result2.Messages[0].Tags.find((t: { name: string; value: string }) => t.name == 'counter').value).toEqual(5);
 
-    contractState = result2.Memory;
+    contractState = result2.State;
   });
 
   test('should correctly handle ProcessError', async () => {

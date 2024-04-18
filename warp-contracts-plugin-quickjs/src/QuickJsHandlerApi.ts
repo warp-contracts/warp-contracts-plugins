@@ -34,8 +34,10 @@ export class QuickJsHandlerApi<State> {
         errorEvalAndDispose('interaction', this.logger, this.vm, evalInteractionResult.error);
       } else {
         const result: AoInteractionResult<Result> = this.disposeResult(evalInteractionResult);
+        const state = this.currentState() as State;
         return {
-          Memory: this.currentBinaryState(),
+          Memory: this.currentBinaryState(state),
+          State: state,
           Error: '',
           Messages: result.Messages,
           Spawns: result.Spawns,
@@ -46,7 +48,7 @@ export class QuickJsHandlerApi<State> {
     } catch (err: any) {
       if (err.name.includes('ProcessError')) {
         return {
-          Memory: this.currentBinaryState(),
+          Memory: null,
           Error: `${err.message} ${JSON.stringify(err.stack)}`,
           Messages: null,
           Spawns: null,
@@ -54,7 +56,7 @@ export class QuickJsHandlerApi<State> {
         };
       } else {
         return {
-          Memory: this.currentBinaryState(),
+          Memory: null,
           Error: `${(err && JSON.stringify(err.stack)) || (err && err.message) || err}`,
           Messages: null,
           Spawns: null,
@@ -64,8 +66,8 @@ export class QuickJsHandlerApi<State> {
     }
   }
 
-  currentBinaryState(): Buffer {
-    const currentState = this.currentState();
+  currentBinaryState(state: State): Buffer {
+    const currentState = state || this.currentState();
     return Buffer.from(JSON.stringify(currentState));
   }
 
