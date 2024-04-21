@@ -111,14 +111,9 @@ describe('Memory loading test', () => {
     expect(firstRandom).not.toEqual(secondRandom);
     expect(contractState.random1).toEqual(contractState.random2);
     expect(contractState.random2).toEqual(contractState.random3);
-
-
-
-    console.log("RANDOM: ", contractState.random);
-    //expect(contractState.random).toEqual(1);
   });
 
-  /*test('should respect passed current state', async () => {
+  test('should respect passed current state', async () => {
     const quickJs2 = await quickJSPlugin.process({
       contractSource,
       binaryType: "release_sync"
@@ -132,7 +127,7 @@ describe('Memory loading test', () => {
     result = await quickJs2.handle(message, contractState)
     contractState = result.State;
     const result2 = await quickJs2.handle(message, contractState);
-    expect(result2.Messages[0].Tags.find((t: { name: string; value: string }) => t.name == 'counter').value).toEqual(5);
+    expect(result2.Messages[0].Tags.find((t: { name: string; value: string }) => t.name == 'counter').value).toEqual(4);
 
     contractState = result2.State;
   });
@@ -155,6 +150,6 @@ describe('Memory loading test', () => {
     expect(result3.Messages).toBeNull();
     expect(result3.Spawns).toBeNull();
     expect(result3.Output).toBeNull();
-  });*/
+  });
 
 });
