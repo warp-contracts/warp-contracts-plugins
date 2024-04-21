@@ -1,6 +1,7 @@
 import { QuickJSContext } from 'quickjs-emscripten';
 import { LoggerFactory } from 'warp-contracts';
 import { PNG } from 'pngjs';
+import seedrandom from 'seedrandom';
 
 export class QuickJsEvaluator {
   private readonly logger = LoggerFactory.INST.create('QuickJsEvaluator');
@@ -19,16 +20,6 @@ export class QuickJsEvaluator {
     logHandle.dispose();
   }
 
-  evalBtoa() {
-    const btoaHandle = this.vm.newFunction('btoa', (...args) => {
-      const nativeArgs = args.map(this.vm.dump);
-      const result = btoa(nativeArgs[0]);
-      return this.vm.newString(result);
-    });
-    this.vm.setProp(this.vm.global, 'btoa', btoaHandle);
-    btoaHandle.dispose();
-  }
-
   evalPngJS() {
     const parseHandle = this.vm.newFunction('parse', (arg) => {
       const png = PNG.sync.write(this.vm.dump(arg));
@@ -41,6 +32,20 @@ export class QuickJsEvaluator {
     this.vm.setProp(this.vm.global, 'PNG', pngHandle);
     pngHandle.dispose();
     parseHandle.dispose();
+  }
+
+  evalSeedRandom() {
+    const randomHandle = this.vm.newFunction('random', (...args) => {
+      const nativeArgs = args.map(this.vm.dump);
+      const message = nativeArgs[0];
+      const rng = seedrandom(message.Signature);
+      return this.vm.newNumber(rng());
+    });
+    const warpHandle = this.vm.newObject();
+    this.vm.setProp(warpHandle, 'random', randomHandle);
+    this.vm.setProp(this.vm.global, 'Warp', warpHandle);
+    warpHandle.dispose();
+    randomHandle.dispose();
   }
 
   evalGlobalsCode(globalsCode: string) {

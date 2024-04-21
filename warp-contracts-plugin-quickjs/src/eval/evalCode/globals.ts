@@ -161,6 +161,7 @@ let ao = {
 }
 
 let currentState = {};
+let currentMessage = {};
 
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -175,4 +176,6 @@ function __initState(newState) {
 function __currentState() {
   return JSON.stringify(currentState);
 }
+
+Math.random = () => Warp.random(currentMessage);
 `;

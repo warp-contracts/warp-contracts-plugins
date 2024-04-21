@@ -4,6 +4,7 @@ export const decorateProcessFn = (processCode: string) => {
     
         function __handleDecorator(message) {
           ao.clearOutbox();
+          currentMessage = message;
           handle(currentState, message);
           return JSON.stringify(ao.outbox);
         }

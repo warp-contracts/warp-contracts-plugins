@@ -18,5 +18,12 @@ function handle(state, message) {
     };
   }
 
+  if (message.Tags['Action'] == 'random') {
+    console.log('random called', Math.random());
+    state.random1 = Math.random();
+    state.random2 = Math.random();
+    state.random3 = Math.random();
+    return;
+  }
   throw new ProcessError('unknown action');
 }

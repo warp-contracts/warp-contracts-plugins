@@ -40,6 +40,7 @@
   "dependencies": {
     "pngjs": "7.0.0",
     "quickjs-emscripten": "^0.29.1",
+    "seedrandom": "^3.0.5",
     "warp-contracts": "1.4.40"
   },
   "files": [

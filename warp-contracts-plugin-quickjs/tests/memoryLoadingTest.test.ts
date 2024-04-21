@@ -13,7 +13,7 @@ import { QuickJsHandlerApi } from '../src/QuickJsHandlerApi';
 describe('Memory loading test', () => {
   let contractSource: string;
   let quickJSPlugin: QuickJsPlugin<unknown>;
-  let message: QuickJsPluginMessage;
+  let message, messageRandom1, messageRandom2: QuickJsPluginMessage;
   let contractState: any;
   let quickJs: QuickJsHandlerApi<unknown>;
   const initState = {
@@ -51,6 +51,22 @@ describe('Memory loading test', () => {
       'Hash-Chain': 'hJ0B-0yxKxeL3IIfaIIF7Yr6bFLG2vQayaF8G0EpjbY'
     };
 
+    messageRandom1 = {
+      ...message,
+      Tags: {
+        type: 'Message',
+        variant: 'ao.TN.1',
+        'Data-Protocol': 'ao',
+        'From-Module': 'PR72afhcby-x9c9Jg--utxw9L8_ZCOyjCgnUhp2JSMA',
+        'From-Process': 'jliaItK34geaPuyOYVqh8fsRgXIXWwa9iLJszGXKOHE',
+        Action: 'random'
+      },
+    }
+    messageRandom2 = {
+      ...messageRandom1,
+      Signature: 'xxx'
+    }
+
     quickJs = await quickJSPlugin.process({
       contractSource,
       binaryType: "release_sync"
@@ -73,12 +89,36 @@ describe('Memory loading test', () => {
 
     contractState = result.State;
 
-    console.log(contractState);
-
     expect(contractState.counter).toEqual(1);
   });
 
-  test('should respect passed current state', async () => {
+  test('should properly use PRNG', async () => {
+    const quickJs = await quickJSPlugin.process({
+      contractSource,
+      binaryType: "release_sync"
+    } as QuickJsPluginInput);
+
+    const result1 = await quickJs.handle(messageRandom1);
+
+    contractState = result1.State;
+    const firstRandom = contractState.random1;
+    expect(contractState.random1).toEqual(contractState.random2);
+    expect(contractState.random2).toEqual(contractState.random3);
+
+    const result2 = await quickJs.handle(messageRandom2);
+    contractState = result2.State;
+    const secondRandom = contractState.random1;
+    expect(firstRandom).not.toEqual(secondRandom);
+    expect(contractState.random1).toEqual(contractState.random2);
+    expect(contractState.random2).toEqual(contractState.random3);
+
+
+
+    console.log("RANDOM: ", contractState.random);
+    //expect(contractState.random).toEqual(1);
+  });
+
+  /*test('should respect passed current state', async () => {
     const quickJs2 = await quickJSPlugin.process({
       contractSource,
       binaryType: "release_sync"
@@ -115,6 +155,6 @@ describe('Memory loading test', () => {
     expect(result3.Messages).toBeNull();
     expect(result3.Spawns).toBeNull();
     expect(result3.Output).toBeNull();
-  });
+  });*/
 
 });

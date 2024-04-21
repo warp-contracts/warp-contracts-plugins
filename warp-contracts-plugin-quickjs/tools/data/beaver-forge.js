@@ -42,7 +42,7 @@ function handle(state, message) {
     }
     console.log('before parse');
 
-    let resParsed = PNG.parse(result);
+    let resParsed = "data:image/png;base64," + PNG.parse(result);
 
     console.log('after parse');
 
