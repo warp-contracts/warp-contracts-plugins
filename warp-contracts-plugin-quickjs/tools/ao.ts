@@ -44,18 +44,21 @@ async function main() {
         new Tag('Module', moduleId),
         // new Tag('Module', '9afQ1PLf2mrshqCTZEzzJTR2gWaC9zNPnYgYEqg1Pt4'),
         // new Tag('Scheduler', '_GQ33BkPtZrqxA84vM8Zk-N2aO0toNNu_C-l-rawrBA'),
-        new Tag('Scheduler', '_GQ33BkPtZrqxA84vM8Zk-N2aO0toNNu_C-l-rawrBA'),
+        // new Tag('Scheduler', '_GQ33BkPtZrqxA84vM8Zk-N2aO0toNNu_C-l-rawrBA'),
+        new Tag('Scheduler', 'jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M'),
         new Tag('SDK', 'ao'),
         new Tag('Content-Type', 'text/plain'),
         new Tag('Name', 'asia')
     ];
 
+    let muAddress = 'https://mu.warp.cc';
+    //let muAddress = 'http://localhost:8080';
     if (messageType == 'process') {
         const data = JSON.stringify({counter: {}});
         const processDataItem = createData(data, signer, {tags: processTags});
         await processDataItem.sign(signer);
 
-        const processResponse = await fetch('http://localhost:3004', {
+        const processResponse = await fetch(muAddress, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/octet-stream',
@@ -95,7 +98,7 @@ async function main() {
         });
         await messageDataItem.sign(signer);
 
-        const messageResponse = await fetch('http://localhost:3004', {
+        const messageResponse = await fetch(muAddress, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/octet-stream',

@@ -72,7 +72,7 @@ let ao = {
       Target: msg.Target,
       Data: msg.Data,
       // what's happening here?
-      Anchor: '%032d' + ao._ref,
+      Anchor: (this._ref + '').padStart(32, '0'),
       Tags: [
         { name: 'Data-Protocol', value: 'ao' },
         { name: 'Variant', value: 'ao.TN.1' },
