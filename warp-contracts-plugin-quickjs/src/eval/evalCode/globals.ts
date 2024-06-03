@@ -177,5 +177,5 @@ function __currentState() {
   return JSON.stringify(currentState);
 }
 
-Math.random = () => Warp.random(currentMessage);
+Math.random = (uniqueValue) => Warp.random(currentMessage, uniqueValue);
 `;

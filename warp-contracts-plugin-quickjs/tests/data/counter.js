@@ -19,10 +19,13 @@ function handle(state, message) {
   }
 
   if (message.Tags['Action'] == 'random') {
-    console.log('random called', Math.random());
+    console.log('random called');
     state.random1 = Math.random();
+    console.log('state.random1', state.random1);
     state.random2 = Math.random();
+    console.log('state.random2', state.random2);
     state.random3 = Math.random();
+    console.log('state.random3', state.random3);
     return;
   }
   throw new ProcessError('unknown action');

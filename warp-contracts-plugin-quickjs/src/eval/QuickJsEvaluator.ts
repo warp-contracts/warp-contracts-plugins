@@ -38,7 +38,8 @@ export class QuickJsEvaluator {
     const randomHandle = this.vm.newFunction('random', (...args) => {
       const nativeArgs = args.map(this.vm.dump);
       const message = nativeArgs[0];
-      const rng = seedrandom(message.Signature);
+      const uniqueValue = nativeArgs.length > 1 ? "" + nativeArgs[1] : ''
+      const rng = seedrandom(message.Signature + uniqueValue);
       return this.vm.newNumber(rng());
     });
     const warpHandle = this.vm.newObject();
