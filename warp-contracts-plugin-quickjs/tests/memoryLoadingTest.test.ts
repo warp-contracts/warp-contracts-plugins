@@ -152,4 +152,42 @@ describe('Memory loading test', () => {
     expect(result3.Output).toBeNull();
   });
 
+  test('should not allow for partial state changes', async () => {
+    const quickJs = await quickJSPlugin.process({
+      contractSource,
+      binaryType: "release_sync"
+    } as QuickJsPluginInput);
+
+    const result = await quickJs.handle({
+      ...message,
+      Tags: {
+        ...message.Tags,
+        Action: 'increment'
+      }
+    });
+
+    expect(result.State.counter).toEqual(1);
+
+    const result2 = await quickJs.handle({
+      ...message,
+      Tags: {
+        ...message.Tags,
+        Action: 'haltAndCatchFire'
+      }
+    });
+    expect(result2.Error).toContain('ProcessError');
+
+    const result3 = await quickJs.handle({
+      ...message,
+      Tags: {
+        ...message.Tags,
+        Action: 'increment'
+      }
+    });
+
+    // note: the increment done in result2 should be 'rollbacked'
+    expect(result3.State.counter).toEqual(2);
+
+  });
+
 });

@@ -12,6 +12,11 @@ function handle(state, message) {
     return;
   }
 
+  if (message.Tags['Action'] == 'haltAndCatchFire') {
+    state.counter++;
+    throw new ProcessError("I'm done here");
+  }
+
   if (message.Tags['Action'] == 'currentValue') {
     return {
       result: state.counter
