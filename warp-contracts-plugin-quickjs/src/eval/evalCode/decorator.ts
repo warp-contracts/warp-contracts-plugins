@@ -2,8 +2,8 @@ export const decorateProcessFn = (processCode: string) => {
   return `
         ${processCode}
     
-        function __handleDecorator(message) {
-          ao.clearOutbox();
+        function __handleDecorator(message, env) {
+          ao.init(env);
           currentMessage = message;
           const stateCopy = JSON.parse(JSON.stringify(currentState));
           try {

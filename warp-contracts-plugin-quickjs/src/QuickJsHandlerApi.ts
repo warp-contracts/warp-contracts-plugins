@@ -1,5 +1,5 @@
 import { QuickJSContext, QuickJSHandle, QuickJSRuntime, QuickJSWASMModule } from 'quickjs-emscripten';
-import { AoInteractionResult, InteractionResult, LoggerFactory, QuickJsPluginMessage } from 'warp-contracts';
+import {AoInteractionResult, InteractionResult, LoggerFactory, QuickJsPluginMessage, Tag} from 'warp-contracts';
 import { errorEvalAndDispose } from './utils';
 
 export class QuickJsHandlerApi<State> {
@@ -11,11 +11,11 @@ export class QuickJsHandlerApi<State> {
     private readonly quickJS: QuickJSWASMModule,
   ) {}
 
-  async handle<Result>(message: QuickJsPluginMessage, state?: State): Promise<InteractionResult<State, Result>> {
+  async handle<Result>(message: QuickJsPluginMessage, env: ProcessEnv, state?: State): Promise<InteractionResult<State, Result>> {
     if (state) {
       this.initState(state);
     }
-    return this.runContractFunction(message);
+    return this.runContractFunction(message, env);
   }
 
   initState(state: State): void {
@@ -27,16 +27,16 @@ export class QuickJsHandlerApi<State> {
     }
   }
 
-  private async runContractFunction<Result>(message: QuickJsPluginMessage): InteractionResult<State, Result> {
+  private async runContractFunction<Result>(message: QuickJsPluginMessage, env: ProcessEnv): InteractionResult<State, Result> {
     try {
-      const evalInteractionResult = this.vm.evalCode(`__handleDecorator(${JSON.stringify(message)})`);
+      const evalInteractionResult = this.vm.evalCode(`__handleDecorator(${JSON.stringify(message)}, ${JSON.stringify(env)})`);
       if (evalInteractionResult.error) {
         errorEvalAndDispose('interaction', this.logger, this.vm, evalInteractionResult.error);
       } else {
         const result: AoInteractionResult<Result> = this.disposeResult(evalInteractionResult);
         const state = this.currentState() as State;
         return {
-          Memory: this.currentBinaryState(state),
+          Memory: null,
           State: state,
           Error: '',
           Messages: result.Messages,
@@ -146,4 +146,18 @@ export class QuickJsHandlerApi<State> {
     }
   }
 
+}
+
+// https://cookbook_ao.g8way.io/concepts/processes.html
+export type ProcessEnv = {
+  Process: {
+    Id: string,
+    Owner: string,
+    Tags: { name: string, value: string }[]
+  },
+  Module: {
+    Id: string,
+    Owner: string,
+    Tags: { name: string, value: string }[]
+  }
 }

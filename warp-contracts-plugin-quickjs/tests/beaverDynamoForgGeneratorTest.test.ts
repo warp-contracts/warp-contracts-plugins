@@ -10,8 +10,20 @@ describe('just pick one already', () => {
   let quickJSPlugin: QuickJsPlugin<unknown>;
   let message: QuickJsPluginMessage;
   let riseMessage: QuickJsPluginMessage;
-  let wasmMemory: Buffer;
   let quickJs: QuickJsHandlerApi<unknown>;
+
+  const processEnv = {
+    Process: {
+      Id: "",
+      Owner: "",
+      Tags: []
+    },
+    Module: {
+      Id: "",
+      Owner: "",
+      Tags: []
+    }
+  }
 
   beforeAll(async () => {
     LoggerFactory.INST.logLevel('error');
@@ -76,7 +88,7 @@ describe('just pick one already', () => {
   });
 
   test('should correctly handle message', async () => {
-    const result = await quickJs.handle(message);
+    const result = await quickJs.handle(message, processEnv);
     expect(result.Messages.length).toBe(1);
     expect(result.Messages[0].Tags.find((t: { name: string; value: string }) => t.name == 'counter').value).toEqual(1);
   });
@@ -87,7 +99,7 @@ describe('just pick one already', () => {
       binaryType: "release_sync"
     } as QuickJsPluginInput);
 
-    const result2 = await quickJs2.handle(riseMessage);
+    const result2 = await quickJs2.handle(riseMessage, processEnv);
     const spawnedPng = PNG.sync.read(Buffer.from(result2.Spawns[0].Data, 'base64'));
     const actualPng = PNG.sync.read(fs.readFileSync('./tests/img/result.png'));
     expect(spawnedPng).toEqual(actualPng);

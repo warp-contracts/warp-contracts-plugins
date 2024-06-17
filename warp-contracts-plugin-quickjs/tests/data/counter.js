@@ -33,5 +33,10 @@ function handle(state, message) {
     console.log('state.random3', state.random3);
     return;
   }
+
+  if (message.Tags['Action'] == 'env') {
+    ao.result(ao.env);
+    return;
+  }
   throw new ProcessError('unknown action');
 }
