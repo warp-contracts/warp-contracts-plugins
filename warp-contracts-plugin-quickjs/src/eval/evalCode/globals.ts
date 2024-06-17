@@ -11,24 +11,13 @@ let ao = {
   _module: '',
   _version: '0.0.3',
   _ref: 0,
-  authorities: [],
+  authorities: null,
   env: {},
   id: '',
   init: function(env) {
-    if (this.id == '') {
-      this.id = env.process.id;
-    }
-  
-    if (this._module == '') {
-      for (const tag of env.process.tags) {
-        if (tag.name == 'Module') {
-          this._module = tag.value;
-        }
-      }
-    }
-  
-    if (this.authorities.length < 1) {
-      for (const tag of env.process.Tags) {
+    if (this.authorities == null) {
+      this.authorities = [];
+      for (const tag of env.Process.Tags) {
         if (tag.name == 'Authority') {
           this.authorities.push(tag.value);
         }
