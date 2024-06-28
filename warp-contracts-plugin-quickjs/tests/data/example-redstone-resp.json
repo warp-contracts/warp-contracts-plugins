@@ -1,0 +1,855 @@
+{
+  "BTC": [
+    {
+      "dataPoints": [
+        {
+          "dataFeedId": "BTC",
+          "value": 61312.772880419834,
+          "metadata": {
+            "value": "61312.772880419834",
+            "sourceMetadata": {
+              "bitget-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 61314.794943830864,
+                  "askPrice": 61315.44405873799,
+                  "volumeInUsd": 221226535.63104948
+                },
+                "value": "61314.19576083967"
+              },
+              "bitmart-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 61316.043241729174,
+                  "askPrice": 61316.123132794666,
+                  "volumeInUsd": 296807043.2019472
+                },
+                "value": "61310.41092161198"
+              },
+              "bitrue-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 61310.4009352288,
+                  "askPrice": 61310.41092161198,
+                  "volumeInUsd": 651624643.4548311
+                },
+                "value": "61322.334663136666"
+              },
+              "coinbasepro-usd": {
+                "tradeInfo": {
+                  "bidPrice": 61316.83,
+                  "askPrice": 61316.84,
+                  "volumeInUsd": 477467825.7563793
+                },
+                "value": "61311.35"
+              },
+              "coingecko": {
+                "value": "61173"
+              },
+              "coinmarketcap": {
+                "value": "61214.54040178265"
+              },
+              "kraken-usd": {
+                "tradeInfo": {
+                  "bidPrice": 61281.7,
+                  "askPrice": 61281.8,
+                  "volumeInUsd": 47167392.396437176
+                },
+                "value": "61281.8"
+              },
+              "mexc-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 61322.21482653844,
+                  "askPrice": 61322.22481292162,
+                  "volumeInUsd": 514420246.1187528
+                },
+                "value": "61322.334663136666"
+              },
+              "okx-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 61314.99467149459,
+                  "askPrice": 61315.094535326454,
+                  "volumeInUsd": 370201264.1498465
+                },
+                "value": "61315.094535326454"
+              },
+              "xt": {
+                "value": "61403.65"
+              },
+              "binance-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 61322.22481292162,
+                  "askPrice": 61322.2347993048,
+                  "volumeInUsd": 1333141600.6492357
+                },
+                "value": "61322.2347993048"
+              },
+              "binancecoinm-usd": {
+                "tradeInfo": {
+                  "volumeInUsd": 1412642821.612304
+                },
+                "value": "61346.2"
+              },
+              "binanceusdm-usdt": {
+                "value": "61294.12313063479"
+              },
+              "kucoin-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 61309.00284158269,
+                  "askPrice": 61308.90297775082,
+                  "volumeInUsd": 109962412.64110604
+                },
+                "value": "61308.90297775082"
+              },
+              "lbank-usdt": {
+                "tradeInfo": {
+                  "volumeInUsd": 441968870.88306046
+                },
+                "value": "61307.2152789923"
+              },
+              "bingx-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 61317.69099495495,
+                  "askPrice": 61318.200300497454,
+                  "volumeInUsd": 78462813.55790266
+                },
+                "value": "61319.21891158248"
+              },
+              "bitfinex2-usd": {
+                "tradeInfo": {
+                  "bidPrice": 61465,
+                  "askPrice": 61466,
+                  "volumeInUsd": 57347979.08171638
+                },
+                "value": "61466"
+              },
+              "bitstamp-usd": {
+                "tradeInfo": {
+                  "bidPrice": 61307,
+                  "askPrice": 61309,
+                  "volumeInUsd": 83889522.3504378
+                },
+                "value": "61310"
+              },
+              "kaiko": {
+                "value": "61268.713962132504"
+              },
+              "kaiko-v2": {
+                "value": "61318.22987582794"
+              }
+            },
+            "nodeLabel": "main-bnb-btc"
+          }
+        }
+      ],
+      "timestampMilliseconds": 1719583300000,
+      "dataFeedId": "BTC",
+      "signature": "fj3Iv8xZjz8qwodXe2fCmtL5lgUMD0ujbnScPROSq2UkevDcXNDLlq/Se2jftpQ8nylzaAEhPG0EnmSREGqI7xw="
+    }
+  ],
+  "ETH": [
+    {
+      "dataPoints": [
+        {
+          "dataFeedId": "ETH",
+          "value": 3448.0092449267086,
+          "metadata": {
+            "value": "3448.0092449267086",
+            "sourceMetadata": {
+              "binance-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 3449.19762477948,
+                  "askPrice": 3449.207611164797,
+                  "volumeInUsd": 674575138.5886772
+                },
+                "value": "3449.207611164797"
+              },
+              "binancecoinm-usd": {
+                "tradeInfo": {
+                  "volumeInUsd": 779722666.9604069
+                },
+                "value": "3449.34"
+              },
+              "binanceusdm-usdt": {
+                "value": "3446.970660853698"
+              },
+              "bitget-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 3448.2289454036913,
+                  "askPrice": 3448.238931789009,
+                  "volumeInUsd": 137799378.5765493
+                },
+                "value": "3448.2289454036913"
+              },
+              "bitmart-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 3448.7282646695617,
+                  "askPrice": 3448.738251054879,
+                  "volumeInUsd": 168061746.7030226
+                },
+                "value": "3448.5984416604356"
+              },
+              "coingecko": {
+                "value": "3436.57"
+              },
+              "coinmarketcap": {
+                "value": "3441.4769829585994"
+              },
+              "kucoin-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 3448.338795642183,
+                  "askPrice": 3448.3288092568655,
+                  "volumeInUsd": 105309490.49322356
+                },
+                "value": "3448.0092449267086"
+              },
+              "mexc-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 3449.027856229084,
+                  "askPrice": 3449.047828999719,
+                  "volumeInUsd": 104993530.33013886
+                },
+                "value": "3447.9093810735344"
+              },
+              "lbank-usdt": {
+                "tradeInfo": {
+                  "volumeInUsd": 358970812.6274182
+                },
+                "value": "3447.869435532265"
+              },
+              "okx-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 3449.027856229084,
+                  "askPrice": 3449.037842614401,
+                  "volumeInUsd": 182443602.4824659
+                },
+                "value": "3449.027856229084"
+              },
+              "xt": {
+                "value": "3453.59"
+              },
+              "bingx-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 3448.588455275118,
+                  "askPrice": 3448.6184144310705,
+                  "volumeInUsd": 29549202.691499263
+                },
+                "value": "3448.5485097338483"
+              },
+              "bitfinex2-usd": {
+                "tradeInfo": {
+                  "bidPrice": 3456.5,
+                  "askPrice": 3456.8,
+                  "volumeInUsd": 4524793.21128438
+                },
+                "value": "3454.6"
+              },
+              "bitrue-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 3448.0192313120256,
+                  "askPrice": 3448.169027091787,
+                  "volumeInUsd": 126113468.10402344
+                },
+                "value": "3448.069163238613"
+              },
+              "bitstamp-usd": {
+                "tradeInfo": {
+                  "bidPrice": 3448,
+                  "askPrice": 3448.9,
+                  "volumeInUsd": 12620161.589267978
+                },
+                "value": "3447.7"
+              },
+              "coinbasepro-usd": {
+                "tradeInfo": {
+                  "bidPrice": 3448.89,
+                  "askPrice": 3448.9,
+                  "volumeInUsd": 260222314.92897597
+                },
+                "value": "3448.74"
+              },
+              "kaiko": {
+                "value": "3443.711550780563"
+              },
+              "kaiko-v2": {
+                "value": "3447.778879888236"
+              },
+              "kraken-usd": {
+                "tradeInfo": {
+                  "bidPrice": 3447.7,
+                  "askPrice": 3447.71,
+                  "volumeInUsd": 39020968.83159514
+                },
+                "value": "3447.7"
+              },
+              "gate-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 3447.899394688217,
+                  "askPrice": 3447.9093810735344,
+                  "volumeInUsd": 274750934.83977
+                },
+                "value": "3447.9093810735344"
+              }
+            },
+            "nodeLabel": "main"
+          }
+        }
+      ],
+      "timestampMilliseconds": 1719583300000,
+      "dataFeedId": "ETH",
+      "signature": "c2R2BxQnC2VgNbGMgw5NwgwdqEL0pEML+2CN06JdtZcNGHji8/yamXHNBRfTXhgaMpqdbkRsly7/pLirBXzNThw="
+    }
+  ],
+  "USDC": [
+    {
+      "dataPoints": [
+        {
+          "dataFeedId": "USDC",
+          "value": 0.99987337355549,
+          "metadata": {
+            "value": "0.99987337355549",
+            "sourceMetadata": {
+              "binance-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 0.99983689797887,
+                  "askPrice": 0.99993676183204,
+                  "volumeInUsd": 1024462452.2020738
+                },
+                "value": "0.99993676183204"
+              },
+              "binanceusdm-usdt": {
+                "value": "0.99943244937351"
+              },
+              "bitget-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 0.99983689797887,
+                  "askPrice": 0.99993676183204,
+                  "volumeInUsd": 6329555.595029481
+                },
+                "value": "0.99993676183204"
+              },
+              "bitmart-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 0.99892813691498,
+                  "askPrice": 0.99974702051101,
+                  "volumeInUsd": 1146704.7064046974
+                },
+                "value": "0.99974702051101"
+              },
+              "bitrue-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 0.99983689797887,
+                  "askPrice": 0.99993676183204,
+                  "volumeInUsd": 9775553.538512489
+                },
+                "value": "0.99983689797887"
+              },
+              "bitstamp-usd": {
+                "tradeInfo": {
+                  "bidPrice": 0.99988,
+                  "askPrice": 0.99989,
+                  "volumeInUsd": 1795761.3352277058
+                },
+                "value": "0.99988"
+              },
+              "coingecko": {
+                "value": "0.996848"
+              },
+              "coinmarketcap": {
+                "value": "0.9998920472458739"
+              },
+              "curve-ethereum-dai": {
+                "slippage": [
+                  {
+                    "slippageAsPercent": "0.000020",
+                    "direction": "buy",
+                    "simulationValueInUsd": "10000"
+                  },
+                  {
+                    "slippageAsPercent": "0.000053",
+                    "direction": "sell",
+                    "simulationValueInUsd": "10000"
+                  }
+                ],
+                "value": "0.999905"
+              },
+              "curve-ethereum-usdt": {
+                "slippage": [
+                  {
+                    "slippageAsPercent": "-0.000003",
+                    "direction": "buy",
+                    "simulationValueInUsd": "10000"
+                  },
+                  {
+                    "slippageAsPercent": "0.000005",
+                    "direction": "sell",
+                    "simulationValueInUsd": "10000"
+                  }
+                ],
+                "value": "0.99982769"
+              },
+              "kaiko": {
+                "value": "0.99987675711099"
+              },
+              "kaiko-v2": {
+                "value": "0.9999020825301114"
+              },
+              "kraken-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 0.99983689797887,
+                  "askPrice": 0.99993676183204,
+                  "volumeInUsd": 11870735.448437633
+                },
+                "value": "0.99983689797887"
+              },
+              "kucoin-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 0.99988682990546,
+                  "askPrice": 0.99987684352014,
+                  "volumeInUsd": 3591562.888252603
+                },
+                "value": "0.99988682990546"
+              },
+              "lbank-usdt": {
+                "tradeInfo": {
+                  "volumeInUsd": 4879333.511020062
+                },
+                "value": "0.99983689797887"
+              },
+              "maverick-ethereum-usdt": {
+                "slippage": [
+                  {
+                    "slippageAsPercent": "21.070665",
+                    "direction": "buy",
+                    "simulationValueInUsd": "10000"
+                  },
+                  {
+                    "slippageAsPercent": "13.393937",
+                    "direction": "sell",
+                    "simulationValueInUsd": "10000"
+                  }
+                ],
+                "value": "0.99942889"
+              },
+              "mexc-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 0.99983689797887,
+                  "askPrice": 0.99993676183204,
+                  "volumeInUsd": 8441618.701899366
+                },
+                "value": "0.99983689797887"
+              },
+              "okx-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 0.99983689797887,
+                  "askPrice": 0.99993676183204,
+                  "volumeInUsd": 11859652.89125404
+                },
+                "value": "0.99993676183204"
+              },
+              "uniswap-v3-ethereum-dai-100": {
+                "slippage": [
+                  {
+                    "slippageAsPercent": "0.000001",
+                    "direction": "buy",
+                    "simulationValueInUsd": "10000"
+                  },
+                  {
+                    "slippageAsPercent": "-0.000096",
+                    "direction": "sell",
+                    "simulationValueInUsd": "10000"
+                  }
+                ],
+                "value": "0.99986999"
+              }
+            },
+            "nodeLabel": "main"
+          }
+        }
+      ],
+      "timestampMilliseconds": 1719583300000,
+      "dataFeedId": "USDC",
+      "signature": "AO0XbNFydTZhY8KOsdl6pmOcD28kabyIOOJJ03w/5VtSBWc6VBkBvuoGkmN9tj14zrilBDuwdPG909aWnR7I4hs="
+    }
+  ],
+  "USDT": [
+    {
+      "dataPoints": [
+        {
+          "dataFeedId": "USDT",
+          "value": 0.99863853174078,
+          "metadata": {
+            "value": "0.99863853174078",
+            "sourceMetadata": {
+              "bitstamp-usd": {
+                "tradeInfo": {
+                  "bidPrice": 0.99863,
+                  "askPrice": 0.99864,
+                  "volumeInUsd": 14110809.610023454
+                },
+                "value": "0.99864"
+              },
+              "coinbasepro-usd": {
+                "tradeInfo": {
+                  "bidPrice": 0.99859,
+                  "askPrice": 0.9986,
+                  "volumeInUsd": 534421104.8193904
+                },
+                "value": "0.99859"
+              },
+              "coingecko": {
+                "value": "0.997874"
+              },
+              "coinmarketcap": {
+                "value": "0.9987071541793503"
+              },
+              "kaiko": {
+                "value": "0.9986429876841129"
+              },
+              "kaiko-v2": {
+                "value": "0.9986370634815651"
+              }
+            },
+            "nodeLabel": "main"
+          }
+        }
+      ],
+      "timestampMilliseconds": 1719583300000,
+      "dataFeedId": "USDT",
+      "signature": "kr+apQYcRPl8tckm9NgSNq8/DeYN+izQlZrSQ974wlV8IBV7TdyzyVC70JFyx46UZUrNxvHgi2XofJBIYP3k1Bs="
+    }
+  ],
+  "SOL": [
+    {
+      "dataPoints": [
+        {
+          "dataFeedId": "SOL",
+          "value": 143.6270900101382,
+          "metadata": {
+            "value": "143.6270900101382",
+            "sourceMetadata": {
+              "binance-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 143.71407110281564,
+                  "askPrice": 143.72405748813304,
+                  "volumeInUsd": 495520583.09465796
+                },
+                "value": "143.71407110281564"
+              },
+              "binanceusdm-usdt": {
+                "value": "143.5712657927767"
+              },
+              "bitget-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 143.66513781476033,
+                  "askPrice": 143.67013100741906,
+                  "volumeInUsd": 84839940.24139358
+                },
+                "value": "143.67013100741906"
+              },
+              "coingecko": {
+                "value": "143.14"
+              },
+              "coinmarketcap": {
+                "value": "143.30628176992144"
+              },
+              "kucoin-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 143.60422086432416,
+                  "askPrice": 143.60222358726068,
+                  "volumeInUsd": 38376015.973407134
+                },
+                "value": "143.5952331175385"
+              },
+              "mexc-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 143.69409833218083,
+                  "askPrice": 143.70408471749823,
+                  "volumeInUsd": 43160263.28073181
+                },
+                "value": "143.6341800202764"
+              },
+              "lbank-usdt": {
+                "tradeInfo": {
+                  "volumeInUsd": 12222804.727354633
+                },
+                "value": "143.5143433964675"
+              },
+              "okx-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 143.67412556154602,
+                  "askPrice": 143.68411194686342,
+                  "volumeInUsd": 128089525.39192331
+                },
+                "value": "143.67412556154602"
+              },
+              "xt": {
+                "value": "143.9"
+              },
+              "bingx-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 143.69409833218083,
+                  "askPrice": 143.72405748813304,
+                  "volumeInUsd": 9163074.177558806
+                },
+                "value": "143.69409833218083"
+              },
+              "bitfinex2-usd": {
+                "tradeInfo": {
+                  "bidPrice": 144.02,
+                  "askPrice": 144.08,
+                  "volumeInUsd": 1793424.7992227788
+                },
+                "value": "143.98"
+              },
+              "bitstamp-usd": {
+                "tradeInfo": {
+                  "bidPrice": 143.6598,
+                  "askPrice": 143.7358,
+                  "volumeInUsd": 2354514.882106
+                },
+                "value": "143.5153"
+              },
+              "coinbasepro-usd": {
+                "tradeInfo": {
+                  "bidPrice": 143.61,
+                  "askPrice": 143.62,
+                  "volumeInUsd": 120705257.75858942
+                },
+                "value": "143.62"
+              },
+              "kraken-usd": {
+                "tradeInfo": {
+                  "bidPrice": 143.56,
+                  "askPrice": 143.57,
+                  "volumeInUsd": 39314016.90521883
+                },
+                "value": "143.57"
+              },
+              "gate-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 143.60422086432416,
+                  "askPrice": 143.61420724964157,
+                  "volumeInUsd": 41213553.61728684
+                },
+                "value": "143.66413917622862"
+              }
+            },
+            "nodeLabel": "main"
+          }
+        }
+      ],
+      "timestampMilliseconds": 1719583300000,
+      "dataFeedId": "SOL",
+      "signature": "bekpr2LzYUg6fGYPKoD4Bb+pFkx6zawNh3AwOlyK/QRfiwypbNbSXVPu+jHfb27qTYJuWRev+qFqpe9WENjDaBs="
+    }
+  ],
+  "stETH": [
+    {
+      "dataPoints": [
+        {
+          "dataFeedId": "stETH",
+          "value": 3447.092967425,
+          "metadata": {
+            "value": "3447.092967425",
+            "sourceMetadata": {
+              "bitget-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 3443.2856846715745,
+                  "askPrice": 3450.795446430265,
+                  "volumeInUsd": 73791.99836941958
+                },
+                "value": "3444.404159827124"
+              },
+              "coinmarketcap": {
+                "value": "3444.7774840660227"
+              },
+              "bingx-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 3447.699666981869,
+                  "askPrice": 3448.5485097338483,
+                  "volumeInUsd": 647965.4429129229
+                },
+                "value": "3447.629762284647"
+              },
+              "curve-ethereum-eth": {
+                "slippage": [
+                  {
+                    "slippageAsPercent": "0.000041",
+                    "direction": "buy",
+                    "simulationValueInUsd": "10000"
+                  },
+                  {
+                    "slippageAsPercent": "0.000041",
+                    "direction": "sell",
+                    "simulationValueInUsd": "10000"
+                  }
+                ],
+                "value": "3447.40575526"
+              },
+              "curve-ethereum-eth-2": {
+                "slippage": [
+                  {
+                    "slippageAsPercent": "0.000022",
+                    "direction": "buy",
+                    "simulationValueInUsd": "10000"
+                  },
+                  {
+                    "slippageAsPercent": "0.000022",
+                    "direction": "sell",
+                    "simulationValueInUsd": "10000"
+                  }
+                ],
+                "value": "3446.75218955"
+              },
+              "curve-ethereum-weth": {
+                "slippage": [
+                  {
+                    "slippageAsPercent": "0.001407",
+                    "direction": "buy",
+                    "simulationValueInUsd": "10000"
+                  },
+                  {
+                    "slippageAsPercent": "0.001429",
+                    "direction": "sell",
+                    "simulationValueInUsd": "10000"
+                  }
+                ],
+                "value": "3446.78017959"
+              },
+              "okx-eth": {
+                "tradeInfo": {
+                  "bidPrice": 3447.664444002216,
+                  "askPrice": 3448.0092449267086,
+                  "volumeInUsd": 353608.0973598491
+                },
+                "value": "3448.0092449267086"
+              },
+              "uniswap-v2-ethereum-weth": {
+                "slippage": [
+                  {
+                    "slippageAsPercent": "0.212294",
+                    "direction": "buy",
+                    "simulationValueInUsd": "10000"
+                  },
+                  {
+                    "slippageAsPercent": "0.212738",
+                    "direction": "sell",
+                    "simulationValueInUsd": "10000"
+                  }
+                ],
+                "value": "3454.81017566"
+              }
+            },
+            "nodeLabel": "main"
+          }
+        }
+      ],
+      "timestampMilliseconds": 1719583300000,
+      "dataFeedId": "stETH",
+      "signature": "ymE/xUbySrqBWksAjzP0ZuKkiZ0pVjr7TSXHDZWK/ggQafLYkRGYQ9XcmFeGLwHxVKZ5BLpFKo9Ram0UjKvXIRs="
+    }
+  ],
+  "AR": [
+    {
+      "dataPoints": [
+        {
+          "dataFeedId": "AR",
+          "value": 26.15933633894974,
+          "metadata": {
+            "value": "26.15933633894974",
+            "sourceMetadata": {
+              "binance-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 26.1633308930767,
+                  "askPrice": 26.16432953160843,
+                  "volumeInUsd": 19885566.354557097
+                },
+                "value": "26.1633308930767"
+              },
+              "bitget-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 26.16133361601321,
+                  "askPrice": 26.2002805187511,
+                  "volumeInUsd": 2997893.6684668562
+                },
+                "value": "26.1633308930767"
+              },
+              "bitmart-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 26.10620876906112,
+                  "askPrice": 26.21166499801295,
+                  "volumeInUsd": 370864.59325755684
+                },
+                "value": "26.15434314629103"
+              },
+              "bitrue-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 26.07644934081524,
+                  "askPrice": 26.23723014442551,
+                  "volumeInUsd": 3644755.777581648
+                },
+                "value": "26.15534178482277"
+              },
+              "coingecko": {
+                "value": "26.12"
+              },
+              "kucoin-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 26.17631319398933,
+                  "askPrice": 26.15034859216406,
+                  "volumeInUsd": 1025353.070582221
+                },
+                "value": "26.12638126740228"
+              },
+              "okx-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 26.16233225454495,
+                  "askPrice": 26.17631319398933,
+                  "volumeInUsd": 3252192.035382751
+                },
+                "value": "26.16432953160843"
+              },
+              "bingx-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 26.15733906188625,
+                  "askPrice": 26.1633308930767,
+                  "volumeInUsd": 345054.58866611833
+                },
+                "value": "26.15234586922755"
+              },
+              "xt": {
+                "value": "26.194"
+              },
+              "gate-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 26.15434314629103,
+                  "askPrice": 26.17431591692585,
+                  "volumeInUsd": 1898429.1186948076
+                },
+                "value": "26.16432953160843"
+              },
+              "binance-btc": {
+                "tradeInfo": {
+                  "bidPrice": 26.13933976389829,
+                  "askPrice": 26.16999814973444,
+                  "volumeInUsd": 663824.1531386129
+                },
+                "value": "26.16386647256721"
+              },
+              "bybit-usdt": {
+                "tradeInfo": {
+                  "bidPrice": 26.16103402445369,
+                  "askPrice": 26.17361686995362,
+                  "volumeInUsd": 104045.63205297188
+                },
+                "value": "26.14745254042202"
+              }
+            },
+            "nodeLabel": "main"
+          }
+        }
+      ],
+      "timestampMilliseconds": 1719583300000,
+      "dataFeedId": "AR",
+      "signature": "K9AJU80udbV5jvuOiLV2uCQ5OWqGrZ2lqkSliCiEEFsMqivIVz/0zt93h/X8xdgsVc08gKWvRn8WjiPvMvSV+Bw="
+    }
+  ]
+}

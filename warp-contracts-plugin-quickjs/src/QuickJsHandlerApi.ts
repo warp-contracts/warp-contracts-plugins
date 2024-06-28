@@ -97,55 +97,6 @@ export class QuickJsHandlerApi<State> {
     return result;
   }
 
-  private init(message: QuickJsPluginMessage): void {
-    const env = {
-      process: {
-        id: message.From,
-        owner: message.Owner,
-        tags: [
-          {
-            name: 'Name',
-            value: 'Personal AOS'
-          },
-          {
-            name: 'Data-Protocol',
-            value: message.Tags['Data-Protocol']
-          },
-          {
-            name: 'Variant',
-            value: message.Tags.variant
-          },
-          {
-            name: 'Type',
-            value: 'Process'
-          },
-          {
-            name: 'Module',
-            value: message.Tags['From-Module']
-          },
-          {
-            name: 'Scheduler',
-            value: 'TZ7o7SIZ06ZEJ14lXwVtng1EtSx60QkPy-kh-kdAXog'
-          },
-          {
-            name: 'SDK',
-            value: 'ao'
-          },
-          {
-            name: 'Content-Type',
-            value: 'text/plain'
-          }
-        ]
-      }
-    };
-    const initResult = this.vm.evalCode(`ao.init(${JSON.stringify(env)})`);
-    if (initResult.error) {
-      errorEvalAndDispose('init', this.logger, this.vm, initResult.error);
-    } else {
-      initResult.value.dispose();
-    }
-  }
-
 }
 
 // https://cookbook_ao.g8way.io/concepts/processes.html

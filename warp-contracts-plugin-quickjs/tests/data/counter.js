@@ -38,5 +38,16 @@ function handle(state, message) {
     ao.result(ao.env);
     return;
   }
+
+  if (message.Tags['Action'] == 'RedStone') {
+    const data = JSON.parse(message.Data);
+    const result = {
+      "AR": JSON.parse(RedStone.recoverSignerAddress(JSON.stringify(data["AR"][0]))),
+      "ETH": JSON.parse(RedStone.recoverSignerAddress(JSON.stringify(data["ETH"][0]))),
+      "BTC": JSON.parse(RedStone.recoverSignerAddress(JSON.stringify(data["BTC"][0]))),
+    };
+    ao.result(result);
+    return;
+  }
   throw new ProcessError('unknown action');
 }

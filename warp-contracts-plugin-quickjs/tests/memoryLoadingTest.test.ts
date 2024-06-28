@@ -233,9 +233,41 @@ describe('Memory loading test', () => {
                 Tags: []
             }
         });
+    });
 
-        //expect(result.Output)
+    test('should properly recover signer address from RedStone data package', async () => {
+        console.log("aaa")
+        const quickJs = await quickJSPlugin.process({
+            contractSource,
+            binaryType: "release_sync"
+        } as QuickJsPluginInput);
 
+        const result = await quickJs.handle({
+            ...message,
+            Data: fs.readFileSync('tests/data/example-redstone-resp.json', 'utf-8'),
+            Tags: {
+                ...message.Tags,
+                Action: 'RedStone'
+            }
+        }, processEnv);
+
+        expect(result.Output).toEqual({
+            AR: {
+                v: 26.15933633894974,
+                t: 1719583300000,
+                a: '0xdEB22f54738d54976C4c0fe5ce6d408E40d88499'
+            },
+            ETH: {
+                v: 3448.0092449267086,
+                t: 1719583300000,
+                a: '0xDD682daEC5A90dD295d14DA4b0bec9281017b5bE'
+            },
+            BTC: {
+                v: 61312.772880419834,
+                t: 1719583300000,
+                a: '0x51Ce04Be4b3E32572C4Ec9135221d0691Ba7d202'
+            }
+        });
     });
 
 });

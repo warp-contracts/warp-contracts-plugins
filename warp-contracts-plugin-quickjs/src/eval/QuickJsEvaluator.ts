@@ -2,6 +2,7 @@ import { QuickJSContext } from 'quickjs-emscripten';
 import { LoggerFactory } from 'warp-contracts';
 import { PNG } from 'pngjs';
 import seedrandom from 'seedrandom';
+import { SignedDataPackage } from "@redstone-finance/protocol"
 
 export class QuickJsEvaluator {
   private readonly logger = LoggerFactory.INST.create('QuickJsEvaluator');
@@ -47,6 +48,27 @@ export class QuickJsEvaluator {
     this.vm.setProp(this.vm.global, 'Warp', warpHandle);
     warpHandle.dispose();
     randomHandle.dispose();
+  }
+
+  evalRedStone() {
+    const recoverSignerAddressHandle = this.vm.newFunction('recoverSignerAddress', (...args) => {
+      const nativeArgs = args.map(this.vm.dump);
+      const pricePackage = nativeArgs[0];
+      const pricePackageObj = JSON.parse(pricePackage);
+      const signedDataPackage = SignedDataPackage.fromObj(pricePackageObj);
+      const recoveredSignerAddress = signedDataPackage.recoverSignerAddress();
+      const result = JSON.stringify({
+        a: recoveredSignerAddress,
+        t: pricePackageObj.timestampMilliseconds,
+        v: pricePackageObj.dataPoints[0].value
+      });
+      return this.vm.newString(result);
+    });
+    const redstoneHandle = this.vm.newObject();
+    this.vm.setProp(redstoneHandle, 'recoverSignerAddress', recoverSignerAddressHandle);
+    this.vm.setProp(this.vm.global, 'RedStone', redstoneHandle);
+    redstoneHandle.dispose();
+    recoverSignerAddressHandle.dispose();
   }
 
   evalGlobalsCode(globalsCode: string) {
