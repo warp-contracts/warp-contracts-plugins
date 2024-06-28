@@ -1,6 +1,6 @@
 {
   "name": "warp-contracts-plugin-quickjs",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "license": "MIT",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
@@ -38,11 +38,11 @@
     "warp-contracts-plugin-deploy": "^1.0.13"
   },
   "dependencies": {
+    "@redstone-finance/protocol": "0.5.4",
     "pngjs": "7.0.0",
     "quickjs-emscripten": "^0.29.2",
     "seedrandom": "^3.0.5",
-    "warp-contracts": "1.4.40",
-    "@redstone-finance/protocol": "0.5.4"
+    "warp-contracts": "1.4.40"
   },
   "files": [
     "build/"
