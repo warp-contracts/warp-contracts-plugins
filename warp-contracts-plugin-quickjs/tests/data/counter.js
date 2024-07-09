@@ -41,6 +41,7 @@ function handle(state, message) {
 
   if (message.Tags['Action'] == 'RedStone') {
     const data = JSON.parse(message.Data);
+    console.log(data["AR"][0]);
     const result = {
       "AR": JSON.parse(RedStone.recoverSignerAddress(JSON.stringify(data["AR"][0]))),
       "ETH": JSON.parse(RedStone.recoverSignerAddress(JSON.stringify(data["ETH"][0]))),

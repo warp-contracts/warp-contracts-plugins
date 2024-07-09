@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@redstone-finance/protocol": "0.5.4",
+    "fast-copy": "^3.0.2",
     "pngjs": "7.0.0",
     "quickjs-emscripten": "^0.29.2",
     "seedrandom": "^3.0.5",

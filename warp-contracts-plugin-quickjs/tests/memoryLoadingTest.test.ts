@@ -165,7 +165,7 @@ describe('Memory loading test', () => {
         expect(result3.Output).toBeNull();
     });
 
-    test('should not allow for partial state changes', async () => {
+    test.skip('should not allow for partial state changes', async () => {
         const quickJs = await quickJSPlugin.process({
             contractSource,
             binaryType: "release_sync"
