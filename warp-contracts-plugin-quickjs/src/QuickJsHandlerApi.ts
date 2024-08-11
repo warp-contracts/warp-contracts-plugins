@@ -46,10 +46,12 @@ export class QuickJsHandlerApi<State> {
       }
       throw new Error(`Unexpected result from contract: ${JSON.stringify(evalInteractionResult)}`);
     } catch (err: any) {
+      const state = this.currentState() as State;
       if (err.name.includes('ProcessError')) {
         return {
           Memory: null,
           Error: `${err.message} ${JSON.stringify(err.stack)}`,
+          State: state,
           Messages: null,
           Spawns: null,
           Output: null
@@ -58,6 +60,7 @@ export class QuickJsHandlerApi<State> {
         return {
           Memory: null,
           Error: `${(err && JSON.stringify(err.stack)) || (err && err.message) || err}`,
+          State: state,
           Messages: null,
           Spawns: null,
           Output: null
