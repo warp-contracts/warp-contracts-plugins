@@ -1,5 +1,5 @@
 import { QuickJSContext, QuickJSHandle, QuickJSRuntime, QuickJSWASMModule } from 'quickjs-emscripten';
-import {AoInteractionResult, InteractionResult, LoggerFactory, QuickJsPluginMessage, Tag} from 'warp-contracts';
+import { AoInteractionResult, InteractionResult, LoggerFactory, QuickJsPluginMessage, Tag } from 'warp-contracts';
 import { errorEvalAndDispose } from './utils';
 
 export class QuickJsHandlerApi<State> {
@@ -8,10 +8,14 @@ export class QuickJsHandlerApi<State> {
   constructor(
     private readonly vm: QuickJSContext,
     private readonly runtime: QuickJSRuntime,
-    private readonly quickJS: QuickJSWASMModule,
+    private readonly quickJS: QuickJSWASMModule
   ) {}
 
-  async handle<Result>(message: QuickJsPluginMessage, env: ProcessEnv, state?: State): Promise<InteractionResult<State, Result>> {
+  async handle<Result>(
+    message: QuickJsPluginMessage,
+    env: ProcessEnv,
+    state?: State
+  ): Promise<InteractionResult<State, Result>> {
     if (state) {
       this.initState(state);
     }
@@ -27,24 +31,38 @@ export class QuickJsHandlerApi<State> {
     }
   }
 
-  private async runContractFunction<Result>(message: QuickJsPluginMessage, env: ProcessEnv): InteractionResult<State, Result> {
+  private async runContractFunction<Result>(
+    message: QuickJsPluginMessage,
+    env: ProcessEnv
+  ): InteractionResult<State, Result> {
     try {
-      const evalInteractionResult = this.vm.evalCode(`__handleDecorator(${JSON.stringify(message)}, ${JSON.stringify(env)})`);
-      if (evalInteractionResult.error) {
-        errorEvalAndDispose('interaction', this.logger, this.vm, evalInteractionResult.error);
-      } else {
-        const result: AoInteractionResult<Result> = this.disposeResult(evalInteractionResult);
-        const state = this.currentState() as State;
-        return {
-          Memory: null,
-          State: state,
-          Error: '',
-          Messages: result.Messages,
-          Spawns: result.Spawns,
-          Output: result.Output
-        };
-      }
-      throw new Error(`Unexpected result from contract: ${JSON.stringify(evalInteractionResult)}`);
+      const result = this.vm.evalCode(`(async () => {
+        const content = await readFile('example.txt')
+        return content.toUpperCase()
+      })()`);
+      const promiseHandle = this.vm.unwrapResult(result);
+      const resolvedResult = await this.vm.resolvePromise(promiseHandle);
+      promiseHandle.dispose();
+      const resolvedHandle = this.vm.unwrapResult(resolvedResult);
+      this.logger.info('Result:', this.vm.getString(resolvedHandle));
+      resolvedHandle.dispose();
+      // this.logger.info(evalInteractionResult);
+      // this.vm.runtime.executePendingJobs();
+      // if (evalInteractionResult.error) {
+      //   errorEvalAndDispose('interaction', this.logger, this.vm, evalInteractionResult.error);
+      // } else {
+      //   const result: AoInteractionResult<Result> = this.disposeResult(evalInteractionResult);
+      //   const state = this.currentState() as State;
+      //   return {
+      //     Memory: null,
+      //     State: state,
+      //     Error: '',
+      //     Messages: result.Messages,
+      //     Spawns: result.Spawns,
+      //     Output: result.Output
+      //   };
+      // }
+      // throw new Error(`Unexpected result from contract: ${JSON.stringify(evalInteractionResult)}`);
     } catch (err: any) {
       const state = this.currentState() as State;
       if (err.name.includes('ProcessError')) {
@@ -99,19 +117,18 @@ export class QuickJsHandlerApi<State> {
     resultValue.dispose();
     return result;
   }
-
 }
 
 // https://cookbook_ao.g8way.io/concepts/processes.html
 export type ProcessEnv = {
   Process: {
-    Id: string,
-    Owner: string,
-    Tags: { name: string, value: string }[]
-  },
+    Id: string;
+    Owner: string;
+    Tags: { name: string; value: string }[];
+  };
   Module: {
-    Id: string,
-    Owner: string,
-    Tags: { name: string, value: string }[]
-  }
-}
+    Id: string;
+    Owner: string;
+    Tags: { name: string; value: string }[];
+  };
+};

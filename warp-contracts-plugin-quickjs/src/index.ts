@@ -37,11 +37,7 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
   constructor(private readonly quickJsOptions: QuickJsOptions) {}
 
   async process(input: QuickJsPluginInput): Promise<QuickJsHandlerApi<State>> {
-    ({
-      QuickJS: this.QuickJS,
-      runtime: this.runtime,
-      vm: this.vm
-    } = await this.configureWasmModule(input.binaryType));
+    ({ QuickJS: this.QuickJS, runtime: this.runtime, vm: this.vm } = await this.configureWasmModule(input.binaryType));
     this.setRuntimeOptions();
 
     const quickJsEvaluator = new QuickJsEvaluator(this.vm);
@@ -52,6 +48,8 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
     quickJsEvaluator.evalLogging();
     quickJsEvaluator.evalPngJS();
     quickJsEvaluator.evalRedStone();
+    quickJsEvaluator.evalReadFile();
+    //quickJsEvaluator.evalExternal();
 
     return new QuickJsHandlerApi(this.vm, this.runtime, this.QuickJS);
   }
