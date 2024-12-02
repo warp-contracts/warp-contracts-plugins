@@ -21,7 +21,7 @@
     }
   },
   "devDependencies": {
-    "@jitl/quickjs-singlefile-mjs-release-sync": "^0.28.0",
+    "@jitl/quickjs-singlefile-mjs-release-sync": "0.28.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.5",
     "@types/pngjs": "^6.0.4",
@@ -42,7 +42,7 @@
     "@redstone-finance/protocol": "0.5.4",
     "fast-copy": "^3.0.2",
     "pngjs": "7.0.0",
-    "quickjs-emscripten": "^0.31.0",
+    "quickjs-emscripten": "0.29.2",
     "seedrandom": "^3.0.5",
     "warp-contracts": "1.4.40"
   },
