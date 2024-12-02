@@ -38,6 +38,7 @@
     "warp-contracts-plugin-deploy": "^1.0.13"
   },
   "dependencies": {
+    "@permaweb/aoconnect": "^0.0.62",
     "@redstone-finance/protocol": "0.5.4",
     "fast-copy": "^3.0.2",
     "pngjs": "7.0.0",

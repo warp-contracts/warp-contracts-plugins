@@ -1,13 +1,13 @@
-import { QuickJSContext } from 'quickjs-emscripten';
+import { QuickJSAsyncContext, QuickJSContext } from 'quickjs-emscripten';
 import { LoggerFactory } from 'warp-contracts';
 import { PNG } from 'pngjs';
 import seedrandom from 'seedrandom';
-import { SignedDataPackage } from "@redstone-finance/protocol"
+import { SignedDataPackage } from '@redstone-finance/protocol';
 
 export class QuickJsEvaluator {
   private readonly logger = LoggerFactory.INST.create('QuickJsEvaluator');
 
-  constructor(private vm: QuickJSContext) {}
+  constructor(private vm: QuickJSAsyncContext) {}
 
   evalLogging() {
     const logHandle = this.vm.newFunction('log', (...args) => {
@@ -39,7 +39,7 @@ export class QuickJsEvaluator {
     const randomHandle = this.vm.newFunction('random', (...args) => {
       const nativeArgs = args.map(this.vm.dump);
       const message = nativeArgs[0];
-      const uniqueValue = nativeArgs.length > 1 ? "" + nativeArgs[1] : ''
+      const uniqueValue = nativeArgs.length > 1 ? '' + nativeArgs[1] : '';
       const rng = seedrandom(message.Signature + uniqueValue);
       return this.vm.newNumber(rng());
     });
@@ -48,6 +48,31 @@ export class QuickJsEvaluator {
     this.vm.setProp(this.vm.global, 'Warp', warpHandle);
     warpHandle.dispose();
     randomHandle.dispose();
+  }
+
+  evalExternal() {
+    const self = this;
+    self.logger.info('Inside eval external');
+    const readExternalHandle = this.vm.newAsyncifiedFunction('readExternal', async () => {
+      self.logger.info('Inside read external handle');
+      const res = await this.readRes();
+      return this.vm.newString(JSON.stringify(res));
+    });
+    // const externalHandle = this.vm.newObject();
+    // this.vm.setProp(externalHandle, 'readExternal', readExternalHandle);
+    this.vm.setProp(this.vm.global, 'readExternal', readExternalHandle);
+    // externalHandle.dispose();
+    readExternalHandle.dispose();
+  }
+
+  async readRes() {
+    const { dryrun } = await import('@permaweb/aoconnect');
+    const readRes = await dryrun({
+      process: 'iWM-odlyQHopPECpyz465p7ED8lm5d3hyyWtijKhie4',
+      tags: [{ name: 'Action', value: 'Read-Hollow' }],
+      data: '1234'
+    });
+    return JSON.parse(readRes.Messages[0].Data);
   }
 
   evalRedStone() {

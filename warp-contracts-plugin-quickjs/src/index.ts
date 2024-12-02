@@ -7,10 +7,15 @@ import {
   QuickJsBinaryType
 } from 'warp-contracts';
 import {
+  QuickJSAsyncContext,
+  QuickJSAsyncRuntime,
+  QuickJSAsyncWASMModule,
   QuickJSContext,
   QuickJSRuntime,
   QuickJSWASMModule,
+  RELEASE_ASYNC,
   RELEASE_SYNC,
+  newQuickJSAsyncWASMModule,
   newQuickJSWASMModule,
   newVariant
 } from 'quickjs-emscripten';
@@ -30,18 +35,14 @@ const MEMORY_MAXIMUM_PAGE_SIZE = 2048;
 
 export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Promise<QuickJsHandlerApi<State>>> {
   private readonly logger = LoggerFactory.INST.create('QuickJsPlugin');
-  private vm: QuickJSContext;
-  private runtime: QuickJSRuntime;
-  private QuickJS: QuickJSWASMModule;
+  private vm: QuickJSAsyncContext;
+  private runtime: QuickJSAsyncRuntime;
+  private QuickJS: QuickJSAsyncWASMModule;
 
   constructor(private readonly quickJsOptions: QuickJsOptions) {}
 
   async process(input: QuickJsPluginInput): Promise<QuickJsHandlerApi<State>> {
-    ({
-      QuickJS: this.QuickJS,
-      runtime: this.runtime,
-      vm: this.vm
-    } = await this.configureWasmModule(input.binaryType));
+    ({ QuickJS: this.QuickJS, runtime: this.runtime, vm: this.vm } = await this.configureWasmModule(input.binaryType));
     this.setRuntimeOptions();
 
     const quickJsEvaluator = new QuickJsEvaluator(this.vm);
@@ -52,6 +53,7 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
     quickJsEvaluator.evalLogging();
     quickJsEvaluator.evalPngJS();
     quickJsEvaluator.evalRedStone();
+    quickJsEvaluator.evalExternal();
 
     return new QuickJsHandlerApi(this.vm, this.runtime, this.QuickJS);
   }
@@ -73,10 +75,10 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
       });
 
       // TODO: set variant depending on the binaryType
-      const variant = newVariant(RELEASE_SYNC, {
+      const variant = newVariant(RELEASE_ASYNC, {
         wasmMemory: initialWasmMemory
       });
-      const QuickJS = await newQuickJSWASMModule(variant);
+      const QuickJS = await newQuickJSAsyncWASMModule(variant);
       const runtime = QuickJS.newRuntime();
 
       const vm = runtime.newContext({

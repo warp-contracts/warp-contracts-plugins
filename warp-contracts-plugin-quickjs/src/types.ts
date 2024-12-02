@@ -1,4 +1,13 @@
-import { QuickJSContext, QuickJSRuntime, QuickJSVariant, QuickJSWASMModule } from 'quickjs-emscripten';
+import {
+  QuickJSAsyncContext,
+  QuickJSAsyncRuntime,
+  QuickJSAsyncVariant,
+  QuickJSAsyncWASMModule,
+  QuickJSContext,
+  QuickJSRuntime,
+  QuickJSVariant,
+  QuickJSWASMModule
+} from 'quickjs-emscripten';
 
 export type Pointer<CType extends string> = number & {
   ctype: CType;
@@ -7,9 +16,9 @@ export type JSRuntimePointer = Pointer<'JSRuntime'>;
 export type JSContextPointer = Pointer<'JSContext'>;
 
 export interface WasmModuleConfig {
-  QuickJS: QuickJSWASMModule;
-  vm: QuickJSContext;
-  runtime: QuickJSRuntime;
+  QuickJS: QuickJSAsyncWASMModule;
+  vm: QuickJSAsyncContext;
+  runtime: QuickJSAsyncRuntime;
 }
 
 export enum WasmMemoryBuffer {
@@ -31,7 +40,7 @@ export class EvalError extends Error {
 }
 
 export interface WasmMemoryHeaders {
-  variantType: QuickJSVariant;
+  variantType: QuickJSAsyncVariant;
   runtimePointer: number;
   vmPointer: number;
   compressed: boolean;
