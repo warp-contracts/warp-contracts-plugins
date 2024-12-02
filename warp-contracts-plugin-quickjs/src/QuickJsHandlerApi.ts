@@ -36,12 +36,13 @@ export class QuickJsHandlerApi<State> {
     env: ProcessEnv
   ): InteractionResult<State, Result> {
     try {
-      const result = this.vm.evalCode('__handleDecorator(${JSON.stringify(message)}, ${JSON.stringify(env)})');
+      const result = this.vm.evalCode(`__handleDecorator(${JSON.stringify(message)}, ${JSON.stringify(env)})`);
       const promiseHandle = this.vm.unwrapResult(result);
       const resolvedResult = await this.vm.resolvePromise(promiseHandle);
       promiseHandle.dispose();
       const resolvedHandle = this.vm.unwrapResult(resolvedResult);
       this.logger.info('Result:', this.vm.getString(resolvedHandle));
+      console.log('Result:', this.vm.getString(resolvedHandle));
       resolvedHandle.dispose();
       // this.logger.info(evalInteractionResult);
       // this.vm.runtime.executePendingJobs();
