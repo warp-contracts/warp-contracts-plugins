@@ -23,7 +23,7 @@ export const vmIntrinsics = {
   ...DefaultIntrinsics,
   Date: false,
   Proxy: false,
-  Promise: false,
+  Promise: true,
   MapSet: false,
   BigFloat: false,
   BigInt: true,

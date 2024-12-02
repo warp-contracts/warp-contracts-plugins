@@ -36,10 +36,7 @@ export class QuickJsHandlerApi<State> {
     env: ProcessEnv
   ): InteractionResult<State, Result> {
     try {
-      const result = this.vm.evalCode(`(async () => {
-  const content = await readFile('example.txt');
-  return content.toUpperCase();
-})()`)
+      const result = this.vm.evalCode('__handleDecorator(${JSON.stringify(message)}, ${JSON.stringify(env)})');
       const promiseHandle = this.vm.unwrapResult(result);
       const resolvedResult = await this.vm.resolvePromise(promiseHandle);
       promiseHandle.dispose();
@@ -64,9 +61,9 @@ export class QuickJsHandlerApi<State> {
       // }
       // throw new Error(`Unexpected result from contract: ${JSON.stringify(evalInteractionResult)}`);
     } catch (err: any) {
-      //const state = this.currentState() as State;
+      const state = this.currentState() as State;
       console.log(err);
-     /* if (err.name.includes('ProcessError')) {
+      if (err.name.includes('ProcessError')) {
         return {
           Memory: null,
           Error: `${err.message} ${JSON.stringify(err.stack)}`,
@@ -84,7 +81,7 @@ export class QuickJsHandlerApi<State> {
           Spawns: null,
           Output: null
         };
-      }*/
+      }
     }
   }
 

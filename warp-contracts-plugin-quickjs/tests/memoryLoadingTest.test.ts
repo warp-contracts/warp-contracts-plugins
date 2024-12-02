@@ -31,7 +31,8 @@ describe('Memory loading test', () => {
         LoggerFactory.INST.logLevel('error');
 
         //contractSource = fs.readFileSync('tests/data/counter.js', 'utf-8');
-        //contractSource = fs.readFileSync('tests/data/async-handle.js', 'utf-8');
+        contractSource = fs.readFileSync('tests/data/async-handle.js', 'utf-8');
+        console.log(contractSource);
 
         quickJSPlugin = new QuickJsPlugin({});
 
