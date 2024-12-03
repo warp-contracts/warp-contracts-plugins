@@ -15,7 +15,7 @@ import {
   newVariant
 } from 'quickjs-emscripten';
 import { QuickJsHandlerApi } from './QuickJsHandlerApi';
-import { decorateProcessFn } from './eval/evalCode/decorator';
+import { asyncDecorateProcessFn, decorateProcessFn } from './eval/evalCode/decorator';
 import { globals } from './eval/evalCode/globals';
 import { WasmModuleConfig } from './types';
 import { vmIntrinsics } from './utils';
@@ -37,23 +37,22 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
   constructor(private readonly quickJsOptions: QuickJsOptions) {}
 
   async process(input: QuickJsPluginInput): Promise<QuickJsHandlerApi<State>> {
-    ({
-      QuickJS: this.QuickJS,
-      runtime: this.runtime,
-      vm: this.vm
-    } = await this.configureWasmModule(input.binaryType));
+    ({ QuickJS: this.QuickJS, runtime: this.runtime, vm: this.vm } = await this.configureWasmModule(input.binaryType));
     this.setRuntimeOptions();
 
     const quickJsEvaluator = new QuickJsEvaluator(this.vm);
-
+    const isSourceAsync = input.contractSource.search('async') > -1;
+    const processDecorator = isSourceAsync ? asyncDecorateProcessFn : decorateProcessFn;
     quickJsEvaluator.evalSeedRandom();
     quickJsEvaluator.evalGlobalsCode(globals);
-    quickJsEvaluator.evalHandleFnCode(decorateProcessFn, input.contractSource);
+    quickJsEvaluator.evalHandleFnCode(processDecorator, input.contractSource);
     quickJsEvaluator.evalLogging();
     quickJsEvaluator.evalPngJS();
     quickJsEvaluator.evalRedStone();
+    quickJsEvaluator.evalExternal();
+    quickJsEvaluator.dummyPromiseEval();
 
-    return new QuickJsHandlerApi(this.vm, this.runtime, this.QuickJS);
+    return new QuickJsHandlerApi(this.vm, this.runtime, isSourceAsync);
   }
 
   setRuntimeOptions() {
