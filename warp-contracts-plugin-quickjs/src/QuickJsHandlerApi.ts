@@ -1,4 +1,4 @@
-import { QuickJSContext, QuickJSHandle, QuickJSRuntime, QuickJSWASMModule } from 'quickjs-emscripten';
+import { QuickJSContext, QuickJSHandle, QuickJSRuntime } from 'quickjs-emscripten';
 import { AoInteractionResult, InteractionResult, LoggerFactory, QuickJsPluginMessage, Tag } from 'warp-contracts';
 import { errorEvalAndDispose } from './utils';
 
@@ -19,7 +19,7 @@ export class QuickJsHandlerApi<State> {
     if (state) {
       this.initState(state);
     }
-    return await this.runContractFunction(message, env);
+    return this.runContractFunction(message, env);
   }
 
   initState(state: State): void {
@@ -43,9 +43,6 @@ export class QuickJsHandlerApi<State> {
         errorEvalAndDispose('interaction', this.logger, this.vm, evalInteractionResult.error);
       } else {
         const result: AoInteractionResult<Result> = this.disposeResult(evalInteractionResult);
-        if (this.isSourceAsync) {
-          this.vm.runtime.executePendingJobs();
-        }
         const state = this.currentState() as State;
         return {
           Memory: null,

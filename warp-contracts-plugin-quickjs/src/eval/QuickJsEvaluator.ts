@@ -3,6 +3,9 @@ import { HandlerBasedContract, LoggerFactory } from 'warp-contracts';
 import { PNG } from 'pngjs';
 import seedrandom from 'seedrandom';
 import { SignedDataPackage } from '@redstone-finance/protocol';
+import { timeout } from '../utils';
+
+const TIMEOUT_ASYNC_OPERATIONS = 10000;
 
 export class QuickJsEvaluator {
   private readonly logger = LoggerFactory.INST.create('QuickJsEvaluator');
@@ -64,9 +67,13 @@ export class QuickJsEvaluator {
   evalExternal() {
     const readExternalHandle = this.vm.newFunction('readExternal', (processIdHandle, actionHandle) => {
       const promise = this.vm.newPromise();
-      this.readExternal(processIdHandle, actionHandle).then((result) => {
-        promise.resolve(this.vm.newString(JSON.stringify(result) || ''));
-      });
+      this.readExternal(processIdHandle, actionHandle)
+        .then((result) => {
+          promise.resolve(this.vm.newString(result) || '');
+        })
+        .catch((error) => {
+          promise.reject(this.vm.newString(error?.message) || `External read threw an error.`);
+        });
       promise.settled.then(this.vm.runtime.executePendingJobs);
       return promise.handle;
     });
@@ -78,12 +85,26 @@ export class QuickJsEvaluator {
     const processId = this.vm.getString(processIdHandle);
     const action = this.vm.getString(actionHandle);
     const { dryrun } = await import('@permaweb/aoconnect');
-    const readRes = await dryrun({
-      process: processId,
-      tags: [{ name: 'Action', value: action }],
-      data: '1234'
-    });
-    return JSON.parse(readRes.Messages[0].Data);
+    try {
+      const result = await Promise.race<{
+        Output: any;
+        Messages: any[];
+        Spawns: any[];
+        Error?: any;
+      }>([
+        dryrun({
+          process: processId,
+          tags: [{ name: 'Action', value: action }],
+          data: '1234'
+        }),
+        timeout(TIMEOUT_ASYNC_OPERATIONS, 'Dryrun operation timed out after 10 seconds')
+      ]);
+      return result.Messages[0].Data;
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
   }
 
   evalRedStone() {

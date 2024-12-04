@@ -25,8 +25,6 @@ export const DELIMITER = '|||';
 const MEMORY_LIMIT = 1024 * 640;
 const MAX_STACK_SIZE = 1024 * 320;
 const INTERRUPT_CYCLES = 1024;
-const MEMORY_INITIAL_PAGE_SIZE = 64 * 1024;
-const MEMORY_MAXIMUM_PAGE_SIZE = 2048;
 
 export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Promise<QuickJsHandlerApi<State>>> {
   private readonly logger = LoggerFactory.INST.create('QuickJsPlugin');
@@ -37,11 +35,10 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
   constructor(private readonly quickJsOptions: QuickJsOptions) {}
 
   async process(input: QuickJsPluginInput): Promise<QuickJsHandlerApi<State>> {
-    ({ QuickJS: this.QuickJS, runtime: this.runtime, vm: this.vm } = await this.configureWasmModule(input.binaryType));
-    this.setRuntimeOptions();
-
-    const quickJsEvaluator = new QuickJsEvaluator(this.vm);
     const isSourceAsync = input.contractSource.search('async') > -1;
+    ({ QuickJS: this.QuickJS, runtime: this.runtime, vm: this.vm } = await this.configureWasmModule(isSourceAsync));
+    this.setRuntimeOptions();
+    const quickJsEvaluator = new QuickJsEvaluator(this.vm);
     const processDecorator = isSourceAsync ? asyncDecorateProcessFn : decorateProcessFn;
     quickJsEvaluator.evalSeedRandom();
     quickJsEvaluator.evalGlobalsCode(globals);
@@ -49,9 +46,10 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
     quickJsEvaluator.evalLogging();
     quickJsEvaluator.evalPngJS();
     quickJsEvaluator.evalRedStone();
-    quickJsEvaluator.evalExternal();
-    quickJsEvaluator.dummyPromiseEval();
-
+    if (isSourceAsync) {
+      quickJsEvaluator.evalExternal();
+      quickJsEvaluator.dummyPromiseEval();
+    }
     return new QuickJsHandlerApi(this.vm, this.runtime, isSourceAsync);
   }
 
@@ -64,7 +62,7 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
     );
   }
 
-  async configureWasmModule(binaryType: QuickJsBinaryType): Promise<WasmModuleConfig> {
+  async configureWasmModule(isSourceAsync: boolean): Promise<WasmModuleConfig> {
     try {
       const initialWasmMemory = new WebAssembly.Memory({
         initial: 256, //*65536
@@ -79,7 +77,10 @@ export class QuickJsPlugin<State> implements WarpPlugin<QuickJsPluginInput, Prom
       const runtime = QuickJS.newRuntime();
 
       const vm = runtime.newContext({
-        intrinsics: vmIntrinsics
+        intrinsics: {
+          ...vmIntrinsics,
+          ...(isSourceAsync && { Promise: true })
+        }
       });
 
       return {

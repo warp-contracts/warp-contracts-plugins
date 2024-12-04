@@ -8,7 +8,7 @@ export const errorEvalAndDispose = (
   vm: QuickJSContext,
   evalError: QuickJSHandle
 ) => {
-  const error = vm.dump(evalError);
+  const error = vm.dump(evalError) || vm.getString(evalError);
   evalError.dispose();
   logger.error(`${evalType} eval failed: ${JSON.stringify(error)}`);
 
@@ -23,7 +23,7 @@ export const vmIntrinsics = {
   ...DefaultIntrinsics,
   Date: false,
   Proxy: false,
-  Promise: true,
+  Promise: false,
   MapSet: false,
   BigFloat: false,
   BigInt: true,
@@ -49,4 +49,12 @@ export const splitBuffer = (buffer: Buffer, delimiter: string) => {
   }
   splitted.push(buffer.slice(start));
   return splitted;
+};
+
+export const timeout = (ms: number, message: string): Promise<never> => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject(new Error(message));
+    }, ms);
+  });
 };
