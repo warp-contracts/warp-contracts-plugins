@@ -13,11 +13,14 @@ const QuickJS = await newQuickJSWASMModule(variant);
 const vm = QuickJS.newContext();
 
 const timeout = (ms, message) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
+  let timeoutId = null;
+  const timeoutPromise = new Promise((resolve, reject) => {
+    timeoutId = setTimeout(() => {
+      clearTimeout(timeoutId);
       reject(new Error(message));
     }, ms);
   });
+  return { timeoutId, timeoutPromise };
 };
 
 const readExternalHandle = vm.newFunction('readExternal', () => {
@@ -35,14 +38,16 @@ const readExternalHandle = vm.newFunction('readExternal', () => {
 readExternalHandle.consume((handle) => vm.setProp(vm.global, 'readExternal', handle));
 
 async function readExternal() {
+  const { timeoutId, timeoutPromise } = timeout(1000, 'Operation timed out after 10 seconds');
   const result = await Promise.race([
     fakedryrun({
       process: 'iWM-odlyQHopPECpyz465p7ED8lm5d3hyyWtijKhie4',
       tags: [{ name: 'Action', value: 'Read-Hollow' }],
       data: '1234'
     }),
-    timeout(1000, 'Operation timed out after 10 seconds')
+    timeoutPromise
   ]);
+  if (timeoutId) clearTimeout(timeoutId);
   return result.Messages[0].Data;
 }
 function fakedryrun(config) {
@@ -51,7 +56,7 @@ function fakedryrun(config) {
       resolve({
         Messages: [{ Data: JSON.stringify({ ap: { Price: '100', Quantity: '49' } }) }]
       });
-    }, 20000);
+    }, 10000);
   });
 }
 

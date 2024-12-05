@@ -85,6 +85,10 @@ export class QuickJsEvaluator {
     const processId = this.vm.getString(processIdHandle);
     const action = this.vm.getString(actionHandle);
     const { dryrun } = await import('@permaweb/aoconnect');
+    const { timeoutId, timeoutPromise } = timeout(
+      TIMEOUT_ASYNC_OPERATIONS,
+      'Dryrun operation timed out after 10 seconds'
+    );
     try {
       const result = await Promise.race<{
         Output: any;
@@ -97,8 +101,9 @@ export class QuickJsEvaluator {
           tags: [{ name: 'Action', value: action }],
           data: '1234'
         }),
-        timeout(TIMEOUT_ASYNC_OPERATIONS, 'Dryrun operation timed out after 10 seconds')
+        timeoutPromise
       ]);
+      if (timeoutId) clearTimeout(timeoutId);
       return result.Messages[0].Data;
     } catch (error) {
       const errorMessage = (error as Error).message;

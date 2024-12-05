@@ -51,10 +51,16 @@ export const splitBuffer = (buffer: Buffer, delimiter: string) => {
   return splitted;
 };
 
-export const timeout = (ms: number, message: string): Promise<never> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
+export const timeout = (
+  ms: number,
+  message: string
+): { timeoutId: string | number | NodeJS.Timeout | undefined; timeoutPromise: Promise<any> } => {
+  let timeoutId: string | number | NodeJS.Timeout | undefined;
+  const timeoutPromise = new Promise((resolve, reject) => {
+    timeoutId = setTimeout(() => {
+      clearTimeout(timeoutId);
       reject(new Error(message));
     }, ms);
   });
+  return { timeoutId, timeoutPromise };
 };
