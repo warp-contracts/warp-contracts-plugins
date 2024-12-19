@@ -1,5 +1,5 @@
-import { QuickJSContext, QuickJSHandle, QuickJSRuntime, QuickJSWASMModule } from 'quickjs-emscripten';
-import {AoInteractionResult, InteractionResult, LoggerFactory, QuickJsPluginMessage, Tag} from 'warp-contracts';
+import { QuickJSContext, QuickJSHandle, QuickJSRuntime } from 'quickjs-emscripten';
+import { AoInteractionResult, InteractionResult, LoggerFactory, QuickJsPluginMessage, Tag } from 'warp-contracts';
 import { errorEvalAndDispose } from './utils';
 
 export class QuickJsHandlerApi<State> {
@@ -8,10 +8,14 @@ export class QuickJsHandlerApi<State> {
   constructor(
     private readonly vm: QuickJSContext,
     private readonly runtime: QuickJSRuntime,
-    private readonly quickJS: QuickJSWASMModule,
+    private readonly isSourceAsync: boolean
   ) {}
 
-  async handle<Result>(message: QuickJsPluginMessage, env: ProcessEnv, state?: State): Promise<InteractionResult<State, Result>> {
+  async handle<Result>(
+    message: QuickJsPluginMessage,
+    env: ProcessEnv,
+    state?: State
+  ): Promise<InteractionResult<State, Result>> {
     if (state) {
       this.initState(state);
     }
@@ -27,9 +31,14 @@ export class QuickJsHandlerApi<State> {
     }
   }
 
-  private async runContractFunction<Result>(message: QuickJsPluginMessage, env: ProcessEnv): InteractionResult<State, Result> {
+  private async runContractFunction<Result>(
+    message: QuickJsPluginMessage,
+    env: ProcessEnv
+  ): InteractionResult<State, Result> {
     try {
-      const evalInteractionResult = this.vm.evalCode(`__handleDecorator(${JSON.stringify(message)}, ${JSON.stringify(env)})`);
+      const evalInteractionResult = this.isSourceAsync
+        ? await this.evalInteractionAsync(message, env)
+        : this.evalInteractionSync(message, env);
       if (evalInteractionResult.error) {
         errorEvalAndDispose('interaction', this.logger, this.vm, evalInteractionResult.error);
       } else {
@@ -69,6 +78,20 @@ export class QuickJsHandlerApi<State> {
     }
   }
 
+  private async evalInteractionAsync(message: QuickJsPluginMessage, env: ProcessEnv) {
+    const result = this.vm.evalCode(`(async () => {
+      return await __handleDecorator(${JSON.stringify(message)}, ${JSON.stringify(env)})
+    })()`);
+    const promiseHandle = this.vm.unwrapResult(result);
+    const evalInteractionResult = await this.vm.resolvePromise(promiseHandle);
+    promiseHandle.dispose();
+    return evalInteractionResult;
+  }
+
+  private evalInteractionSync(message: QuickJsPluginMessage, env: ProcessEnv) {
+    return this.vm.evalCode(`__handleDecorator(${JSON.stringify(message)}, ${JSON.stringify(env)})`);
+  }
+
   currentBinaryState(state: State): Buffer {
     const currentState = state || this.currentState();
     return Buffer.from(JSON.stringify(currentState));
@@ -99,19 +122,18 @@ export class QuickJsHandlerApi<State> {
     resultValue.dispose();
     return result;
   }
-
 }
 
 // https://cookbook_ao.g8way.io/concepts/processes.html
 export type ProcessEnv = {
   Process: {
-    Id: string,
-    Owner: string,
-    Tags: { name: string, value: string }[]
-  },
+    Id: string;
+    Owner: string;
+    Tags: { name: string; value: string }[];
+  };
   Module: {
-    Id: string,
-    Owner: string,
-    Tags: { name: string, value: string }[]
-  }
-}
+    Id: string;
+    Owner: string;
+    Tags: { name: string; value: string }[];
+  };
+};

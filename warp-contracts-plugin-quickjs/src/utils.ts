@@ -8,7 +8,7 @@ export const errorEvalAndDispose = (
   vm: QuickJSContext,
   evalError: QuickJSHandle
 ) => {
-  const error = vm.dump(evalError);
+  const error = vm.dump(evalError) || vm.getString(evalError);
   evalError.dispose();
   logger.error(`${evalType} eval failed: ${JSON.stringify(error)}`);
 
@@ -49,4 +49,18 @@ export const splitBuffer = (buffer: Buffer, delimiter: string) => {
   }
   splitted.push(buffer.slice(start));
   return splitted;
+};
+
+export const timeout = (
+  ms: number,
+  message: string
+): { timeoutId: string | number | NodeJS.Timeout | undefined; timeoutPromise: Promise<any> } => {
+  let timeoutId: string | number | NodeJS.Timeout | undefined;
+  const timeoutPromise = new Promise((resolve, reject) => {
+    timeoutId = setTimeout(() => {
+      clearTimeout(timeoutId);
+      reject(new Error(message));
+    }, ms);
+  });
+  return { timeoutId, timeoutPromise };
 };

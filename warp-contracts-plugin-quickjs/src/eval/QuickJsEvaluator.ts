@@ -1,8 +1,11 @@
-import { QuickJSContext } from 'quickjs-emscripten';
-import { LoggerFactory } from 'warp-contracts';
+import { QuickJSContext, QuickJSHandle } from 'quickjs-emscripten';
+import { HandlerBasedContract, LoggerFactory } from 'warp-contracts';
 import { PNG } from 'pngjs';
 import seedrandom from 'seedrandom';
-import { SignedDataPackage } from "@redstone-finance/protocol"
+import { SignedDataPackage } from '@redstone-finance/protocol';
+import { timeout } from '../utils';
+
+const TIMEOUT_ASYNC_OPERATIONS = 10000;
 
 export class QuickJsEvaluator {
   private readonly logger = LoggerFactory.INST.create('QuickJsEvaluator');
@@ -39,7 +42,7 @@ export class QuickJsEvaluator {
     const randomHandle = this.vm.newFunction('random', (...args) => {
       const nativeArgs = args.map(this.vm.dump);
       const message = nativeArgs[0];
-      const uniqueValue = nativeArgs.length > 1 ? "" + nativeArgs[1] : ''
+      const uniqueValue = nativeArgs.length > 1 ? '' + nativeArgs[1] : '';
       const rng = seedrandom(message.Signature + uniqueValue);
       return this.vm.newNumber(rng());
     });
@@ -48,6 +51,65 @@ export class QuickJsEvaluator {
     this.vm.setProp(this.vm.global, 'Warp', warpHandle);
     warpHandle.dispose();
     randomHandle.dispose();
+  }
+
+  dummyPromiseEval() {
+    const dummyPromiseEval = this.vm.newFunction('dummyPromise', () => {
+      const promise = this.vm.newPromise();
+      promise.resolve(this.vm.newString(''));
+      promise.settled.then(this.vm.runtime.executePendingJobs);
+      return promise.handle;
+    });
+    this.vm.setProp(this.vm.global, 'dummyPromise', dummyPromiseEval);
+    dummyPromiseEval.dispose();
+  }
+
+  evalExternal() {
+    const readExternalHandle = this.vm.newFunction('readExternal', (processIdHandle, actionHandle) => {
+      const promise = this.vm.newPromise();
+      this.readExternal(processIdHandle, actionHandle)
+        .then((result) => {
+          promise.resolve(this.vm.newString(result) || '');
+        })
+        .catch((error) => {
+          promise.reject(this.vm.newString(error?.message) || `External read threw an error.`);
+        });
+      promise.settled.then(this.vm.runtime.executePendingJobs);
+      return promise.handle;
+    });
+    this.vm.setProp(this.vm.global, 'readExternal', readExternalHandle);
+    readExternalHandle.dispose();
+  }
+
+  async readExternal(processIdHandle: QuickJSHandle, actionHandle: QuickJSHandle) {
+    const processId = this.vm.getString(processIdHandle);
+    const action = this.vm.getString(actionHandle);
+    const { dryrun } = await import('@permaweb/aoconnect');
+    const { timeoutId, timeoutPromise } = timeout(
+      TIMEOUT_ASYNC_OPERATIONS,
+      'Dryrun operation timed out after 10 seconds'
+    );
+    try {
+      const result = await Promise.race<{
+        Output: any;
+        Messages: any[];
+        Spawns: any[];
+        Error?: any;
+      }>([
+        dryrun({
+          process: processId,
+          tags: [{ name: 'Action', value: action }],
+          data: '1234'
+        }),
+        timeoutPromise
+      ]);
+      if (timeoutId) clearTimeout(timeoutId);
+      return result.Messages[0].Data;
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
   }
 
   evalRedStone() {
